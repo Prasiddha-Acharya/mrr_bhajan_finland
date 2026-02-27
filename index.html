@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Message</title>
+
+  <!-- Poppins Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* === Theme Variables === */
+    :root {
+      --primary-maroon: #800000;    /* Deep base color */
+      --accent-white: #FFFFFF;      /* Primary text/icons */
+      --metallic-white: #FFFFFF;    /* Secondary borders */
+      --pure-white: #FFFFFF;        /* Body text */
+      --bg-gradient: linear-gradient(180deg, #600000 0%, #300000 100%);
+    }
+
+    /* --- Base Reset --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-gradient);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: var(--pure-white);
+    }
+
+    /* --- Container --- */
+    .container {
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(10px);
+      padding: 40px 30px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      border: 2px solid var(--metallic-white);
+      transition: transform 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-3px);
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--accent-white);
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 25px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    }
+
+    /* --- Form Fields --- */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 2px solid var(--metallic-white);
+      font-size: 15px;
+      background: rgba(255,255,255,0.05);
+      color: var(--pure-white);
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: rgba(255,255,255,0.7);
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--accent-white);
+      box-shadow: 0 0 8px rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* --- Buttons --- */
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: var(--accent-white);
+      color: var(--primary-maroon);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: var(--primary-maroon);
+      color: var(--accent-white);
+      box-shadow: 0 0 12px rgba(255,255,255,0.7);
+      transform: translateY(-2px);
+    }
+
+    /* --- Popup --- */
+    .popup-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .popup {
+      background: rgba(0,0,0,0.85);
+      padding: 25px 30px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 320px;
+      border: 2px solid var(--metallic-white);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      transform: scale(0.9);
+      animation: popupShow 0.3s forwards;
+      color: var(--pure-white);
+    }
+
+    .popup img {
+      width: 70px;
+      margin-bottom: 15px;
+    }
+
+    .popup h3 {
+      color: var(--accent-white);
+      font-size: 20px;
+      margin-bottom: 15px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    }
+
+    .popup button {
+      padding: 10px 20px;
+      background: var(--accent-white);
+      color: var(--primary-maroon);
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .popup button:hover {
+      background: var(--primary-maroon);
+      color: var(--accent-white);
+      box-shadow: 0 0 12px rgba(255,255,255,0.7);
+    }
+
+    /* --- Animations --- */
+    @keyframes popupShow {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* --- Responsive --- */
+    @media(max-width: 480px) {
+      .container {
+        padding: 25px 15px;
+      }
+
+      h2 {
+        font-size: 24px;
+      }
+
+      input, textarea, button {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Send Message</h2>
+
+  <form id="contactForm">
+    <div class="form-group">
+      <input type="text" id="name" placeholder="Full Name" required>
+    </div>
+
+    <div class="form-group">
+      <textarea id="message" placeholder="Write your message..." required></textarea>
+    </div>
+
+    <button type="submit">Send Message</button>
+  </form>
+</div>
+
+<!-- Popup -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup">
+    <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Success">
+    <h3>Message Sent Successfully!</h3>
+    <button id="closePopup">OK</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } 
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB4wZzceKofQAiVeQMbrkTZBZLXcB9Z5OI",
+    authDomain: "mrr-bhajan-finland.firebaseapp.com",
+    projectId: "mrr-bhajan-finland",
+    storageBucket: "mrr-bhajan-finland.firebasestorage.app",
+    messagingSenderId: "913989931388",
+    appId: "1:913989931388:web:c9be6b50f662ffe65394f9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const form = document.getElementById("contactForm");
+  const popupOverlay = document.getElementById("popupOverlay");
+  const closePopup = document.getElementById("closePopup");
+
+  async function sendMessage() {
+    const name = document.getElementById("name").value.trim();
+    const message = document.getElementById("message").value.trim();
+    if (!name || !message) return;
+
+    await addDoc(collection(db, "messages"), {
+      name: name,
+      message: message,
+      createdAt: serverTimestamp()
+    });
+
+    popupOverlay.style.display = "flex";
+    form.reset();
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await sendMessage();
+  });
+
+  form.addEventListener("keydown", async (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      await sendMessage();
+    }
+  });
+
+  closePopup.addEventListener("click", () => popupOverlay.style.display = "none");
+  popupOverlay.addEventListener("click", (e) => { if(e.target === popupOverlay) popupOverlay.style.display = "none"; });
+</script>
+
+</body>
+</html>
