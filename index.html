@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +12,14 @@
   <style>
     /* === Theme Variables === */
     :root {
-      --primary-maroon: #800000;    /* Deep base color */
-      --accent-white: #FFFFFF;      /* Primary text/icons */
-      --metallic-white: #FFFFFF;    /* Secondary borders */
-      --pure-white: #FFFFFF;        /* Body text */
+      --primary-maroon: #800000;
+      /* Deep base color */
+      --accent-white: #FFFFFF;
+      /* Primary text/icons */
+      --metallic-white: #FFFFFF;
+      /* Secondary borders */
+      --pure-white: #FFFFFF;
+      /* Body text */
       --bg-gradient: linear-gradient(180deg, #600000 0%, #300000 100%);
     }
 
@@ -38,13 +43,13 @@
 
     /* --- Container --- */
     .container {
-      background: rgba(0,0,0,0.7);
+      background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(10px);
       padding: 40px 30px;
       border-radius: 20px;
       width: 100%;
       max-width: 450px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
       border: 2px solid var(--metallic-white);
       transition: transform 0.3s ease;
     }
@@ -59,7 +64,7 @@
       font-size: 28px;
       font-weight: 600;
       margin-bottom: 25px;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
     }
 
     /* --- Form Fields --- */
@@ -67,26 +72,29 @@
       margin-bottom: 20px;
     }
 
-    input, textarea {
+    input,
+    textarea {
       width: 100%;
       padding: 14px 16px;
       border-radius: 12px;
       border: 2px solid var(--metallic-white);
       font-size: 15px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       color: var(--pure-white);
       outline: none;
       transition: 0.3s;
     }
 
-    input::placeholder, textarea::placeholder {
-      color: rgba(255,255,255,0.7);
+    input::placeholder,
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.7);
     }
 
-    input:focus, textarea:focus {
+    input:focus,
+    textarea:focus {
       border-color: var(--accent-white);
-      box-shadow: 0 0 8px rgba(255,255,255,0.5);
-      background: rgba(255,255,255,0.1);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.1);
     }
 
     textarea {
@@ -111,16 +119,18 @@
     button:hover {
       background: var(--primary-maroon);
       color: var(--accent-white);
-      box-shadow: 0 0 12px rgba(255,255,255,0.7);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
       transform: translateY(-2px);
     }
 
     /* --- Popup --- */
     .popup-overlay {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
       display: none;
       justify-content: center;
       align-items: center;
@@ -129,13 +139,13 @@
     }
 
     .popup {
-      background: rgba(0,0,0,0.85);
+      background: rgba(0, 0, 0, 0.85);
       padding: 25px 30px;
       border-radius: 20px;
       text-align: center;
       max-width: 320px;
       border: 2px solid var(--metallic-white);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
       transform: scale(0.9);
       animation: popupShow 0.3s forwards;
       color: var(--pure-white);
@@ -150,7 +160,7 @@
       color: var(--accent-white);
       font-size: 20px;
       margin-bottom: 15px;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
     }
 
     .popup button {
@@ -164,18 +174,30 @@
     .popup button:hover {
       background: var(--primary-maroon);
       color: var(--accent-white);
-      box-shadow: 0 0 12px rgba(255,255,255,0.7);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
     }
 
     /* --- Animations --- */
     @keyframes popupShow {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     /* --- Responsive --- */
@@ -188,381 +210,386 @@
         font-size: 24px;
       }
 
-      input, textarea, button {
+      input,
+      textarea,
+      button {
         font-size: 14px;
       }
     }
-.logo {
-  display: block;
-  margin: 0 auto 15px auto;
-  width: 100%;
-  max-width: 385px;
-  height: auto;
-  border-radius: 10px;
-}
-.choose-title{
-  text-align:center;
-  font-weight:500;
-  margin-bottom:12px;
-}
 
-.type-options{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:20px;
-}
+    .logo {
+      display: block;
+      margin: 0 auto 15px auto;
+      width: 100%;
+      max-width: 385px;
+      height: auto;
+      border-radius: 10px;
+    }
 
-.type-btn{
-  padding:10px;
-  border-radius:10px;
-  border:2px solid white;
-  background:transparent;
-  color:white;
-  cursor:pointer;
-  font-weight:500;
-}
+    .choose-title {
+      text-align: center;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
 
-.type-btn:hover{
-  background:white;
-  color:#800000;
-}
+    .type-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-.hidden{
-  display:none;
-}
+    .type-btn {
+      padding: 10px;
+      border-radius: 10px;
+      border: 2px solid white;
+      background: transparent;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+    }
 
-#voicePreview {
-  margin-top: 15px;
-}
+    .type-btn:hover {
+      background: white;
+      color: #800000;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #voicePreview {
+      margin-top: 15px;
+    }
   </style>
 </head>
+
 <body>
+  <div class="container">
+    <img src="mrr.png" alt="MRR Logo" class="logo">
 
-<div class="container">
-   <img src="mrr.png" alt="MRR Logo" class="logo">
+    <h2>आफ्नो भजन पठाउनुहोस्</h2>
 
-  <h2>Send your message</h2>
+    <div class="message-type">
+      <p class="choose-title">तपाईं कुन माध्यममा भजन पठाउन चाहनुहुन्छ ?</p>
 
-  <div class="message-type">
-  <p class="choose-title">Choose how you want to send message</p>
-
-  <div class="type-options">
-    <button type="button" class="type-btn" data-type="link">🔗 Link</button>
-    <button type="button" class="type-btn" data-type="text">✍️ Text</button>
-    <button type="button" class="type-btn" data-type="voice">🎤 Voice</button>
-    <button type="button" class="type-btn" data-type="media">📷 Photo / Video</button>
-  </div>
-</div>
-
-  <form id="contactForm">
-    <div class="form-group">
-      <input type="text" id="name" placeholder="Full Name" required>
+      <div class="type-options">
+        <button type="button" class="type-btn" data-type="link">🔗 लिंक</button>
+        <button type="button" class="type-btn" data-type="text">✍️ लेखेर</button>
+        <button type="button" class="type-btn" data-type="voice">🎤 बोलेर</button>
+        <button type="button" class="type-btn" data-type="media">📷 फोटो / भिडियो</button>
+      </div>
     </div>
 
-  <div class="form-group text-input">
-  <textarea id="message" placeholder="Write your message..."></textarea>
-</div>
+    <form id="contactForm">
+      <div class="form-group">
+        <input type="text" id="name" placeholder="पूरा नाम" required>
+      </div>
 
-<div class="form-group link-input hidden">
-  <input type="url" id="link" placeholder="Paste Facebook / YouTube / TikTok link here">
-</div>
+      <div class="form-group text-input">
+        <textarea id="message" placeholder="आफ्नो भजन लेख्नुहोस्..."></textarea>
+      </div>
 
-<div class="form-group media-input hidden">
-  <input type="file" id="mediaFile" accept="image/*,video/*">
-</div>
+      <div class="form-group link-input hidden">
+        <input type="url" id="link" placeholder="यहाँ Facebook / YouTube / TikTok को लिंक राख्नुहोस्">
+      </div>
 
-<div class="form-group voice-input hidden">
-  <button type="button" id="recordBtn">🎤 Record Voice</button>
-  <audio id="voicePreview" controls class="hidden"></audio>
-</div>
+      <div class="form-group media-input hidden">
+        <input type="file" id="mediaFile" accept="image/*,video/*">
+      </div>
 
-    <button type="submit">Send message</button>
-  </form>
-</div>
+      <div class="form-group voice-input hidden">
+        <button type="button" id="recordBtn">🎤 आवाज रेकर्ड गर्नुहोस्</button>
+        <audio id="voicePreview" controls class="hidden"></audio>
+      </div>
 
-<!-- Popup -->
-<div class="popup-overlay" id="popupOverlay">
-  <div class="popup">
-    <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Success">
-    <h3>message Sent Successfully!</h3>
-    <button id="closePopup">OK</button>
+      <button type="submit">भजन पठाउनुहोस्</button>
+    </form>
   </div>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
-
-
-/* ===============================
-   FIREBASE CONFIG
-================================*/
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB4wZzceKofQAiVeQMbrkTZBZLXcB9Z5OI",
-  authDomain: "mrr-bhajan-finland.firebaseapp.com",
-  projectId: "mrr-bhajan-finland",
-  storageBucket: "mrr-bhajan-finland.firebasestorage.app",
-  messagingSenderId: "913989931388",
-  appId: "1:913989931388:web:c9be6b50f662ffe65394f9"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-
-/* ===============================
-   DOM ELEMENTS
-================================*/
-
-const form = document.getElementById("contactForm");
-const popupOverlay = document.getElementById("popupOverlay");
-const closePopup = document.getElementById("closePopup");
-
-const textInput = document.querySelector(".text-input");
-const linkInput = document.querySelector(".link-input");
-const mediaInput = document.querySelector(".media-input");
-const voiceInput = document.querySelector(".voice-input");
-
-const typeButtons = document.querySelectorAll(".type-btn");
-
-
-/* ===============================
-   MESSAGE TYPE SELECTOR
-================================*/
-
-typeButtons.forEach(btn => {
-
-  btn.addEventListener("click", () => {
-
-    textInput.classList.add("hidden");
-    linkInput.classList.add("hidden");
-    mediaInput.classList.add("hidden");
-    voiceInput.classList.add("hidden");
-
-    const type = btn.dataset.type;
-
-    if (type === "text") textInput.classList.remove("hidden");
-    if (type === "link") linkInput.classList.remove("hidden");
-    if (type === "media") mediaInput.classList.remove("hidden");
-    if (type === "voice") voiceInput.classList.remove("hidden");
-
-  });
-
-});
-
-
-/* ===============================
-   VOICE RECORDING
-================================*/
-
-let mediaRecorder;
-let audioChunks = [];
-let recordedBlob = null;
-
-const recordBtn = document.getElementById("recordBtn");
-const voicePreview = document.getElementById("voicePreview");
-
-recordBtn.addEventListener("click", async () => {
-
-  try {
-
-    if (!mediaRecorder || mediaRecorder.state === "inactive") {
-
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-      mediaRecorder = new MediaRecorder(stream);
-
-      audioChunks = [];
-
-      mediaRecorder.ondataavailable = event => {
-        audioChunks.push(event.data);
-      };
-
-      mediaRecorder.onstop = () => {
-
-        recordedBlob = new Blob(audioChunks, { type: "audio/webm" });
-
-        voicePreview.src = URL.createObjectURL(recordedBlob);
-        voicePreview.classList.remove("hidden");
-
-      };
-
-      mediaRecorder.start();
-
-      recordBtn.textContent = "⏹ Stop Recording";
-
-    } else {
-
-      mediaRecorder.stop();
-
-      recordBtn.textContent = "🎤 Record Voice";
-
-    }
-
-  } catch (error) {
-
-    alert("Microphone access denied");
-
-  }
-
-});
-
-
-/* ===============================
-   SEND MESSAGE
-================================*/
-
-async function sendMessage() {
-
-  try {
-
-    const name = document.getElementById("name").value.trim();
-    const textMessage = document.getElementById("message")?.value.trim();
-    const link = document.getElementById("link")?.value.trim();
-    const mediaFile = document.getElementById("mediaFile")?.files[0];
-
-    if (!name) {
-      alert("Please enter your name");
-      return;
-    }
-
-    if (!textMessage && !link && !mediaFile && !recordedBlob) {
-      alert("Please add a message, link, file, or voice recording");
-      return;
-    }
-
-    let fileURL = null;
-    let messageType = "text";
-
-
-    /* MEDIA UPLOAD */
-
-    if (mediaFile) {
-
-      messageType = "media";
-
-      const fileName = Date.now() + "_" + mediaFile.name;
-
-      const storageRef = ref(storage, "messages/media/" + fileName);
-
-      await uploadBytes(storageRef, mediaFile);
-
-      fileURL = await getDownloadURL(storageRef);
-
-    }
-
-
-    /* VOICE UPLOAD */
-
-    if (recordedBlob) {
-
-      messageType = "voice";
-
-      const fileName = Date.now() + "_voice.webm";
-
-      const storageRef = ref(storage, "messages/voice/" + fileName);
-
-      await uploadBytes(storageRef, recordedBlob);
-
-      fileURL = await getDownloadURL(storageRef);
-
-    }
-
-
-    /* LINK MESSAGE */
-
-    if (link) {
-      messageType = "link";
-    }
-
-
-    /* SAVE TO FIRESTORE */
-
-    await addDoc(collection(db, "messages"), {
-
-      name: name,
-      message: textMessage || null,
-      link: link || null,
-      fileURL: fileURL || null,
-      messageType: messageType,
-      createdAt: serverTimestamp()
+  <!-- Popup -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup">
+      <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Success">
+      <h3>message Sent Successfully!</h3>
+      <button id="closePopup">OK</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+
+    /* ===============================
+       FIREBASE CONFIG
+    ================================*/
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB4wZzceKofQAiVeQMbrkTZBZLXcB9Z5OI",
+      authDomain: "mrr-bhajan-finland.firebaseapp.com",
+      projectId: "mrr-bhajan-finland",
+      storageBucket: "mrr-bhajan-finland.firebasestorage.app",
+      messagingSenderId: "913989931388",
+      appId: "1:913989931388:web:c9be6b50f662ffe65394f9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+
+    /* ===============================
+       DOM ELEMENTS
+    ================================*/
+
+    const form = document.getElementById("contactForm");
+    const popupOverlay = document.getElementById("popupOverlay");
+    const closePopup = document.getElementById("closePopup");
+
+    const textInput = document.querySelector(".text-input");
+    const linkInput = document.querySelector(".link-input");
+    const mediaInput = document.querySelector(".media-input");
+    const voiceInput = document.querySelector(".voice-input");
+
+    const typeButtons = document.querySelectorAll(".type-btn");
+
+
+    /* ===============================
+       MESSAGE TYPE SELECTOR
+    ================================*/
+
+    typeButtons.forEach(btn => {
+
+      btn.addEventListener("click", () => {
+
+        textInput.classList.add("hidden");
+        linkInput.classList.add("hidden");
+        mediaInput.classList.add("hidden");
+        voiceInput.classList.add("hidden");
+
+        const type = btn.dataset.type;
+
+        if (type === "text") textInput.classList.remove("hidden");
+        if (type === "link") linkInput.classList.remove("hidden");
+        if (type === "media") mediaInput.classList.remove("hidden");
+        if (type === "voice") voiceInput.classList.remove("hidden");
+
+      });
 
     });
 
 
-    popupOverlay.style.display = "flex";
+    /* ===============================
+       VOICE RECORDING
+    ================================*/
 
-    form.reset();
+    let mediaRecorder;
+    let audioChunks = [];
+    let recordedBlob = null;
 
-    recordedBlob = null;
+    const recordBtn = document.getElementById("recordBtn");
+    const voicePreview = document.getElementById("voicePreview");
 
-  } catch (error) {
+    recordBtn.addEventListener("click", async () => {
 
-    console.error(error);
+      try {
 
-    alert("Error sending message: " + error.message);
+        if (!mediaRecorder || mediaRecorder.state === "inactive") {
 
-  }
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-}
+          mediaRecorder = new MediaRecorder(stream);
 
+          audioChunks = [];
 
-/* ===============================
-   FORM EVENTS
-================================*/
+          mediaRecorder.ondataavailable = event => {
+            audioChunks.push(event.data);
+          };
 
-form.addEventListener("submit", async (e) => {
+          mediaRecorder.onstop = () => {
 
-  e.preventDefault();
+            recordedBlob = new Blob(audioChunks, { type: "audio/webm" });
 
-  await sendMessage();
+            voicePreview.src = URL.createObjectURL(recordedBlob);
+            voicePreview.classList.remove("hidden");
 
-});
+          };
 
+          mediaRecorder.start();
 
-form.addEventListener("keydown", async (e) => {
+          recordBtn.textContent = "⏹ रेकर्डिङ रोक्नुहोस्";
 
-  if (e.key === "Enter" && !e.shiftKey) {
+        } else {
 
-    e.preventDefault();
+          mediaRecorder.stop();
 
-    await sendMessage();
+          recordBtn.textContent = "🎤 आवाज रेकर्ड गर्नुहोस्";
+        }
 
-  }
+      }
 
-});
+      } catch (error) {
 
+      alert("Microphone access denied");
 
-/* ===============================
-   POPUP CLOSE
-================================*/
+    }
 
-closePopup.addEventListener("click", () => {
-  popupOverlay.style.display = "none";
-});
-
-popupOverlay.addEventListener("click", (e) => {
-  if (e.target === popupOverlay) popupOverlay.style.display = "none";
-});
+    });
 
 
-</script>
+    /* ===============================
+       SEND MESSAGE
+    ================================*/
+
+    async function sendMessage() {
+
+      try {
+
+        const name = document.getElementById("name").value.trim();
+        const textMessage = document.getElementById("message")?.value.trim();
+        const link = document.getElementById("link")?.value.trim();
+        const mediaFile = document.getElementById("mediaFile")?.files[0];
+
+        if (!name) {
+          alert("कृपया आफ्नो नाम लेख्नुहोस्");
+          return;
+        }
+
+        if (!textMessage && !link && !mediaFile && !recordedBlob) {
+          alert("कृपया म्यासेज, लिंक, फाइल वा भोइस रेकर्डिङ हाल्नुहोस्");
+          return;
+        }
+
+        let fileURL = null;
+        let messageType = "text";
+
+
+        /* MEDIA UPLOAD */
+
+        if (mediaFile) {
+
+          messageType = "media";
+
+          const fileName = Date.now() + "_" + mediaFile.name;
+
+          const storageRef = ref(storage, "messages/media/" + fileName);
+
+          await uploadBytes(storageRef, mediaFile);
+
+          fileURL = await getDownloadURL(storageRef);
+
+        }
+
+
+        /* VOICE UPLOAD */
+
+        if (recordedBlob) {
+
+          messageType = "voice";
+
+          const fileName = Date.now() + "_voice.webm";
+
+          const storageRef = ref(storage, "messages/voice/" + fileName);
+
+          await uploadBytes(storageRef, recordedBlob);
+
+          fileURL = await getDownloadURL(storageRef);
+
+        }
+
+
+        /* LINK MESSAGE */
+
+        if (link) {
+          messageType = "link";
+        }
+
+
+        /* SAVE TO FIRESTORE */
+
+        await addDoc(collection(db, "messages"), {
+
+          name: name,
+          message: textMessage || null,
+          link: link || null,
+          fileURL: fileURL || null,
+          messageType: messageType,
+          createdAt: serverTimestamp()
+
+        });
+
+
+        popupOverlay.style.display = "flex";
+
+        form.reset();
+
+        recordedBlob = null;
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert("Error sending message: " + error.message);
+
+      }
+
+    }
+
+
+    /* ===============================
+       FORM EVENTS
+    ================================*/
+
+    form.addEventListener("submit", async (e) => {
+
+      e.preventDefault();
+
+      await sendMessage();
+
+    });
+
+
+    form.addEventListener("keydown", async (e) => {
+
+      if (e.key === "Enter" && !e.shiftKey) {
+
+        e.preventDefault();
+
+        await sendMessage();
+
+      }
+
+    });
+
+
+    /* ===============================
+       POPUP CLOSE
+    ================================*/
+
+    closePopup.addEventListener("click", () => {
+      popupOverlay.style.display = "none";
+    });
+
+    popupOverlay.addEventListener("click", (e) => {
+      if (e.target === popupOverlay) popupOverlay.style.display = "none";
+    });
+
+
+  </script>
 
 </body>
+
 </html>
