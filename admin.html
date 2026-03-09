@@ -1,121 +1,201 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>MRR (Team Finland) - Bhajans</title>
-  <meta charset="UTF-8">
-  <style>
-    body {
-      font-family: Arial;
-      background: #f4f6f9;
-      padding: 30px;
-    }
+<title>MRR (Team Finland) - Bhajans</title>
+<meta charset="UTF-8">
 
-    h2 {
-      text-align: center;
-    }
+<style>
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background: white;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
+body{
+font-family:Arial;
+background:#f4f6f9;
+padding:30px;
+}
 
-    th, td {
-      padding: 12px;
-      border: 1px solid #ddd;
-      text-align: left;
-    }
+h2{
+text-align:center;
+}
 
-    th {
-      background: #007bff;
-      color: white;
-    }
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+background:white;
+box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
 
-    tr:nth-child(even) {
-      background: #f2f2f2;
-    }
+th,td{
+padding:12px;
+border:1px solid #ddd;
+text-align:left;
+}
 
-    .delete-btn {
-      background: red;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+th{
+background:#007bff;
+color:white;
+}
 
-    .delete-btn:hover {
-      background: darkred;
-    }
-  </style>
+tr:nth-child(even){
+background:#f2f2f2;
+}
+
+.delete-btn{
+background:red;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.delete-btn:hover{
+background:darkred;
+}
+
+.media-preview img{
+max-width:120px;
+border-radius:6px;
+}
+
+.media-preview video{
+max-width:150px;
+}
+
+.media-preview audio{
+width:150px;
+}
+
+</style>
 </head>
+
 <body>
 
 <h2>MRR (Team Finland) - Bhajans</h2>
 
 <table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Message</th>
-      <th>Date</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody id="messagesTable"></tbody>
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Message</th>
+<th>Media / Link</th>
+<th>Date</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="messagesTable"></tbody>
+
 </table>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, query, orderBy, onSnapshot, deleteDoc, doc } 
-  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // 🔥 Same Firebase config here
-  const firebaseConfig = {
-  apiKey: "AIzaSyB4wZzceKofQAiVeQMbrkTZBZLXcB9Z5OI",
-  authDomain: "mrr-bhajan-finland.firebaseapp.com",
-  projectId: "mrr-bhajan-finland",
-  storageBucket: "mrr-bhajan-finland.firebasestorage.app",
-  messagingSenderId: "913989931388",
-  appId: "1:913989931388:web:c9be6b50f662ffe65394f9"
-  };
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+import {
+getFirestore,
+collection,
+query,
+orderBy,
+onSnapshot,
+deleteDoc,
+doc
+}
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  const table = document.getElementById("messagesTable");
 
-  const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+const firebaseConfig={
+apiKey:"AIzaSyB4wZzceKofQAiVeQMbrkTZBZLXcB9Z5OI",
+authDomain:"mrr-bhajan-finland.firebaseapp.com",
+projectId:"mrr-bhajan-finland",
+storageBucket:"mrr-bhajan-finland.firebasestorage.app",
+messagingSenderId:"913989931388",
+appId:"1:913989931388:web:c9be6b50f662ffe65394f9"
+};
 
-  onSnapshot(q, (snapshot) => {
-    table.innerHTML = "";
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
 
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data();
-      const id = docSnap.id;
+const table=document.getElementById("messagesTable");
 
-      const row = document.createElement("tr");
+const q=query(collection(db,"messages"),orderBy("createdAt","desc"));
 
-      row.innerHTML = `
-        <td>${data.name}</td>
-        <td>${data.message}</td>
-        <td>${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleString() : ""}</td>
-        <td><button class="delete-btn" data-id="${id}">Delete</button></td>
-      `;
+onSnapshot(q,(snapshot)=>{
 
-      table.appendChild(row);
-    });
+table.innerHTML="";
 
-    // Delete button
-    document.querySelectorAll(".delete-btn").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const id = btn.getAttribute("data-id");
-        await deleteDoc(doc(db, "messages", id));
-      });
-    });
-  });
+snapshot.forEach((docSnap)=>{
+
+const data=docSnap.data();
+const id=docSnap.id;
+
+let preview="";
+
+/* TEXT MESSAGE */
+
+if(data.messageType==="text"){
+preview=data.message || "";
+}
+
+/* LINK MESSAGE */
+
+if(data.messageType==="link" && data.link){
+preview=`<a href="${data.link}" target="_blank">${data.link}</a>`;
+}
+
+/* MEDIA MESSAGE */
+
+if(data.messageType==="media" && data.fileURL){
+
+const url=data.fileURL;
+
+if(url.match(/\.(jpg|jpeg|png|gif|webp)$/i)){
+preview=`<div class="media-preview"><img src="${url}"></div>`;
+}
+
+else if(url.match(/\.(mp4|webm|ogg)$/i)){
+preview=`<div class="media-preview"><video controls src="${url}"></video></div>`;
+}
+
+else{
+preview=`<a href="${url}" target="_blank">Open File</a>`;
+}
+
+}
+
+/* VOICE MESSAGE */
+
+if(data.messageType==="voice" && data.fileURL){
+preview=`<div class="media-preview"><audio controls src="${data.fileURL}"></audio></div>`;
+}
+
+const row=document.createElement("tr");
+
+row.innerHTML=`
+<td>${data.name || ""}</td>
+<td>${data.messageType || ""}</td>
+<td>${data.message || ""}</td>
+<td>${preview}</td>
+<td>${data.createdAt ? new Date(data.createdAt.seconds*1000).toLocaleString() : ""}</td>
+<td><button class="delete-btn" data-id="${id}">Delete</button></td>
+`;
+
+table.appendChild(row);
+
+});
+
+/* DELETE BUTTON */
+
+document.querySelectorAll(".delete-btn").forEach(btn=>{
+btn.addEventListener("click",async()=>{
+const id=btn.getAttribute("data-id");
+await deleteDoc(doc(db,"messages",id));
+});
+});
+
+});
+
 </script>
 
 </body>
