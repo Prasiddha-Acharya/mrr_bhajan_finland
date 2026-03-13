@@ -4,7 +4,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Send message</title>
+  <title>आफ्नो भजन पठाउनुहोस् | MRR Bhajan Finland</title>
+
+  <!-- Social Media Preview (Facebook, WhatsApp, Messenger) -->
+
+  <meta property="og:type" content="website">
+
+  <meta property="og:title" content="आफ्नो भजन पठाउनुहोस् | MRR Bhajan Finland">
+
+  <meta property="og:description"
+    content="तपाईंलाई थाहा भएको, आफ्नो ठाउँको ताल अनुसारको भजन वा टुक्का MRR भजनमा पठाइदिनुहोस्।">
+
+  <meta property="og:image" content="https://mrrbhajanfinland.netlify.app/mrrthumb.png">
+
+  <meta property="og:url" content="https://mrrbhajanfinland.netlify.app/">
+
+  <meta property="og:site_name" content="MRR Bhajan Finland">
+
+  <meta property="og:locale" content="ne_NP">
+
+
+  <!-- WhatsApp / Messenger / Twitter preview -->
+
+  <meta name="twitter:card" content="summary_large_image">
+
+  <meta name="twitter:title" content="आफ्नो भजन पठाउनुहोस् | MRR Bhajan Finland">
+
+  <meta name="twitter:description"
+    content="तपाईंलाई थाहा भएको, आफ्नो ठाउँको ताल अनुसारको भजन वा टुक्का MRR भजनमा पठाइदिनुहोस्।">
+
+  <meta name="twitter:image" content="https://mrrbhajanfinland.netlify.app/mrrthumb.png">
 
   <!-- Poppins Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -368,295 +397,295 @@
 
 
 
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
-
-
-/* ===============================
-   FIREBASE CONFIG
-================================*/
-
-const firebaseConfig = {
-  apiKey: "AIzaSyB4wZzceKofQAiVeQMbrkTZBZLXcB9Z5OI",
-  authDomain: "mrr-bhajan-finland.firebaseapp.com",
-  projectId: "mrr-bhajan-finland",
-  storageBucket: "mrr-bhajan-finland.firebasestorage.app",
-  messagingSenderId: "913989931388",
-  appId: "1:913989931388:web:c9be6b50f662ffe65394f9"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-
-/* ===============================
-   INTRO → FORM SWITCH
-================================*/
-
-const introSection = document.getElementById("introSection");
-const formSection = document.getElementById("formSection");
-const startBtn = document.getElementById("startBtn");
-
-startBtn.addEventListener("click", () => {
-
-  introSection.style.display = "none";
-  formSection.classList.remove("hidden");
-
-});
-
-
-/* ===============================
-   DOM ELEMENTS
-================================*/
-
-const form = document.getElementById("contactForm");
-const popupOverlay = document.getElementById("popupOverlay");
-const closePopup = document.getElementById("closePopup");
-
-const textInput = document.querySelector(".text-input");
-const linkInput = document.querySelector(".link-input");
-const mediaInput = document.querySelector(".media-input");
-const voiceInput = document.querySelector(".voice-input");
-
-const typeButtons = document.querySelectorAll(".type-btn");
-
-
-/* ===============================
-   MESSAGE TYPE SELECTOR
-================================*/
-
-typeButtons.forEach(btn => {
-
-  btn.addEventListener("click", () => {
-
-    textInput.classList.add("hidden");
-    linkInput.classList.add("hidden");
-    mediaInput.classList.add("hidden");
-    voiceInput.classList.add("hidden");
-
-    const type = btn.dataset.type;
-
-    if (type === "text") textInput.classList.remove("hidden");
-    if (type === "link") linkInput.classList.remove("hidden");
-    if (type === "media") mediaInput.classList.remove("hidden");
-    if (type === "voice") voiceInput.classList.remove("hidden");
-
-  });
-
-});
-
-
-/* ===============================
-   VOICE RECORDING
-================================*/
-
-let mediaRecorder;
-let audioChunks = [];
-let recordedBlob = null;
-
-const recordBtn = document.getElementById("recordBtn");
-const voicePreview = document.getElementById("voicePreview");
-
-recordBtn.addEventListener("click", async () => {
-
-  try {
-
-    if (!mediaRecorder || mediaRecorder.state === "inactive") {
-
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-      mediaRecorder = new MediaRecorder(stream);
-
-      audioChunks = [];
-
-      mediaRecorder.ondataavailable = event => {
-        audioChunks.push(event.data);
-      };
-
-      mediaRecorder.onstop = () => {
-
-        recordedBlob = new Blob(audioChunks, { type: "audio/webm" });
-
-        voicePreview.src = URL.createObjectURL(recordedBlob);
-        voicePreview.classList.remove("hidden");
-
-      };
-
-      mediaRecorder.start();
-
-      recordBtn.textContent = "⏹ रेकर्डिङ रोक्नुहोस्";
-
-    } else {
-
-      mediaRecorder.stop();
-
-      recordBtn.textContent = "🎤 आवाज रेकर्ड गर्नुहोस्";
-
-    }
-
-  } catch (error) {
-
-    alert("Microphone access denied");
-
-  }
-
-});
-
-
-/* ===============================
-   SEND MESSAGE
-================================*/
-
-async function sendMessage() {
-
-  try {
-
-    const name = document.getElementById("name").value.trim();
-    const textMessage = document.getElementById("message")?.value.trim();
-    const link = document.getElementById("link")?.value.trim();
-    const mediaFile = document.getElementById("mediaFile")?.files[0];
-
-    if (!name) {
-      alert("कृपया आफ्नो नाम लेख्नुहोस्");
-      return;
-    }
-
-    if (!textMessage && !link && !mediaFile && !recordedBlob) {
-      alert("कृपया म्यासेज, लिंक, फाइल वा भोइस रेकर्डिङ हाल्नुहोस्");
-      return;
-    }
-
-    let fileURL = null;
-    let messageType = "text";
-
-
-    /* MEDIA UPLOAD */
-
-    if (mediaFile) {
-
-      messageType = "media";
-
-      const fileName = Date.now() + "_" + mediaFile.name;
-
-      const storageRef = ref(storage, "messages/media/" + fileName);
-
-      await uploadBytes(storageRef, mediaFile);
-
-      fileURL = await getDownloadURL(storageRef);
-
-    }
-
-
-    /* VOICE UPLOAD */
-
-    if (recordedBlob) {
-
-      messageType = "voice";
-
-      const fileName = Date.now() + "_voice.webm";
-
-      const storageRef = ref(storage, "messages/voice/" + fileName);
-
-      await uploadBytes(storageRef, recordedBlob);
-
-      fileURL = await getDownloadURL(storageRef);
-
-    }
-
-
-    /* LINK MESSAGE */
-
-    if (link) {
-      messageType = "link";
-    }
-
-
-    /* SAVE TO FIRESTORE */
-
-    await addDoc(collection(db, "messages"), {
-
-      name: name,
-      message: textMessage || null,
-      link: link || null,
-      fileURL: fileURL || null,
-      messageType: messageType,
-      createdAt: serverTimestamp()
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+
+    /* ===============================
+       FIREBASE CONFIG
+    ================================*/
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB4wZzceKofQAiVeQMbrkTZBZLXcB9Z5OI",
+      authDomain: "mrr-bhajan-finland.firebaseapp.com",
+      projectId: "mrr-bhajan-finland",
+      storageBucket: "mrr-bhajan-finland.firebasestorage.app",
+      messagingSenderId: "913989931388",
+      appId: "1:913989931388:web:c9be6b50f662ffe65394f9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+
+    /* ===============================
+       INTRO → FORM SWITCH
+    ================================*/
+
+    const introSection = document.getElementById("introSection");
+    const formSection = document.getElementById("formSection");
+    const startBtn = document.getElementById("startBtn");
+
+    startBtn.addEventListener("click", () => {
+
+      introSection.style.display = "none";
+      formSection.classList.remove("hidden");
 
     });
 
 
-    popupOverlay.style.display = "flex";
+    /* ===============================
+       DOM ELEMENTS
+    ================================*/
 
-    form.reset();
+    const form = document.getElementById("contactForm");
+    const popupOverlay = document.getElementById("popupOverlay");
+    const closePopup = document.getElementById("closePopup");
 
-    recordedBlob = null;
+    const textInput = document.querySelector(".text-input");
+    const linkInput = document.querySelector(".link-input");
+    const mediaInput = document.querySelector(".media-input");
+    const voiceInput = document.querySelector(".voice-input");
 
-  } catch (error) {
-
-    console.error(error);
-
-    alert("Error sending message: " + error.message);
-
-  }
-
-}
-
-
-/* ===============================
-   FORM EVENTS
-================================*/
-
-form.addEventListener("submit", async (e) => {
-
-  e.preventDefault();
-
-  await sendMessage();
-
-});
+    const typeButtons = document.querySelectorAll(".type-btn");
 
 
-form.addEventListener("keydown", async (e) => {
+    /* ===============================
+       MESSAGE TYPE SELECTOR
+    ================================*/
 
-  if (e.key === "Enter" && !e.shiftKey) {
+    typeButtons.forEach(btn => {
 
-    e.preventDefault();
+      btn.addEventListener("click", () => {
 
-    await sendMessage();
+        textInput.classList.add("hidden");
+        linkInput.classList.add("hidden");
+        mediaInput.classList.add("hidden");
+        voiceInput.classList.add("hidden");
 
-  }
+        const type = btn.dataset.type;
 
-});
+        if (type === "text") textInput.classList.remove("hidden");
+        if (type === "link") linkInput.classList.remove("hidden");
+        if (type === "media") mediaInput.classList.remove("hidden");
+        if (type === "voice") voiceInput.classList.remove("hidden");
+
+      });
+
+    });
 
 
-/* ===============================
-   POPUP CLOSE
-================================*/
+    /* ===============================
+       VOICE RECORDING
+    ================================*/
 
-closePopup.addEventListener("click", () => {
-  popupOverlay.style.display = "none";
-});
+    let mediaRecorder;
+    let audioChunks = [];
+    let recordedBlob = null;
 
-popupOverlay.addEventListener("click", (e) => {
-  if (e.target === popupOverlay) popupOverlay.style.display = "none";
-});
+    const recordBtn = document.getElementById("recordBtn");
+    const voicePreview = document.getElementById("voicePreview");
 
-</script>
+    recordBtn.addEventListener("click", async () => {
+
+      try {
+
+        if (!mediaRecorder || mediaRecorder.state === "inactive") {
+
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+          mediaRecorder = new MediaRecorder(stream);
+
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = event => {
+            audioChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = () => {
+
+            recordedBlob = new Blob(audioChunks, { type: "audio/webm" });
+
+            voicePreview.src = URL.createObjectURL(recordedBlob);
+            voicePreview.classList.remove("hidden");
+
+          };
+
+          mediaRecorder.start();
+
+          recordBtn.textContent = "⏹ रेकर्डिङ रोक्नुहोस्";
+
+        } else {
+
+          mediaRecorder.stop();
+
+          recordBtn.textContent = "🎤 आवाज रेकर्ड गर्नुहोस्";
+
+        }
+
+      } catch (error) {
+
+        alert("Microphone access denied");
+
+      }
+
+    });
+
+
+    /* ===============================
+       SEND MESSAGE
+    ================================*/
+
+    async function sendMessage() {
+
+      try {
+
+        const name = document.getElementById("name").value.trim();
+        const textMessage = document.getElementById("message")?.value.trim();
+        const link = document.getElementById("link")?.value.trim();
+        const mediaFile = document.getElementById("mediaFile")?.files[0];
+
+        if (!name) {
+          alert("कृपया आफ्नो नाम लेख्नुहोस्");
+          return;
+        }
+
+        if (!textMessage && !link && !mediaFile && !recordedBlob) {
+          alert("कृपया म्यासेज, लिंक, फाइल वा भोइस रेकर्डिङ हाल्नुहोस्");
+          return;
+        }
+
+        let fileURL = null;
+        let messageType = "text";
+
+
+        /* MEDIA UPLOAD */
+
+        if (mediaFile) {
+
+          messageType = "media";
+
+          const fileName = Date.now() + "_" + mediaFile.name;
+
+          const storageRef = ref(storage, "messages/media/" + fileName);
+
+          await uploadBytes(storageRef, mediaFile);
+
+          fileURL = await getDownloadURL(storageRef);
+
+        }
+
+
+        /* VOICE UPLOAD */
+
+        if (recordedBlob) {
+
+          messageType = "voice";
+
+          const fileName = Date.now() + "_voice.webm";
+
+          const storageRef = ref(storage, "messages/voice/" + fileName);
+
+          await uploadBytes(storageRef, recordedBlob);
+
+          fileURL = await getDownloadURL(storageRef);
+
+        }
+
+
+        /* LINK MESSAGE */
+
+        if (link) {
+          messageType = "link";
+        }
+
+
+        /* SAVE TO FIRESTORE */
+
+        await addDoc(collection(db, "messages"), {
+
+          name: name,
+          message: textMessage || null,
+          link: link || null,
+          fileURL: fileURL || null,
+          messageType: messageType,
+          createdAt: serverTimestamp()
+
+        });
+
+
+        popupOverlay.style.display = "flex";
+
+        form.reset();
+
+        recordedBlob = null;
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert("Error sending message: " + error.message);
+
+      }
+
+    }
+
+
+    /* ===============================
+       FORM EVENTS
+    ================================*/
+
+    form.addEventListener("submit", async (e) => {
+
+      e.preventDefault();
+
+      await sendMessage();
+
+    });
+
+
+    form.addEventListener("keydown", async (e) => {
+
+      if (e.key === "Enter" && !e.shiftKey) {
+
+        e.preventDefault();
+
+        await sendMessage();
+
+      }
+
+    });
+
+
+    /* ===============================
+       POPUP CLOSE
+    ================================*/
+
+    closePopup.addEventListener("click", () => {
+      popupOverlay.style.display = "none";
+    });
+
+    popupOverlay.addEventListener("click", (e) => {
+      if (e.target === popupOverlay) popupOverlay.style.display = "none";
+    });
+
+  </script>
 </body>
 
 </html>
