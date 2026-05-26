@@ -23,7 +23,7 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-/* ── Firebase Configuration (same as register.js) ──────────── */
+/* ── Firebase Configuration (same as index.js) ──────────── */
 const firebaseConfig = {
   apiKey:            "AIzaSyB4wZzceKofQAiVeQMbrkTZBZLXcB9Z5OI",
   authDomain:        "mrr-bhajan-finland.firebaseapp.com",
