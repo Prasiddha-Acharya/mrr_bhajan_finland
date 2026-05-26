@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pending Approvals & Database Administration | MRR TEAM FINLAND</title>
+  <title>Database Administration Console | MRR TEAM FINLAND</title>
   <meta name="description" content="Verify and approve new registrations or manage active member profiles.">
 
   <!-- Google Fonts -->
@@ -52,21 +52,23 @@
     
     .approval-actions-wrapper {
       display: flex;
-      gap: var(--space-3);
+      gap: var(--space-2);
       margin-top: var(--space-4);
       width: 100%;
+      flex-wrap: wrap;
     }
     
-    .btn-approve, .btn-delete, .btn-delete-profile {
+    .btn-approve, .btn-delete, .btn-edit, .btn-delete-profile {
       flex: 1;
+      min-width: 80px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: var(--space-2);
-      height: 40px;
+      gap: var(--space-1.5);
+      height: 38px;
       border: none;
       border-radius: var(--radius-md);
-      font-size: 13.5px;
+      font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
       transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), opacity var(--duration-fast) ease;
@@ -75,30 +77,41 @@
     .btn-approve {
       background: linear-gradient(135deg, #059669, #10b981);
       color: white;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
     }
     
     .btn-approve:hover {
-      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+      transform: translateY(-1.5px);
+    }
+    
+    .btn-edit {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      color: white;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);
+    }
+    
+    .btn-edit:hover {
+      box-shadow: 0 6px 16px rgba(14, 165, 233, 0.35);
       transform: translateY(-1.5px);
     }
     
     .btn-delete, .btn-delete-profile {
       background: linear-gradient(135deg, #b91c1c, #ef4444);
       color: white;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
     }
     
     .btn-delete:hover, .btn-delete-profile:hover {
-      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
       transform: translateY(-1.5px);
     }
     
-    .btn-approve:active, .btn-delete:active, .btn-delete-profile:active {
+    .btn-approve:active, .btn-delete:active, .btn-edit:active, .btn-delete-profile:active {
       transform: translateY(0);
     }
     
-    .btn-approve:disabled, .btn-delete:disabled, .btn-delete-profile:disabled {
+    .btn-approve:disabled, .btn-delete:disabled, .btn-edit:disabled, .btn-delete-profile:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none !important;
@@ -277,6 +290,151 @@
   <footer class="site-footer" role="contentinfo">
     <p>&copy; 2026 &nbsp;&#8231;&nbsp; MRR TEAM FINLAND &nbsp;&#8231;&nbsp; All rights reserved.</p>
   </footer>
+
+  <!-- Direct Admin Member Profile Editor Modal -->
+  <div class="edit-modal-backdrop" id="editModal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Update Member Profile (Administrator Mode)</h2>
+        <button class="modal-close-btn" id="btnCancelEdit1" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="editMemberForm" class="edit-form" novalidate>
+          
+          <!-- Grid Fields Layout -->
+          <div class="edit-form-grid">
+            <!-- Full Name -->
+            <div class="field-group">
+              <label class="field-label" for="editFullName">Full Name <span class="required-star">*</span></label>
+              <input type="text" id="editFullName" class="field-input" required>
+              <span class="field-error" id="editFullNameError" role="alert"></span>
+            </div>
+
+            <!-- City -->
+            <div class="field-group">
+              <label class="field-label" for="editCity">City of Residence <span class="required-star">*</span></label>
+              <input type="text" id="editCity" class="field-input" required>
+              <span class="field-error" id="editCityError" role="alert"></span>
+            </div>
+
+            <!-- Phone -->
+            <div class="field-group">
+              <label class="field-label" for="editPhone">Phone Number <span class="required-star">*</span></label>
+              <input type="tel" id="editPhone" class="field-input" required>
+              <span class="field-error" id="editPhoneError" role="alert"></span>
+            </div>
+
+            <!-- Email -->
+            <div class="field-group">
+              <label class="field-label" for="editEmail">Email Address <span class="required-star">*</span></label>
+              <input type="email" id="editEmail" class="field-input" required>
+              <span class="field-error" id="editEmailError" role="alert"></span>
+            </div>
+          </div>
+
+          <!-- Photo Edit Zone -->
+          <div class="field-group" style="margin-top: var(--space-4);">
+            <label class="field-label">Profile Photo <span class="field-optional">(Optional)</span></label>
+            <div class="photo-dropzone" id="editPhotoDropzone" role="button" tabindex="0">
+              <!-- Preview prefilled or new -->
+              <div class="photo-preview-wrapper" id="editPhotoPreviewWrapper">
+                <img id="editPhotoPreview" class="photo-preview-img" src="" alt="Profile preview">
+                <button type="button" class="photo-remove-btn" id="editPhotoRemoveBtn" aria-label="Remove photo">
+                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                   </svg>
+                </button>
+              </div>
+              
+              <!-- Placeholder -->
+              <div class="photo-placeholder" id="editPhotoPlaceholder" style="display: none;">
+                <div class="photo-placeholder-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                </div>
+                <p class="photo-placeholder-text">Click to upload photo</p>
+              </div>
+
+              <input type="file" id="editProfilePhoto" class="photo-file-input" accept="image/png,image/jpeg,image/webp,image/gif">
+            </div>
+            <span class="field-error" id="editPhotoError" role="alert"></span>
+          </div>
+
+          <!-- Jersey Interest -->
+          <div class="field-group" style="margin-top: var(--space-4);">
+            <label class="field-label">Interested in MRR Jersey?</label>
+            <div class="radio-pill-group" role="radiogroup">
+              <label class="radio-pill" id="editRadioLabelYes">
+                <input type="radio" id="editJerseyInterestYes" name="editJerseyInterest" value="yes" class="radio-pill__input">
+                <span class="radio-pill__check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </span>
+                <span class="radio-pill__text">Yes</span>
+              </label>
+
+              <label class="radio-pill" id="editRadioLabelNo">
+                <input type="radio" id="editJerseyInterestNo" name="editJerseyInterest" value="no" class="radio-pill__input">
+                <span class="radio-pill__check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </span>
+                <span class="radio-pill__text">No</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Jersey Subfields Panel -->
+          <div class="jersey-details-panel" id="editJerseyDetailsPanel" aria-hidden="true" style="margin-top: var(--space-4);">
+            <div class="jersey-panel-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
+              </svg>
+              Jersey Details
+            </div>
+            <div class="edit-form-grid" style="margin-top: var(--space-3);">
+              <div class="field-group">
+                <label class="field-label" for="editJerseySize">Jersey Size (Nepal Size) <span class="required-star">*</span></label>
+                <select id="editJerseySize" class="field-input field-select">
+                  <option value="" disabled>Select size…</option>
+                  <option value="XS">XS — Extra Small</option>
+                  <option value="S">S — Small</option>
+                  <option value="M">M — Medium</option>
+                  <option value="L">L — Large</option>
+                  <option value="XL">XL — Extra Large</option>
+                  <option value="XXL">XXL — Double Extra Large</option>
+                  <option value="XXXL">XXXL — Triple Extra Large</option>
+                </select>
+                <span class="field-error" id="editJerseySizeError" role="alert"></span>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="editJerseyNumber">Jersey Number <span class="required-star">*</span></label>
+                <input type="number" id="editJerseyNumber" class="field-input" placeholder="e.g. 10" min="1" max="99">
+                <span class="field-error" id="editJerseyNumberError" role="alert"></span>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="btnCancelEdit2">Cancel</button>
+        <button type="button" class="btn-primary" id="btnSaveChanges">
+          <span id="saveBtnLabel">Save Changes</span>
+          <span id="saveBtnSpinner" style="display: none;" class="submit-btn__spinner">
+            <svg class="spinner-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+              <path d="M12 2a10 10 0 0 1 10 10" stroke="white" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            Saving…
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Toast Notification -->
   <div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>

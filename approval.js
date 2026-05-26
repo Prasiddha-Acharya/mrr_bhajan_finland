@@ -17,6 +17,12 @@ import {
   updateDoc,
   deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  getStorage,
+  ref as storageRef,
+  uploadBytesResumable,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 /* ── Firebase Configuration ───────────────────────────────── */
 const firebaseConfig = {
@@ -29,13 +35,23 @@ const firebaseConfig = {
 };
 
 /* Initialize Services */
-const app  = initializeApp(firebaseConfig);
-const db   = getFirestore(app);
+const app     = initializeApp(firebaseConfig);
+const db      = getFirestore(app);
+const storage = getStorage(app);
 
 /* ── State variables ──────────────────────────────────────── */
-let pendingMembers = []; // Pending requests
-let activeMembers  = [];  // Approved member profiles
-let activeTab      = "pending"; // Current administrative view ("pending" | "active")
+let pendingMembers     = []; // Pending requests
+let activeMembers      = [];  // Approved member profiles
+let activeTab          = "pending"; // Current administrative view ("pending" | "active")
+let selectedMemberId   = null;
+let selectedMemberData = null;
+
+// Constants for Validation
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_REGEX = /^\+?[0-9\s\-().]{7,20}$/;
+const MAX_PHOTO_SIZE_MB   = 5;
+const MAX_PHOTO_BYTES     = MAX_PHOTO_SIZE_MB * 1024 * 1024;
+const ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 /* ── DOM References ───────────────────────────────────────── */
 const membersGrid       = document.getElementById("membersGrid");
@@ -61,6 +77,39 @@ const dashboardWrapper  = document.getElementById("dashboardWrapper");
 const gatePasswordInput = document.getElementById("gatePassword");
 const gateErrorText     = document.getElementById("gateError");
 const btnGateSubmit     = document.getElementById("btnGateSubmit");
+
+/* Modal Profile Editor Elements */
+const editModal           = document.getElementById("editModal");
+const editMemberForm      = document.getElementById("editMemberForm");
+const editFullNameInput   = document.getElementById("editFullName");
+const editCityInput       = document.getElementById("editCity");
+const editPhoneInput      = document.getElementById("editPhone");
+const editEmailInput      = document.getElementById("editEmail");
+
+const editPhotoDropzone       = document.getElementById("editPhotoDropzone");
+const editProfilePhotoInput   = document.getElementById("editProfilePhoto");
+const editPhotoPlaceholder    = document.getElementById("editPhotoPlaceholder");
+const editPhotoPreviewWrapper = document.getElementById("editPhotoPreviewWrapper");
+const editPhotoPreviewImg     = document.getElementById("editPhotoPreview");
+const editPhotoRemoveBtn      = document.getElementById("editPhotoRemoveBtn");
+
+const editJerseyDetailsPanel   = document.getElementById("editJerseyDetailsPanel");
+const editJerseySizeSelect     = document.getElementById("editJerseySize");
+const editJerseyNumberInput    = document.getElementById("editJerseyNumber");
+
+const btnSaveChanges          = document.getElementById("btnSaveChanges");
+const saveBtnLabel            = document.getElementById("saveBtnLabel");
+const saveBtnSpinner          = document.getElementById("saveBtnSpinner");
+
+const btnCancelEdit1          = document.getElementById("btnCancelEdit1");
+const btnCancelEdit2          = document.getElementById("btnCancelEdit2");
+
+/* Helper to track photo changes in edit state */
+let editPhotoState = {
+  file: null,
+  removedOld: false,
+  currentUrl: null
+};
 
 /* ═══════════════════════════════════════════════════════════
    TOAST UTILITY
@@ -121,7 +170,7 @@ async function fetchAdminData(showSuccessToast = true) {
       }
     });
 
-    // Populate dashboard statistics counters
+    // Populate stats
     animateCounter(countPendingText, pendingMembers.length);
     animateCounter(countActiveText, activeMembers.length);
 
@@ -226,13 +275,19 @@ function renderAdminGrid(membersList) {
       actionsHTML = `
         <div class="approval-actions-wrapper">
           <button type="button" class="btn-approve" data-id="${member.id}" aria-label="Approve registration for ${member.fullName}">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
             Approve
           </button>
+          <button type="button" class="btn-edit" data-id="${member.id}" aria-label="Edit registration for ${member.fullName}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Edit
+          </button>
           <button type="button" class="btn-delete" data-id="${member.id}" aria-label="Delete registration for ${member.fullName}">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
             Delete
@@ -240,11 +295,17 @@ function renderAdminGrid(membersList) {
         </div>
       `;
     } else {
-      // Active tab: Show Delete Profile button
+      // Active tab: Show Edit button and Delete Profile button
       actionsHTML = `
         <div class="approval-actions-wrapper">
+          <button type="button" class="btn-edit" data-id="${member.id}" aria-label="Edit active member profile for ${member.fullName}">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Edit
+          </button>
           <button type="button" class="btn-delete-profile" data-id="${member.id}" aria-label="Delete active member profile for ${member.fullName}">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
             Delete Profile
@@ -300,7 +361,7 @@ function renderAdminGrid(membersList) {
     membersGrid.appendChild(card);
   });
 
-  // Attach active action button click handlers
+  // Attach action button handlers
   attachActionHandlers();
 }
 
@@ -311,10 +372,9 @@ function applyFiltersAndSort() {
   const searchTerm = searchInput.value.trim().toLowerCase();
   const currentSort = sortControlSelect.value;
 
-  // Decide which list to use based on tab
   const activeList = activeTab === "pending" ? pendingMembers : activeMembers;
 
-  // 1. FILTERING (Search Term only!)
+  // 1. FILTERING
   let filtered = activeList.filter((member) => {
     const nameMatch  = member.fullName ? member.fullName.toLowerCase().includes(searchTerm) : false;
     const emailMatch = member.email ? member.email.toLowerCase().includes(searchTerm) : false;
@@ -351,14 +411,12 @@ if (sortControlSelect) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   BUTTON ACTION HANDLERS (APPROVE, DELETE REQUEST & DELETE PROFILE)
+   BUTTON ACTION HANDLERS (APPROVE, EDIT, DELETE REQUEST & PROFILE)
    ═══════════════════════════════════════════════════════════ */
 function attachActionHandlers() {
-  // Pending actions
   const approveBtns = membersGrid.querySelectorAll(".btn-approve");
+  const editBtns    = membersGrid.querySelectorAll(".btn-edit");
   const deleteBtns  = membersGrid.querySelectorAll(".btn-delete");
-  
-  // Active deletion actions
   const deleteProfileBtns = membersGrid.querySelectorAll(".btn-delete-profile");
 
   approveBtns.forEach(btn => {
@@ -370,12 +428,13 @@ function attachActionHandlers() {
 
       btn.disabled = true;
       const delBtn = targetCard.querySelector(".btn-delete");
+      const edBtn = targetCard.querySelector(".btn-edit");
       if (delBtn) delBtn.disabled = true;
+      if (edBtn) edBtn.disabled = true;
 
       try {
         showToast(`Approving ${member.fullName}…`, "info");
         
-        // Update Firestore membershipStatus to "Active"
         const docRef = doc(db, "members", memberId);
         await updateDoc(docRef, { membershipStatus: "Active" });
 
@@ -393,7 +452,28 @@ function attachActionHandlers() {
         showToast(`Approval failed: ${err.message}`, "error");
         btn.disabled = false;
         if (delBtn) delBtn.disabled = false;
+        if (edBtn) edBtn.disabled = false;
       }
+    });
+  });
+
+  editBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const memberId = btn.getAttribute("data-id");
+      selectedMemberId = memberId;
+      selectedMemberData = pendingMembers.find(m => m.id === memberId) || activeMembers.find(m => m.id === memberId);
+      
+      if (!selectedMemberData) return;
+
+      // Bypass passkeys - Prefill form directly
+      prefillEditForm();
+
+      // Show modal instantly
+      editModal.style.display = "flex";
+      setTimeout(() => {
+        editModal.classList.add("is-open");
+        editFullNameInput.focus();
+      }, 20);
     });
   });
 
@@ -409,7 +489,9 @@ function attachActionHandlers() {
 
       btn.disabled = true;
       const appBtn = targetCard.querySelector(".btn-approve");
+      const edBtn = targetCard.querySelector(".btn-edit");
       if (appBtn) appBtn.disabled = true;
+      if (edBtn) edBtn.disabled = true;
 
       try {
         showToast(`Deleting request for ${member.fullName}…`, "info");
@@ -431,6 +513,7 @@ function attachActionHandlers() {
         showToast(`Deletion failed: ${err.message}`, "error");
         btn.disabled = false;
         if (appBtn) appBtn.disabled = false;
+        if (edBtn) edBtn.disabled = false;
       }
     });
   });
@@ -446,6 +529,8 @@ function attachActionHandlers() {
       if (!confirmDelete) return;
 
       btn.disabled = true;
+      const edBtn = targetCard.querySelector(".btn-edit");
+      if (edBtn) edBtn.disabled = true;
 
       try {
         showToast(`Deleting profile for ${member.fullName}…`, "info");
@@ -466,6 +551,7 @@ function attachActionHandlers() {
         console.error("Failed to delete active profile:", err);
         showToast(`Deletion failed: ${err.message}`, "error");
         btn.disabled = false;
+        if (edBtn) edBtn.disabled = false;
       }
     });
   });
@@ -505,6 +591,340 @@ function setupTabs() {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   MODAL DISPLAY, PREFILL & PHOTO UPLOAD LOGIC
+   ═══════════════════════════════════════════════════════════ */
+function closeModal() {
+  editModal.classList.remove("is-open");
+  setTimeout(() => {
+    editModal.style.display = "none";
+    editMemberForm.reset();
+    clearPhotoPreview();
+    
+    selectedMemberId   = null;
+    selectedMemberData = null;
+    
+    // Clear validation error highlights
+    editModal.querySelectorAll(".field-group").forEach((g) => {
+      g.classList.remove("has-error", "is-valid");
+      const errEl = g.querySelector(".field-error");
+      if (errEl) errEl.textContent = "";
+    });
+  }, 200);
+}
+
+// Modal Close Listeners
+[btnCancelEdit1, btnCancelEdit2].forEach(btn => {
+  btn.addEventListener("click", closeModal);
+});
+editModal.addEventListener("click", (e) => {
+  if (e.target === editModal) closeModal();
+});
+
+function prefillEditForm() {
+  const m = selectedMemberData;
+  
+  editFullNameInput.value = m.fullName || "";
+  editCityInput.value     = m.city || "";
+  editPhoneInput.value    = m.phone || "";
+  editEmailInput.value    = m.email || "";
+
+  editPhotoState = {
+    file: null,
+    removedOld: false,
+    currentUrl: m.profilePhoto
+  };
+
+  if (m.profilePhoto) {
+    editPhotoPreviewImg.src              = m.profilePhoto;
+    editPhotoPreviewWrapper.style.display = "flex";
+    editPhotoPlaceholder.style.display    = "none";
+  } else {
+    clearPhotoPreview();
+  }
+
+  const jerseyInterested = m.jersey && m.jersey.interested === true;
+  
+  if (jerseyInterested) {
+    document.getElementById("editJerseyInterestYes").checked = true;
+    editJerseyDetailsPanel.classList.add("is-open");
+    editJerseyDetailsPanel.setAttribute("aria-hidden", "false");
+    editJerseySizeSelect.value   = m.jersey.size || "";
+    editJerseyNumberInput.value  = m.jersey.number || "";
+  } else {
+    document.getElementById("editJerseyInterestNo").checked = true;
+    editJerseyDetailsPanel.classList.remove("is-open");
+    editJerseyDetailsPanel.setAttribute("aria-hidden", "true");
+    editJerseySizeSelect.value   = "";
+    editJerseyNumberInput.value  = "";
+  }
+}
+
+/* Jersey preference change listener */
+document.querySelectorAll('input[name="editJerseyInterest"]').forEach((radio) => {
+  radio.addEventListener("change", () => {
+    const wantsJersey = document.querySelector('input[name="editJerseyInterest"]:checked')?.value === "yes";
+
+    if (wantsJersey) {
+      editJerseyDetailsPanel.classList.add("is-open");
+      editJerseyDetailsPanel.setAttribute("aria-hidden", "false");
+    } else {
+      editJerseyDetailsPanel.classList.remove("is-open");
+      editJerseyDetailsPanel.setAttribute("aria-hidden", "true");
+      editJerseySizeSelect.value  = "";
+      editJerseyNumberInput.value = "";
+    }
+  });
+});
+
+/* Photo Dropzone Previews & Handlers */
+function showPhotoPreview(file) {
+  const reader  = new FileReader();
+  reader.onload = (e) => {
+    editPhotoPreviewImg.src               = e.target.result;
+    editPhotoPreviewWrapper.style.display = "flex";
+    editPhotoPlaceholder.style.display    = "none";
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPhotoPreview() {
+  editProfilePhotoInput.value           = "";
+  editPhotoPreviewImg.src               = "";
+  editPhotoPreviewWrapper.style.display = "none";
+  editPhotoPlaceholder.style.display    = "flex";
+}
+
+editProfilePhotoInput.addEventListener("change", () => {
+  const file = editProfilePhotoInput.files[0];
+  const photoGroup = editPhotoDropzone.closest(".field-group");
+  const photoError = document.getElementById("editPhotoError");
+
+  if (!file) {
+    if (!editPhotoState.currentUrl) clearPhotoPreview();
+    return;
+  }
+
+  if (!ALLOWED_PHOTO_TYPES.includes(file.type)) {
+    photoError.textContent = "Unsupported file type. Use PNG, JPG, or WEBP.";
+    photoGroup?.classList.add("has-error");
+    clearPhotoPreview();
+    return;
+  }
+  if (file.size > MAX_PHOTO_BYTES) {
+    photoError.textContent = `Photo must be under ${MAX_PHOTO_SIZE_MB} MB.`;
+    photoGroup?.classList.add("has-error");
+    clearPhotoPreview();
+    return;
+  }
+
+  photoError.textContent = "";
+  photoGroup?.classList.remove("has-error");
+  
+  editPhotoState.file = file;
+  editPhotoState.removedOld = true;
+  showPhotoPreview(file);
+});
+
+editPhotoRemoveBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  clearPhotoPreview();
+  editPhotoState.file = null;
+  editPhotoState.removedOld = true;
+  editPhotoState.currentUrl = null;
+});
+
+editPhotoDropzone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  editPhotoDropzone.classList.add("drag-over");
+});
+editPhotoDropzone.addEventListener("dragleave", () => editPhotoDropzone.classList.remove("drag-over"));
+editPhotoDropzone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  editPhotoDropzone.classList.remove("drag-over");
+  const file = e.dataTransfer?.files[0];
+  if (!file) return;
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  editProfilePhotoInput.files = dt.files;
+  editProfilePhotoInput.dispatchEvent(new Event("change"));
+});
+editPhotoDropzone.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    editProfilePhotoInput.click();
+  }
+});
+
+/* Form Validations */
+function setFieldError(fieldGroup, errorEl, message) {
+  fieldGroup.classList.add("has-error");
+  fieldGroup.classList.remove("is-valid");
+  if (errorEl) errorEl.textContent = message;
+}
+
+function setFieldValid(fieldGroup, errorEl) {
+  fieldGroup.classList.remove("has-error");
+  fieldGroup.classList.add("is-valid");
+  if (errorEl) errorEl.textContent = "";
+}
+
+function validateEditForm() {
+  let isValid = true;
+
+  const nameGroup = editFullNameInput.closest(".field-group");
+  const nameError = document.getElementById("editFullNameError");
+  const nameVal   = editFullNameInput.value.trim();
+  if (!nameVal) {
+    setFieldError(nameGroup, nameError, "Full name is required.");
+    isValid = false;
+  } else if (nameVal.length < 2) {
+    setFieldError(nameGroup, nameError, "Name must be at least 2 characters.");
+    isValid = false;
+  } else {
+    setFieldValid(nameGroup, nameError);
+  }
+
+  const cityGroup = editCityInput.closest(".field-group");
+  const cityError = document.getElementById("editCityError");
+  if (!editCityInput.value.trim()) {
+    setFieldError(cityGroup, cityError, "City is required.");
+    isValid = false;
+  } else {
+    setFieldValid(cityGroup, cityError);
+  }
+
+  const phoneGroup = editPhoneInput.closest(".field-group");
+  const phoneError = document.getElementById("editPhoneError");
+  const rawPhone   = editPhoneInput.value.trim();
+  if (!rawPhone) {
+    setFieldError(phoneGroup, phoneError, "Phone is required.");
+    isValid = false;
+  } else if (!PHONE_REGEX.test(rawPhone)) {
+    setFieldError(phoneGroup, phoneError, "Enter a valid phone (e.g. +358 40 1234567).");
+    isValid = false;
+  } else {
+    setFieldValid(phoneGroup, phoneError);
+  }
+
+  const emailGroup = editEmailInput.closest(".field-group");
+  const emailError = document.getElementById("editEmailError");
+  const rawEmail   = editEmailInput.value.trim();
+  if (!rawEmail) {
+    setFieldError(emailGroup, emailError, "Email is required.");
+    isValid = false;
+  } else if (!EMAIL_REGEX.test(rawEmail)) {
+    setFieldError(emailGroup, emailError, "Enter a valid email address.");
+    isValid = false;
+  } else {
+    setFieldValid(emailGroup, emailError);
+  }
+
+  const editJerseyInterested = document.querySelector('input[name="editJerseyInterest"]:checked')?.value === "yes";
+  if (editJerseyInterested) {
+    const sizeGroup = editJerseySizeSelect.closest(".field-group");
+    const sizeError = document.getElementById("editJerseySizeError");
+    if (!editJerseySizeSelect.value) {
+      setFieldError(sizeGroup, sizeError, "Select your jersey size.");
+      isValid = false;
+    } else {
+      setFieldValid(sizeGroup, sizeError);
+    }
+
+    const numGroup = editJerseyNumberInput.closest(".field-group");
+    const numError = document.getElementById("editJerseyNumberError");
+    const numVal   = parseInt(editJerseyNumberInput.value, 10);
+    if (!editJerseyNumberInput.value) {
+      setFieldError(numGroup, numError, "Number is required.");
+      isValid = false;
+    } else if (isNaN(numVal) || numVal < 1 || numVal > 99) {
+      setFieldError(numGroup, numError, "Number must be 1 to 99.");
+      isValid = false;
+    } else {
+      setFieldValid(numGroup, numError);
+    }
+  }
+
+  return isValid;
+}
+
+function uploadProfilePhoto(file, memberId) {
+  return new Promise((resolve, reject) => {
+    const ext     = file.name.split(".").pop().toLowerCase() || "jpg";
+    const path    = `profile-photos/${memberId}/photo_${Date.now()}.${ext}`;
+    const fileRef = storageRef(storage, path);
+    const task    = uploadBytesResumable(fileRef, file, { contentType: file.type });
+
+    task.on(
+      "state_changed",
+      null,
+      (err) => reject(err),
+      async () => resolve(await getDownloadURL(task.snapshot.ref))
+    );
+  });
+}
+
+function setSaveLoading(isSaving) {
+  btnSaveChanges.disabled         = isSaving;
+  saveBtnLabel.style.display     = isSaving ? "none" : "block";
+  saveBtnSpinner.style.display   = isSaving ? "flex" : "none";
+}
+
+/* Save Admin Changes Trigger */
+btnSaveChanges.addEventListener("click", async () => {
+  if (!validateEditForm()) {
+    showToast("Please correct the validation errors.", "error");
+    return;
+  }
+
+  setSaveLoading(true);
+
+  try {
+    const memberDocRef = doc(db, "members", selectedMemberId);
+
+    let photoURL = selectedMemberData.profilePhoto;
+    
+    if (editPhotoState.removedOld) {
+      if (editPhotoState.file) {
+        showToast("Uploading new profile photo…", "info");
+        photoURL = await uploadProfilePhoto(editPhotoState.file, selectedMemberData.memberId);
+      } else {
+        photoURL = null;
+      }
+    }
+
+    const wantsJersey = document.querySelector('input[name="editJerseyInterest"]:checked')?.value === "yes";
+    
+    const updatedData = {
+      fullName:     editFullNameInput.value.trim(),
+      city:         editCityInput.value.trim(),
+      phone:        editPhoneInput.value.trim(),
+      email:        editEmailInput.value.trim().toLowerCase(),
+      profilePhoto: photoURL,
+      jersey: {
+        interested: wantsJersey,
+        size:       wantsJersey ? editJerseySizeSelect.value   : null,
+        number:     wantsJersey ? parseInt(editJerseyNumberInput.value, 10) : null
+      }
+    };
+
+    showToast("Saving changes in database…", "info");
+    await updateDoc(memberDocRef, updatedData);
+
+    showToast("Member updated successfully! 🎉", "success", 4000);
+    closeModal();
+    
+    // Reload administration database silently
+    await fetchAdminData(false);
+
+  } catch (err) {
+    console.error("Save profile updates failed:", err);
+    showToast(`Save failed: ${err.message || "Unknown error."}`, "error", 6000);
+  } finally {
+    setSaveLoading(false);
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════
    PAGE GATE (SECURITY OVERLAY) LOGIC
    ═══════════════════════════════════════════════════════════ */
 function checkGateAuthorization() {
@@ -534,7 +954,6 @@ function handleGateSubmit() {
     return;
   }
   
-  // Custom admin passcode requirement: Prastika@1216
   if (enteredCode === "Prastika@1216") {
     sessionStorage.setItem("mrr_admin_authorized", "true");
     if (pageGate) pageGate.classList.add("fade-out");
