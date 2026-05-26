@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pending Approvals & Database Administration | MRR TEAM FINLAND</title>
+  <meta name="description" content="Verify and approve new registrations or manage active member profiles.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet (reuses dashboard styling) -->
+  <link rel="stylesheet" href="members.css">
+  
+  <!-- Add custom admin layout and action styles -->
+  <style>
+    .admin-tabs {
+      display: flex;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+      border-bottom: 1.5px solid rgba(255, 157, 157, 0.15);
+      padding-bottom: var(--space-4);
+      grid-column: span 2;
+    }
+    
+    .admin-tab {
+      background: transparent;
+      border: 1px solid var(--clr-border);
+      color: var(--clr-text-secondary);
+      padding: 10px 24px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--ease-out);
+    }
+    
+    .admin-tab:hover {
+      color: var(--clr-accent);
+      border-color: var(--clr-accent-border);
+      background: var(--clr-red-50);
+    }
+    
+    .admin-tab.active {
+      background: linear-gradient(135deg, #8a0505, #c00b0b);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(192, 11, 11, 0.3);
+    }
+    
+    .approval-actions-wrapper {
+      display: flex;
+      gap: var(--space-3);
+      margin-top: var(--space-4);
+      width: 100%;
+    }
+    
+    .btn-approve, .btn-delete, .btn-delete-profile {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      height: 40px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out), opacity var(--duration-fast) ease;
+    }
+    
+    .btn-approve {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: white;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+    
+    .btn-approve:hover {
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+      transform: translateY(-1.5px);
+    }
+    
+    .btn-delete, .btn-delete-profile {
+      background: linear-gradient(135deg, #b91c1c, #ef4444);
+      color: white;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    }
+    
+    .btn-delete:hover, .btn-delete-profile:hover {
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
+      transform: translateY(-1.5px);
+    }
+    
+    .btn-approve:active, .btn-delete:active, .btn-delete-profile:active {
+      transform: translateY(0);
+    }
+    
+    .btn-approve:disabled, .btn-delete:disabled, .btn-delete-profile:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    
+    .member-card.removing {
+      animation: cardExit var(--duration-normal) var(--ease-in) both;
+    }
+    
+    @keyframes cardExit {
+      to { opacity: 0; transform: scale(0.92) translateY(12px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Decoration Orbs -->
+  <div class="bg-orb bg-orb--1" aria-hidden="true"></div>
+  <div class="bg-orb bg-orb--2" aria-hidden="true"></div>
+  <div class="bg-orb bg-orb--3" aria-hidden="true"></div>
+
+  <!-- Page Protection Overlay (Gate) -->
+  <div class="page-gate-overlay" id="pageGate">
+    <div class="gate-card">
+      <div class="gate-icon" aria-hidden="true">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <h2 class="gate-title">Administration Portal</h2>
+      <p class="gate-desc">Please enter the security password to view pending approvals and manage member profiles.</p>
+      
+      <div class="field-group" style="width: 100%;">
+        <div class="input-wrapper">
+          <span class="input-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+            </svg>
+          </span>
+          <input type="password" id="gatePassword" class="field-input" placeholder="Enter security code" aria-label="Enter security code">
+        </div>
+        <span class="field-error" id="gateError" role="alert" style="text-align: left;"></span>
+      </div>
+
+      <button type="button" class="btn-primary" id="btnGateSubmit" style="width: 100%; margin-top: var(--space-4);">
+        Unlock Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Container (Hidden until unlocked) -->
+  <main class="dashboard-wrapper" id="dashboardWrapper" role="main" style="display: none;">
+
+    <!-- Header Section -->
+    <header class="dashboard-header">
+      <div class="header-logo-wrap">
+        <a href="index.html" class="logo-link" title="Go to Registration Form">
+          <img src="mrr-logo.png" alt="MRR TEAM FINLAND Logo" class="header-logo">
+        </a>
+      </div>
+      <div class="header-content">
+        <h1 class="header-title">MRR TEAM FINLAND</h1>
+        <p class="header-subtitle">Database Administration Console</p>
+      </div>
+      
+      <!-- Nav Button to Members Directory -->
+      <div class="header-nav">
+        <a href="members.html" class="nav-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          View Members Directory
+        </a>
+      </div>
+    </header>
+
+    <!-- Stats Dashboard Section -->
+    <section class="stats-grid" aria-label="Database statistics">
+      
+      <div class="stat-card" id="statPending">
+        <div class="stat-icon" aria-hidden="true" style="background: linear-gradient(135deg, #fff0eb, #ffdcd3); color: #ff5722;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Pending Requests</span>
+          <span class="stat-number" id="countPending">—</span>
+        </div>
+      </div>
+
+      <div class="stat-card" id="statActive">
+        <div class="stat-icon" aria-hidden="true" style="background: linear-gradient(135deg, #eefcff, #d8f5fc); color: #0284c7;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Active Members</span>
+          <span class="stat-number" id="countActive">—</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Admin View Switcher Tabs -->
+    <div class="admin-tabs" role="tablist">
+      <button type="button" class="admin-tab active" id="tabPending" role="tab" aria-selected="true" aria-controls="membersGrid">
+        Pending Requests
+      </button>
+      <button type="button" class="admin-tab" id="tabActive" role="tab" aria-selected="false" aria-controls="membersGrid">
+        Active Members
+      </button>
+    </div>
+
+    <!-- Toolbar Filters Section -->
+    <section class="toolbar-section" aria-label="Search and filter controls">
+      <div class="search-box">
+        <span class="search-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </span>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Search requests by name or email…"
+          aria-label="Search items"
+        >
+      </div>
+
+      <div class="filter-controls">
+        <!-- Sort Control -->
+        <div class="select-wrapper">
+          <select id="sortControl" class="filter-select" aria-label="Sort order">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="nameAsc">Name: A to Z</option>
+            <option value="nameDesc">Name: Z to A</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Member Directory Grid -->
+    <section class="directory-section" aria-label="Administration Grid">
+      <div class="members-grid" id="membersGrid">
+        
+        <!-- Loading State -->
+        <div class="loading-state" id="loadingState">
+          <svg class="spinner-svg" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="rgba(192,11,11,0.15)" stroke-width="3"/>
+            <path d="M12 2a10 10 0 0 1 10 10" stroke="var(--clr-accent)" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <p class="loading-text">Loading database elements…</p>
+        </div>
+
+        <!-- No Results State (Hidden by default) -->
+        <div class="no-results-state" id="noResultsState" style="display: none;">
+          <div class="no-results-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <h3 class="no-results-title" id="noResultsTitle">No requests found</h3>
+          <p class="no-results-desc" id="noResultsDesc">All registrations have been processed!</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <p>&copy; 2026 &nbsp;&#8231;&nbsp; MRR TEAM FINLAND &nbsp;&#8231;&nbsp; All rights reserved.</p>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+  <!-- JavaScript module -->
+  <script type="module" src="approval.js"></script>
+
+</body>
+</html>

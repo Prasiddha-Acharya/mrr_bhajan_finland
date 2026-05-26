@@ -160,10 +160,13 @@ async function fetchMembers(showSuccessToast = true) {
 
     snapshot.forEach((docSnap) => {
       const data = docSnap.data();
-      allMembers.push({
-        id: docSnap.id,
-        ...data
-      });
+      // Only show approved members (status is Active or not specified)
+      if (data.membershipStatus === "Active" || !data.membershipStatus) {
+        allMembers.push({
+          id: docSnap.id,
+          ...data
+        });
+      }
     });
 
     // Populate dashboard statistics counters
