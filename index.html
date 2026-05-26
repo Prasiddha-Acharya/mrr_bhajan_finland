@@ -179,6 +179,11 @@
               autocomplete="new-password"
               aria-describedby="passwordError passwordHint"
             >
+            <button type="button" class="password-toggle-btn" id="togglePassword" aria-label="Show password">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path class="eye-path" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
           </div>
           <span class="field-hint" id="passwordHint">This will be needed if you want to update your data</span>
           <span class="field-error" id="passwordError" role="alert" aria-live="polite"></span>
@@ -205,6 +210,11 @@
               autocomplete="new-password"
               aria-describedby="confirmPasswordError"
             >
+            <button type="button" class="password-toggle-btn" id="toggleConfirmPassword" aria-label="Show confirm password">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path class="eye-path" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
           </div>
           <span class="field-error" id="confirmPasswordError" role="alert" aria-live="polite"></span>
         </div>

@@ -454,6 +454,38 @@ a:hover { text-decoration: underline; }
 
 .input-wrapper:focus-within .input-icon { color: var(--clr-accent); }
 
+/* Password Visibility Toggle Button */
+.password-toggle-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--clr-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--duration-fast) var(--ease-out);
+  z-index: 10;
+}
+
+.password-toggle-btn:hover {
+  color: var(--clr-accent);
+}
+
+.password-toggle-btn:focus-visible {
+  outline: 2px solid var(--clr-border-focus);
+  border-radius: var(--radius-sm);
+}
+
+/* Custom padding for password inputs to prevent text overlap with the toggle button */
+#password, #confirmPassword {
+  padding-right: 46px;
+}
+
 /* Error state */
 .field-group.has-error .field-input {
   border-color: var(--clr-error);
