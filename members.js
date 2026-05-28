@@ -60,6 +60,7 @@ const countJerseyText     = document.getElementById("countJersey");
 
 const searchInput         = document.getElementById("searchInput");
 const sortControlSelect   = document.getElementById("sortControl");
+const jerseyFilterControl = document.getElementById("jerseyFilterControl");
 
 const toast               = document.getElementById("toast");
 
@@ -334,12 +335,24 @@ function renderMembers(membersList) {
 function applyFiltersAndSort() {
   const searchTerm = searchInput.value.trim().toLowerCase();
   const currentSort = sortControlSelect.value;
+  const jerseyFilter = jerseyFilterControl ? jerseyFilterControl.value : "all";
 
-  // 1. FILTERING (Search Term only!)
+  // 1. FILTERING
   let filtered = allMembers.filter((member) => {
     const nameMatch  = member.fullName ? member.fullName.toLowerCase().includes(searchTerm) : false;
     const emailMatch = member.email ? member.email.toLowerCase().includes(searchTerm) : false;
-    return nameMatch || emailMatch;
+    const matchesSearch = nameMatch || emailMatch;
+    
+    let matchesJersey = true;
+    const isJerseyInterested = member.jersey && member.jersey.interested === true;
+    
+    if (jerseyFilter === "ordered") {
+      matchesJersey = isJerseyInterested;
+    } else if (jerseyFilter === "none") {
+      matchesJersey = !isJerseyInterested;
+    }
+
+    return matchesSearch && matchesJersey;
   });
 
   // 2. SORTING
@@ -369,6 +382,9 @@ if (searchInput) {
 }
 if (sortControlSelect) {
   sortControlSelect.addEventListener("change", applyFiltersAndSort);
+}
+if (jerseyFilterControl) {
+  jerseyFilterControl.addEventListener("change", applyFiltersAndSort);
 }
 
 /* ═══════════════════════════════════════════════════════════
