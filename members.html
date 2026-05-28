@@ -23,43 +23,8 @@
   <div class="bg-orb bg-orb--2" aria-hidden="true"></div>
   <div class="bg-orb bg-orb--3" aria-hidden="true"></div>
 
-  <!-- Page Protection Overlay (Gate) -->
-  <div class="page-gate-overlay" id="pageGate">
-    <div class="gate-card">
-      <div class="gate-icon" aria-hidden="true">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-        </svg>
-      </div>
-      <h2 class="gate-title">Restricted Database</h2>
-      <p class="gate-desc">This member database of MRR TEAM FINLAND is password-protected. Please enter the password to
-        view the database.</p>
-
-      <div class="field-group" style="width: 100%;">
-        <div class="input-wrapper">
-          <span class="input-icon" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path
-                d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
-            </svg>
-          </span>
-          <input type="password" id="gatePassword" class="field-input" placeholder="Enter security code"
-            aria-label="Enter security code">
-        </div>
-        <span class="field-error" id="gateError" role="alert" style="text-align: left;"></span>
-      </div>
-
-      <button type="button" class="btn-primary" id="btnGateSubmit" style="width: 100%; margin-top: var(--space-4);">
-        Unlock Database
-      </button>
-    </div>
-  </div>
-
-  <!-- Main Container (Hidden until unlocked) -->
-  <main class="dashboard-wrapper" id="dashboardWrapper" role="main" style="display: none;">
+  <!-- Main Container -->
+  <main class="dashboard-wrapper" id="dashboardWrapper" role="main">
 
     <!-- Header Section -->
     <header class="dashboard-header">

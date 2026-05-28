@@ -272,7 +272,13 @@ function renderMembers(membersList) {
         </div>
         <div class="member-title-area">
           <h2 class="member-name" title="${member.fullName}">${member.fullName}</h2>
-          <span class="member-id-badge">${member.memberId || "MRRR-FIN"}</span>
+          <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+            <span class="member-id-badge" style="margin-top: 0;">${member.memberId || "MRRR-FIN"}</span>
+            <span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 9999px; background: rgba(16, 185, 129, 0.1); color: #10b981; font-size: 11.5px; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.2);">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Active
+            </span>
+          </div>
         </div>
       </div>
 
@@ -810,92 +816,8 @@ btnSaveChanges.addEventListener("click", async () => {
 });
 
 /* ═══════════════════════════════════════════════════════════
-   PAGE GATE (SECURITY OVERLAY) LOGIC
-   ═══════════════════════════════════════════════════════════ */
-function checkGateAuthorization() {
-  const isAuthorized = sessionStorage.getItem("mrr_authorized") === "true";
-  
-  if (isAuthorized) {
-    if (pageGate) {
-      pageGate.style.display = "none";
-    }
-    if (dashboardWrapper) {
-      dashboardWrapper.style.display = "flex";
-    }
-    fetchMembers(true);
-  } else {
-    if (pageGate) {
-      pageGate.style.display = "flex";
-    }
-    if (dashboardWrapper) {
-      dashboardWrapper.style.display = "none";
-    }
-    if (gatePasswordInput) {
-      setTimeout(() => gatePasswordInput.focus(), 100);
-    }
-    setupGateListeners();
-  }
-}
-
-function handleGateSubmit() {
-  if (!gatePasswordInput || !gateErrorText) return;
-  const enteredCode = gatePasswordInput.value.trim();
-  const fieldGroup = gatePasswordInput.closest(".field-group");
-  
-  if (!enteredCode) {
-    gateErrorText.textContent = "Please enter the security code.";
-    fieldGroup?.classList.add("has-error");
-    gatePasswordInput.focus();
-    return;
-  }
-  
-  if (enteredCode === "yestobrotherhood") {
-    sessionStorage.setItem("mrr_authorized", "true");
-    if (pageGate) {
-      pageGate.classList.add("fade-out");
-    }
-    if (dashboardWrapper) {
-      dashboardWrapper.style.display = "flex";
-    }
-    fetchMembers(true);
-    
-    setTimeout(() => {
-      if (pageGate) {
-        pageGate.style.display = "none";
-      }
-    }, 400);
-  } else {
-    gateErrorText.textContent = "Access denied. Incorrect security code.";
-    fieldGroup?.classList.add("has-error");
-    gatePasswordInput.focus();
-    gatePasswordInput.select();
-  }
-}
-
-function setupGateListeners() {
-  if (btnGateSubmit) {
-    btnGateSubmit.addEventListener("click", handleGateSubmit);
-  }
-  
-  if (gatePasswordInput) {
-    gatePasswordInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleGateSubmit();
-      }
-    });
-    
-    gatePasswordInput.addEventListener("input", () => {
-      gateErrorText.textContent = "";
-      const fieldGroup = gatePasswordInput.closest(".field-group");
-      fieldGroup?.classList.remove("has-error");
-    });
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════
    INITIAL LOAD
    ═══════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", () => {
-  checkGateAuthorization();
+  fetchMembers(false);
 });
