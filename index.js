@@ -80,7 +80,6 @@ const jerseyPriceInfo = document.getElementById("jerseyPriceInfo");
 const jerseySizeSelect = document.getElementById("jerseySize");
 const jerseyNumberInput = document.getElementById("jerseyNumber");
 const paymentGatewayPanel = document.getElementById("paymentGatewayPanel");
-const successPaymentBox = document.getElementById("successPaymentBox");
 const mobilePayBtn = document.getElementById("mobilePayBtn");
 
 /* Login Modal */
@@ -764,10 +763,8 @@ registrationForm.addEventListener("submit", async (e) => {
       const price = jerseyType === "player" ? "€20" : "€15";
       successJerseyRow.style.display = "flex";
       successJerseyInfo.textContent = `${typeLabel} (${sleeveLabel}) · ${price} · Size ${jerseySize}, No. ${jerseyNumber}`;
-      if (successPaymentBox) successPaymentBox.style.display = "block";
     } else {
       successJerseyRow.style.display = "none";
-      if (successPaymentBox) successPaymentBox.style.display = "none";
     }
 
     /* 10. Show success screen */
@@ -857,16 +854,7 @@ setupPasswordToggle(togglePasswordBtn, passwordInput);
 setupPasswordToggle(toggleConfirmPasswordBtn, confirmPasswordInput);
 
 
-/* ═══════════════════════════════════════════════════════════
-   "REGISTER ANOTHER MEMBER" BUTTON
-   ═══════════════════════════════════════════════════════════ */
 
-registerAnotherBtn.addEventListener("click", () => {
-  successCard.style.display = "none";
-  if (successPaymentBox) successPaymentBox.style.display = "none";
-  formCard.style.display = "block";
-  formCard.scrollIntoView({ behavior: "smooth", block: "start" });
-});
 
 
 /* ═══════════════════════════════════════════════════════════
@@ -981,9 +969,6 @@ if (loginSubmitBtn) {
         const price = data.jersey.type === "player" ? "€20" : "€15";
         successJerseyRow.style.display = "flex";
         successJerseyInfo.textContent = `${typeLabel} (${sleeveLabel}) · ${price} · Size ${data.jersey.size}, No. ${data.jersey.number}`;
-        if (successPaymentBox) successPaymentBox.style.display = "block";
-        
-        if (registerAnotherBtn) registerAnotherBtn.style.display = "none";
         
         // Ensure spinner resets since we return early
         loginSubmitBtn.disabled = false;
