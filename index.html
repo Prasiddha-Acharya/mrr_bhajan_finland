@@ -53,6 +53,9 @@
         <div class="header-divider" aria-hidden="true"></div>
         <p class="header-desc">Fill in the details below to join our community. All fields marked with <span
             class="required-star">*</span> are required.</p>
+        <!--  <div class="header-login-prompt">
+          Already a member? <button type="button" id="openLoginModalBtn" class="login-text-btn">Login here</button>
+        </div>-->
       </div>
 
       <!-- Registration Form -->
@@ -368,11 +371,13 @@
               </div>
               <div class="payment-card__body">
                 <p class="payment-instructions">We are using MobilePay as our payment partner. All payments will be
-                  collected through a dedicated MobilePay Box named <strong>&quot;MRR TEAM FINLAND JERSEY&quot;</strong>
-                  to ensure transparency and fair accounting. After completing your payment in MobilePay, please return
+                  collected through a dedicated MobilePay Box named <strong>&quot;MRR TEAM FINLAND
+                    JERSEY&quot;</strong>
+                  to ensure transparency and fair accounting. After completing your payment in MobilePay, please
+                  return
                   to this page and finish filling out the form to complete your registration.</p>
-                <a href="https://qr.mobilepay.fi/box/a26a22b5-7c49-47fc-b2d8-ab34f4d1d875/pay-in" id="mobilePayBtn" target="_blank"
-                  rel="noopener noreferrer" class="mobilepay-pay-btn">
+                <a href="https://qr.mobilepay.fi/box/a26a22b5-7c49-47fc-b2d8-ab34f4d1d875/pay-in" id="mobilePayBtn"
+                  target="_blank" rel="noopener noreferrer" class="mobilepay-pay-btn">
                   Pay with MobilePay
                 </a>
               </div>
@@ -455,8 +460,10 @@
             <span class="payment-badge" style="background: #fff8e1; color: #b78103;">Pending Payment</span>
           </div>
           <div class="payment-card__body">
-            <p class="payment-instructions" style="font-size: 13px;">We are using MobilePay Box as our payment partner.
-              All payments will be collected through a dedicated MobilePay Box named &quot;MRR TEAM FINLAND JERSEY&quot;
+            <p class="payment-instructions" style="font-size: 13px;">We are using MobilePay Box as our payment
+              partner.
+              All payments will be collected through a dedicated MobilePay Box named &quot;MRR TEAM FINLAND
+              JERSEY&quot;
               to ensure transparency and fair accounting.</p>
             <a href="https://qr.mobilepay.fi/box/a26a22b5-7c49-47fc-b2d8-ab34f4d1d875/pay-in" target="_blank"
               rel="noopener noreferrer" class="mobilepay-pay-btn">
@@ -484,6 +491,75 @@
        TOAST NOTIFICATION
        ===================== -->
   <div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+  <!-- =====================
+       LOGIN MODAL
+       ===================== -->
+  <div class="login-modal-backdrop" id="loginModal" style="display: none;" role="dialog" aria-modal="true"
+    aria-labelledby="loginModalTitle">
+    <div class="login-modal-card">
+      <div class="login-modal-header">
+        <h2 class="login-modal-title" id="loginModalTitle">Member Login</h2>
+        <button type="button" class="login-modal-close-btn" id="closeLoginModalBtn"
+          aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="login-modal-body">
+        <p class="login-modal-instruction">Enter your email and 4-digit PIN to edit your registration details.</p>
+
+        <div class="field-group" id="loginFieldEmail">
+          <label class="field-label" for="loginEmail">Email Address</label>
+          <div class="input-wrapper">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+            </span>
+            <input type="email" id="loginEmail" class="field-input" placeholder="Enter your registered email"
+              aria-describedby="loginEmailError">
+          </div>
+          <span class="field-error" id="loginEmailError" role="alert" aria-live="polite"></span>
+        </div>
+
+        <div class="field-group" id="loginFieldPin">
+          <label class="field-label" for="loginPin">4-Digit PIN</label>
+          <div class="input-wrapper">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </span>
+            <input type="password" id="loginPin" class="field-input pin-input" placeholder="••••" inputmode="numeric"
+              pattern="[0-9]{4}" maxlength="4" aria-describedby="loginPinError">
+            <button type="button" class="password-toggle-btn" id="toggleLoginPin" aria-label="Show password"
+              tabindex="-1">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+          <span class="field-error" id="loginPinError" role="alert" aria-live="polite"></span>
+        </div>
+
+        <button type="button" class="login-submit-btn" id="loginSubmitBtn">
+          <span class="login-submit-btn__label" id="loginSubmitBtnLabel">Verify &amp; Edit Details</span>
+          <span class="login-submit-btn__spinner" id="loginSubmitBtnSpinner" style="display:none;"
+            aria-label="Verifying...">
+            <svg class="spinner-svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" stroke-width="3" />
+              <path d="M12 2a10 10 0 0 1 10 10" stroke="white" stroke-width="3" stroke-linecap="round" />
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- JavaScript -->
   <script type="module" src="index.js"></script>
