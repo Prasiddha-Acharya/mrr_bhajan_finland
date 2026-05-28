@@ -78,6 +78,7 @@ const jerseySizeSelect = document.getElementById("jerseySize");
 const jerseyNumberInput = document.getElementById("jerseyNumber");
 const paymentGatewayPanel = document.getElementById("paymentGatewayPanel");
 const successPaymentBox = document.getElementById("successPaymentBox");
+const mobilePayBtn = document.getElementById("mobilePayBtn");
 
 /** Helper: get the checked jersey type radio value ("player"|"fan"|null) */
 function getJerseyTypeValue() {
@@ -174,6 +175,15 @@ function showToast(message, type = "info", duration = 4000) {
   toast.textContent = message;
   toast.className = `toast toast--${type} toast--visible`;
   toastTimer = setTimeout(() => toast.classList.remove("toast--visible"), duration);
+}
+
+let mobilePayClicked = false;
+
+if (mobilePayBtn) {
+  mobilePayBtn.addEventListener("click", () => {
+    mobilePayClicked = true;
+    showToast("MobilePay launched! Please return here to complete your registration after payment.", "success");
+  });
 }
 
 
@@ -679,6 +689,7 @@ registrationForm.addEventListener("submit", async (e) => {
       pin,                                 // 4-digit PIN for future updates
       profilePhoto: profilePhotoURL,   // null if not provided
       membershipStatus: "Pending",
+      paymentStatus: jerseyInterested ? (mobilePayClicked ? "Maybe" : "No") : "N/A",
       jersey: {
         interested: jerseyInterested,
         type: jerseyType,             // "player" | "fan" | null
@@ -713,6 +724,7 @@ registrationForm.addEventListener("submit", async (e) => {
     showToast("Registration saved successfully! 🎉", "success", 5000);
 
     /* 11. Reset form for next use */
+    mobilePayClicked = false;
     registrationForm.reset();
     clearPhotoPreview();
     jerseyDetailsPanel.classList.remove("is-open");

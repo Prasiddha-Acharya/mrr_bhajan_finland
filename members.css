@@ -604,6 +604,41 @@ a:hover { text-decoration: underline; }
   border: 1.5px solid #e5e7eb;
 }
 
+/* Payment badge inside card */
+.payment-badge-wrapper {
+  margin-top: var(--space-2);
+}
+
+.payment-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  font-size: 12.5px;
+  font-weight: 700;
+  border: 1.5px solid transparent;
+}
+
+.payment-badge--done {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+
+.payment-badge--maybe {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+.payment-badge--no {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+
+
 /* Password secure reveal styling */
 .password-box {
   display: flex;

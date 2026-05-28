@@ -1,7 +1,7 @@
 /**
  * ============================================================
  *  MRRR Team Finland Boys Group — Administration Console Script
- *  Firebase v9 Modular SDK | Secured by Prastika@1216 passcode
+ *  Firebase v9 Modular SDK | Secured by mrrfinland1216 passcode
  * ============================================================
  */
 
@@ -42,7 +42,7 @@ const storage = getStorage(app);
 /* ── State variables ──────────────────────────────────────── */
 let pendingMembers     = []; // Pending requests
 let activeMembers      = [];  // Approved member profiles
-let activeTab          = "pending"; // Current administrative view ("pending" | "active")
+let activeTab          = "active"; // Current administrative view ("pending" | "active")
 let selectedMemberId   = null;
 let selectedMemberData = null;
 
@@ -96,6 +96,7 @@ const editPhotoRemoveBtn      = document.getElementById("editPhotoRemoveBtn");
 const editJerseyDetailsPanel   = document.getElementById("editJerseyDetailsPanel");
 const editJerseySizeSelect     = document.getElementById("editJerseySize");
 const editJerseyNumberInput    = document.getElementById("editJerseyNumber");
+const editPaymentStatusSelect  = document.getElementById("editPaymentStatus");
 
 const btnSaveChanges          = document.getElementById("btnSaveChanges");
 const saveBtnLabel            = document.getElementById("saveBtnLabel");
@@ -252,13 +253,40 @@ function renderAdminGrid(membersList) {
     const phoneCallUrl = `tel:${member.phone.replace(/\s+/g, "")}`;
     const emailMailtoUrl = `mailto:${member.email}`;
 
-    // Jersey Badge HTML
+    // Jersey Badge HTML & Payment Badge HTML
     let jerseyBadgeHTML = "";
-    if (member.jersey && member.jersey.interested === true) {
+    let paymentBadgeHTML = "";
+    const isJerseyInterested = member.jersey && member.jersey.interested === true;
+    
+    if (isJerseyInterested) {
       jerseyBadgeHTML = `
         <div class="jersey-pill-badge jersey-pill-badge--yes">
           <span>Jersey size <strong>${member.jersey.size || "N/A"}</strong></span>
           <span>&nbsp;&#8231;&nbsp; No. <strong>${member.jersey.number || "—"}</strong></span>
+        </div>
+      `;
+      
+      const pStatus = member.paymentStatus || "No";
+      let badgeClass = "payment-badge--no";
+      let badgeLabel = "Not Paid (No)";
+      let badgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+      
+      if (pStatus === "Done" || pStatus === "Paid") {
+        badgeClass = "payment-badge--done";
+        badgeLabel = "Paid (Done)";
+        badgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><polyline points="20 6 9 17 4 12"/></svg>`;
+      } else if (pStatus === "Maybe") {
+        badgeClass = "payment-badge--maybe";
+        badgeLabel = "Clicked Pay (Maybe)";
+        badgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
+      }
+      
+      paymentBadgeHTML = `
+        <div class="payment-badge-wrapper">
+          <div class="payment-pill-badge ${badgeClass}">
+            ${badgeIcon}
+            <span>Payment: <strong>${badgeLabel}</strong></span>
+          </div>
         </div>
       `;
     } else {
@@ -267,13 +295,37 @@ function renderAdminGrid(membersList) {
           <span>No Jersey Interest</span>
         </div>
       `;
+      
+      paymentBadgeHTML = `
+        <div class="payment-badge-wrapper">
+          <div class="payment-pill-badge" style="background:#f3f4f6; color:#6b7280; border-color:#e5e7eb;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            <span>Payment: <strong>N/A</strong></span>
+          </div>
+        </div>
+      `;
     }
 
     // Determine card action layout based on active Tab
     let actionsHTML = "";
+    const showMarkPaidBtn = isJerseyInterested && (member.paymentStatus !== "Done" && member.paymentStatus !== "Paid");
+    
+    let markPaidBtnHTML = "";
+    if (showMarkPaidBtn) {
+      markPaidBtnHTML = `
+        <button type="button" class="btn-mark-paid" data-id="${member.id}" aria-label="Mark as paid for ${member.fullName}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Mark Paid
+        </button>
+      `;
+    }
+
     if (activeTab === "pending") {
       actionsHTML = `
         <div class="approval-actions-wrapper">
+          ${markPaidBtnHTML}
           <button type="button" class="btn-approve" data-id="${member.id}" aria-label="Approve registration for ${member.fullName}">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"/>
@@ -298,6 +350,7 @@ function renderAdminGrid(membersList) {
       // Active tab: Show Edit button and Delete Profile button
       actionsHTML = `
         <div class="approval-actions-wrapper">
+          ${markPaidBtnHTML}
           <button type="button" class="btn-edit" data-id="${member.id}" aria-label="Edit active member profile for ${member.fullName}">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -351,6 +404,7 @@ function renderAdminGrid(membersList) {
 
       <div class="jersey-badge-wrapper">
         ${jerseyBadgeHTML}
+        ${paymentBadgeHTML}
       </div>
 
       ${actionsHTML}
@@ -418,6 +472,33 @@ function attachActionHandlers() {
   const editBtns    = membersGrid.querySelectorAll(".btn-edit");
   const deleteBtns  = membersGrid.querySelectorAll(".btn-delete");
   const deleteProfileBtns = membersGrid.querySelectorAll(".btn-delete-profile");
+  const markPaidBtns = membersGrid.querySelectorAll(".btn-mark-paid");
+
+  // Mark Paid Manual Trigger
+  markPaidBtns.forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const memberId = btn.getAttribute("data-id");
+      const targetCard = document.getElementById(`card-${memberId}`);
+      const member = pendingMembers.find(m => m.id === memberId) || activeMembers.find(m => m.id === memberId);
+      if (!member) return;
+
+      btn.disabled = true;
+      try {
+        showToast(`Updating payment status for ${member.fullName}…`, "info");
+        
+        const docRef = doc(db, "members", memberId);
+        await updateDoc(docRef, { paymentStatus: "Done" });
+
+        showToast(`${member.fullName}'s jersey marked as Paid! 💰`, "success");
+        await fetchAdminData(false);
+
+      } catch (err) {
+        console.error("Failed to mark paid:", err);
+        showToast(`Failed to update payment: ${err.message}`, "error");
+        btn.disabled = false;
+      }
+    });
+  });
 
   approveBtns.forEach(btn => {
     btn.addEventListener("click", async () => {
@@ -429,8 +510,10 @@ function attachActionHandlers() {
       btn.disabled = true;
       const delBtn = targetCard.querySelector(".btn-delete");
       const edBtn = targetCard.querySelector(".btn-edit");
+      const mpBtn = targetCard.querySelector(".btn-mark-paid");
       if (delBtn) delBtn.disabled = true;
       if (edBtn) edBtn.disabled = true;
+      if (mpBtn) mpBtn.disabled = true;
 
       try {
         showToast(`Approving ${member.fullName}…`, "info");
@@ -453,6 +536,7 @@ function attachActionHandlers() {
         btn.disabled = false;
         if (delBtn) delBtn.disabled = false;
         if (edBtn) edBtn.disabled = false;
+        if (mpBtn) mpBtn.disabled = false;
       }
     });
   });
@@ -465,7 +549,7 @@ function attachActionHandlers() {
       
       if (!selectedMemberData) return;
 
-      // Bypass passkeys - Prefill form directly
+      // Prefill form directly
       prefillEditForm();
 
       // Show modal instantly
@@ -490,8 +574,10 @@ function attachActionHandlers() {
       btn.disabled = true;
       const appBtn = targetCard.querySelector(".btn-approve");
       const edBtn = targetCard.querySelector(".btn-edit");
+      const mpBtn = targetCard.querySelector(".btn-mark-paid");
       if (appBtn) appBtn.disabled = true;
       if (edBtn) edBtn.disabled = true;
+      if (mpBtn) mpBtn.disabled = true;
 
       try {
         showToast(`Deleting request for ${member.fullName}…`, "info");
@@ -514,6 +600,7 @@ function attachActionHandlers() {
         btn.disabled = false;
         if (appBtn) appBtn.disabled = false;
         if (edBtn) edBtn.disabled = false;
+        if (mpBtn) mpBtn.disabled = false;
       }
     });
   });
@@ -530,7 +617,9 @@ function attachActionHandlers() {
 
       btn.disabled = true;
       const edBtn = targetCard.querySelector(".btn-edit");
+      const mpBtn = targetCard.querySelector(".btn-mark-paid");
       if (edBtn) edBtn.disabled = true;
+      if (mpBtn) mpBtn.disabled = true;
 
       try {
         showToast(`Deleting profile for ${member.fullName}…`, "info");
@@ -552,6 +641,7 @@ function attachActionHandlers() {
         showToast(`Deletion failed: ${err.message}`, "error");
         btn.disabled = false;
         if (edBtn) edBtn.disabled = false;
+        if (mpBtn) mpBtn.disabled = false;
       }
     });
   });
@@ -650,12 +740,20 @@ function prefillEditForm() {
     editJerseyDetailsPanel.setAttribute("aria-hidden", "false");
     editJerseySizeSelect.value   = m.jersey.size || "";
     editJerseyNumberInput.value  = m.jersey.number || "";
+    
+    if (editPaymentStatusSelect) {
+      editPaymentStatusSelect.value = m.paymentStatus || "No";
+    }
   } else {
     document.getElementById("editJerseyInterestNo").checked = true;
     editJerseyDetailsPanel.classList.remove("is-open");
     editJerseyDetailsPanel.setAttribute("aria-hidden", "true");
     editJerseySizeSelect.value   = "";
     editJerseyNumberInput.value  = "";
+    
+    if (editPaymentStatusSelect) {
+      editPaymentStatusSelect.value = m.paymentStatus || "N/A";
+    }
   }
 }
 
@@ -667,11 +765,17 @@ document.querySelectorAll('input[name="editJerseyInterest"]').forEach((radio) =>
     if (wantsJersey) {
       editJerseyDetailsPanel.classList.add("is-open");
       editJerseyDetailsPanel.setAttribute("aria-hidden", "false");
+      if (editPaymentStatusSelect && editPaymentStatusSelect.value === "N/A") {
+        editPaymentStatusSelect.value = "No";
+      }
     } else {
       editJerseyDetailsPanel.classList.remove("is-open");
       editJerseyDetailsPanel.setAttribute("aria-hidden", "true");
       editJerseySizeSelect.value  = "";
       editJerseyNumberInput.value = "";
+      if (editPaymentStatusSelect) {
+        editPaymentStatusSelect.value = "N/A";
+      }
     }
   });
 });
@@ -687,6 +791,7 @@ function showPhotoPreview(file) {
   reader.readAsDataURL(file);
 }
 
+// Function collision safeguard
 function clearPhotoPreview() {
   editProfilePhotoInput.value           = "";
   editPhotoPreviewImg.src               = "";
@@ -900,6 +1005,7 @@ btnSaveChanges.addEventListener("click", async () => {
       phone:        editPhoneInput.value.trim(),
       email:        editEmailInput.value.trim().toLowerCase(),
       profilePhoto: photoURL,
+      paymentStatus: wantsJersey ? (editPaymentStatusSelect ? editPaymentStatusSelect.value : "No") : "N/A",
       jersey: {
         interested: wantsJersey,
         size:       wantsJersey ? editJerseySizeSelect.value   : null,
@@ -954,7 +1060,7 @@ function handleGateSubmit() {
     return;
   }
   
-  if (enteredCode === "Prastika@1216") {
+  if (enteredCode === "mrrfinland1216") {
     sessionStorage.setItem("mrr_admin_authorized", "true");
     if (pageGate) pageGate.classList.add("fade-out");
     if (dashboardWrapper) dashboardWrapper.style.display = "flex";

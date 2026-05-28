@@ -58,7 +58,7 @@
       flex-wrap: wrap;
     }
     
-    .btn-approve, .btn-delete, .btn-edit, .btn-delete-profile {
+    .btn-approve, .btn-delete, .btn-edit, .btn-delete-profile, .btn-mark-paid {
       flex: 1;
       min-width: 80px;
       display: flex;
@@ -106,12 +106,23 @@
       box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
       transform: translateY(-1.5px);
     }
+
+    .btn-mark-paid {
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+      color: white;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+    }
     
-    .btn-approve:active, .btn-delete:active, .btn-edit:active, .btn-delete-profile:active {
+    .btn-mark-paid:hover {
+      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35);
+      transform: translateY(-1.5px);
+    }
+    
+    .btn-approve:active, .btn-delete:active, .btn-edit:active, .btn-delete-profile:active, .btn-mark-paid:active {
       transform: translateY(0);
     }
     
-    .btn-approve:disabled, .btn-delete:disabled, .btn-edit:disabled, .btn-delete-profile:disabled {
+    .btn-approve:disabled, .btn-delete:disabled, .btn-edit:disabled, .btn-delete-profile:disabled, .btn-mark-paid:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none !important;
@@ -219,10 +230,10 @@
 
     <!-- Admin View Switcher Tabs -->
     <div class="admin-tabs" role="tablist">
-      <button type="button" class="admin-tab active" id="tabPending" role="tab" aria-selected="true" aria-controls="membersGrid">
+      <button type="button" class="admin-tab" id="tabPending" role="tab" aria-selected="false" aria-controls="membersGrid">
         Pending Requests
       </button>
-      <button type="button" class="admin-tab" id="tabActive" role="tab" aria-selected="false" aria-controls="membersGrid">
+      <button type="button" class="admin-tab active" id="tabActive" role="tab" aria-selected="true" aria-controls="membersGrid">
         Active Members
       </button>
     </div>
@@ -239,7 +250,7 @@
           type="text"
           id="searchInput"
           class="search-input"
-          placeholder="Search requests by name or email…"
+          placeholder="Search active members by name or email…"
           aria-label="Search items"
         >
       </div>
@@ -415,6 +426,17 @@
                 <input type="number" id="editJerseyNumber" class="field-input" placeholder="e.g. 10" min="1" max="99">
                 <span class="field-error" id="editJerseyNumberError" role="alert"></span>
               </div>
+
+              <!-- Manual payment status control -->
+              <div class="field-group" style="grid-column: span 2; margin-top: var(--space-3);">
+                <label class="field-label" for="editPaymentStatus">Payment Status</label>
+                <select id="editPaymentStatus" class="field-input field-select">
+                  <option value="No">Not Paid (No)</option>
+                  <option value="Maybe">Clicked Pay (Maybe)</option>
+                  <option value="Done">Paid (Done)</option>
+                  <option value="N/A">Not Applicable (N/A)</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -440,7 +462,7 @@
   <div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
 
   <!-- JavaScript module -->
-  <script type="module" src="approval.js"></script>
+  <script type="module" src="admin.js"></script>
 
 </body>
 </html>

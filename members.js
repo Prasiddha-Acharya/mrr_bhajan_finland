@@ -253,8 +253,7 @@ function renderMembers(membersList) {
     if (member.jersey && member.jersey.interested === true) {
       jerseyBadgeHTML = `
         <div class="jersey-pill-badge jersey-pill-badge--yes">
-          <span>Jersey size <strong>${member.jersey.size || "N/A"}</strong></span>
-          <span>&nbsp;&#8231;&nbsp; No. <strong>${member.jersey.number || "—"}</strong></span>
+          <span>Jersey Ordered</span>
         </div>
       `;
     } else {
