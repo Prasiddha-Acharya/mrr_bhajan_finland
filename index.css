@@ -681,7 +681,7 @@ a:hover { text-decoration: underline; }
 }
 
 .jersey-details-panel.is-open {
-  max-height: 600px;   /* large enough to never clip */
+  max-height: 900px;   /* large enough to never clip */
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
@@ -710,9 +710,58 @@ a:hover { text-decoration: underline; }
 .jersey-panel-header svg { flex-shrink: 0; }
 
 /* Inner fields in the panel */
+#fieldJerseyType {
+  grid-column: span 2;
+}
+
 #fieldJerseySize,
 #fieldJerseyNumber {
   grid-column: span 1;
+}
+
+/* ── Jersey Price Info Box ─────────────────────────────────── */
+.jersey-price-info {
+  grid-column: span 2;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background: linear-gradient(135deg, #fff7f0, #fff0f0);
+  border: 1.5px solid #fca5a5;
+  border-radius: var(--radius-md);
+  animation: fadeSlideIn 0.28s var(--ease-out) both;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.jersey-price-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--clr-accent);
+  margin-top: 2px;
+}
+
+.jersey-price-text {
+  font-size: 13.5px;
+  color: var(--clr-text-primary);
+  line-height: 1.55;
+}
+
+.jersey-price-text strong {
+  color: var(--clr-accent);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.jersey-price-includes {
+  font-size: 12px;
+  color: var(--clr-text-secondary);
+  font-weight: 400;
 }
 
 .jersey-details-panel .field-group {
@@ -949,65 +998,304 @@ a:hover { text-decoration: underline; }
 
 
 /* ── 17. Responsive ───────────────────────────────────────── */
-@media (max-width: 640px) {
-  body { padding: var(--space-4) var(--space-3) 0; }
-  .page-wrapper { max-width: 100%; }
-  .card-header  { padding: var(--space-7) var(--space-5) var(--space-6); }
-  .header-logo-wrap { justify-content: center; }
-  
+
+/* ─── Tablet: 768px and below ─────────────────────────────── */
+@media (max-width: 768px) {
+  body {
+    padding: var(--space-4) var(--space-4) 0;
+  }
+
+  .page-wrapper {
+    max-width: 100%;
+  }
+
+  /* Reduce orb sizes on smaller screens */
+  .bg-orb--1 { width: 360px; height: 360px; }
+  .bg-orb--2 { width: 280px; height: 280px; }
+
+  .card-header {
+    padding: var(--space-7) var(--space-6) var(--space-7);
+  }
+
+  .header-logo { max-width: 280px; }
+
   .reg-form {
-    padding: var(--space-6) var(--space-5);
+    padding: var(--space-7) var(--space-6);
     gap: var(--space-5);
+  }
+
+  /* Side-by-side PIN fields collapse to full width */
+  #fieldPassword,
+  #fieldConfirmPassword {
+    grid-column: span 2;
+  }
+
+  /* Payment card: stack logo + body vertically */
+  .payment-card {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .mobilepay-logo { max-height: 38px; }
+
+  .mobilepay-pay-btn {
+    max-width: 100%;
+  }
+}
+
+
+/* ─── Large mobile: 640px and below ───────────────────────── */
+@media (max-width: 640px) {
+  body {
+    padding: var(--space-3) var(--space-3) 0;
+    font-size: 14px;
+  }
+
+  .page-wrapper { max-width: 100%; }
+
+  /* ── Card header ── */
+  .card-header {
+    padding: var(--space-6) var(--space-5) var(--space-6);
+  }
+  .header-logo-wrap { justify-content: center; }
+  .header-logo { max-width: 240px; }
+  .header-title { font-size: clamp(18px, 5vw, 24px); }
+  .header-desc  { font-size: 12.5px; }
+
+  /* ── Form grid → single column ── */
+  .reg-form {
+    padding: var(--space-5) var(--space-4);
+    gap: var(--space-4);
     grid-template-columns: 1fr;
   }
-  .field-group {
-    grid-column: span 1;
-  }
+
+  /* Every field-group spans the single column */
+  .field-group,
   #fieldPhone,
   #fieldEmail,
   #fieldPassword,
   #fieldConfirmPassword {
     grid-column: span 1;
   }
+
+  /* ── Inputs: slightly shorter on mobile ── */
+  .field-input {
+    padding: 11px 12px 11px 42px;
+    font-size: 15px;   /* prevents iOS auto-zoom (≥16px is safest, 15 is fine) */
+  }
+
+  select.field-input {
+    padding-left: 42px;
+  }
+
+  /* ── Radio pill groups ── */
+  .radio-pill-group {
+    gap: var(--space-2);
+  }
+
+  .radio-pill {
+    padding: 9px 16px;
+    font-size: 13.5px;
+    flex: 1 1 auto;      /* pills share row evenly */
+    justify-content: center;
+  }
+
+  /* ── Jersey details panel ── */
   .jersey-details-panel {
     grid-column: span 1;
   }
   .jersey-details-panel.is-open {
     grid-template-columns: 1fr;
-    gap: var(--space-5);
+    gap: var(--space-4);
   }
-  .jersey-panel-header {
-    grid-column: span 1;
-  }
+  .jersey-panel-header { grid-column: span 1; }
+  #fieldJerseyType,
   #fieldJerseySize,
   #fieldJerseyNumber {
     grid-column: span 1;
   }
+
+  /* ── Price info box ── */
+  .jersey-price-info {
+    grid-column: span 1;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* ── Payment gateway ── */
+  .payment-gateway-panel {
+    grid-column: span 1;
+  }
+
+  .payment-card {
+    flex-direction: column;
+    padding: var(--space-4);
+    gap: var(--space-4);
+  }
+
+  .payment-card__header {
+    justify-content: center;
+  }
+
+  .mobilepay-logo { max-height: 34px; }
+
+  .payment-instructions {
+    font-size: 12.5px;
+    text-align: center;
+  }
+
+  .mobilepay-pay-btn {
+    max-width: 100%;
+    padding: 13px 24px;
+    font-size: 13.5px;
+  }
+
+  /* ── Submit area ── */
   .submit-area {
     grid-column: span 1;
   }
 
-  .success-card { padding: var(--space-8) var(--space-5); }
-  .success-title { font-size: 22px; }
-  .success-detail-row { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
+  .submit-btn {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 14.5px;
+  }
+
+  /* ── Success card ── */
+  .success-card {
+    padding: var(--space-7) var(--space-5);
+    border-radius: var(--radius-lg);
+  }
+  .success-icon svg { width: 40px; height: 40px; }
+  .success-title { font-size: 20px; }
+  .success-body  { font-size: 13.5px; }
+  .success-detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
   .success-detail-value { text-align: left; }
-  .toast { bottom: 16px; right: 12px; left: 12px; min-width: 0; max-width: none; }
-  .bg-orb--1 { width: 280px; height: 280px; }
-  .bg-orb--2 { width: 220px; height: 220px; }
+
+  /* ── Toast ── */
+  .toast {
+    bottom: 16px;
+    right: 12px;
+    left: 12px;
+    min-width: 0;
+    max-width: none;
+    font-size: 13px;
+  }
+
+  /* ── Background orbs ── */
+  .bg-orb--1 { width: 260px; height: 260px; }
+  .bg-orb--2 { width: 200px; height: 200px; }
+  .bg-orb--3 { display: none; }
+
+  /* ── Footer ── */
   .site-footer p {
     white-space: normal;
     display: inline-block;
     border-radius: var(--radius-md);
     padding: 8px 16px;
     line-height: 1.5;
+    font-size: 12px;
   }
+
+  /* ── Photo dropzone ── */
+  .photo-dropzone {
+    padding: var(--space-5) var(--space-4);
+  }
+  .photo-dropzone-text { font-size: 13px; }
 }
 
-@media (max-width: 380px) {
-  .card-header  { padding: var(--space-6) var(--space-4) var(--space-5); }
-  .header-title { font-size: 20px; }
-  .reg-form     { padding: var(--space-5) var(--space-4); }
+
+/* ─── Small mobile: 480px and below ───────────────────────── */
+@media (max-width: 480px) {
+  body { padding: var(--space-2) var(--space-2) 0; }
+
+  .card-header {
+    padding: var(--space-5) var(--space-4) var(--space-5);
+  }
+  .header-logo { max-width: 200px; }
+
+  .reg-form {
+    padding: var(--space-4) var(--space-3);
+    gap: var(--space-4);
+  }
+
+  /* Make field inputs tap-friendly — minimum 44px height */
+  .field-input,
+  .field-select {
+    min-height: 44px;
+    font-size: 16px;   /* prevents iOS double-tap zoom */
+  }
+
+  /* PIN input: bigger digits, centered */
+  .pin-input {
+    font-size: 20px;
+    letter-spacing: 0.35em;
+    text-align: center;
+    padding-left: 44px;
+  }
+
+  .radio-pill {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .header-subtitle { font-size: 10px; }
+
+  .jersey-price-info {
+    padding: var(--space-3);
+  }
+
+  .payment-card {
+    padding: var(--space-3);
+  }
+
+  .mobilepay-logo { max-height: 30px; }
+
+  .mobilepay-pay-btn {
+    padding: 12px 20px;
+    font-size: 13px;
+  }
+
+  .payment-gateway-header {
+    font-size: 11.5px;
+  }
+
+  .success-card { padding: var(--space-6) var(--space-4); }
+  .success-title { font-size: 18px; }
 }
+
+
+/* ─── Ultra-small: 360px and below ────────────────────────── */
+@media (max-width: 360px) {
+  body { padding: var(--space-1) var(--space-1) 0; }
+
+  .card-header {
+    padding: var(--space-4) var(--space-3) var(--space-4);
+  }
+  .header-title { font-size: 16px; }
+  .header-logo  { max-width: 170px; }
+
+  .reg-form {
+    padding: var(--space-3) var(--space-2);
+    gap: var(--space-3);
+  }
+
+  .radio-pill {
+    padding: 8px 10px;
+    font-size: 12.5px;
+  }
+
+  .submit-btn { padding: 13px 16px; font-size: 13.5px; }
+
+  .success-card { padding: var(--space-5) var(--space-3); }
+  .success-title { font-size: 16px; }
+}
+
 
 
 /* ── 18. Footer ───────────────────────────────────────────── */
@@ -1037,4 +1325,113 @@ a:hover { text-decoration: underline; }
   border: 1px solid rgba(255, 157, 157, 0.22);
   box-shadow: 0 2px 10px rgba(192, 11, 11, 0.07);
   white-space: nowrap;
+}
+
+/* ── 19. MobilePay Payment Gateway ─────────────────────────── */
+.payment-gateway-panel {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-3);
+  animation: fadeSlideIn 0.35s var(--ease-out) both;
+}
+
+.payment-gateway-header {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--clr-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.payment-gateway-header svg {
+  color: var(--clr-accent);
+}
+
+.payment-card {
+  background: var(--clr-bg-card);
+  border: 1.5px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  transition: border-color var(--duration-normal) ease, box-shadow var(--duration-normal) ease;
+}
+
+.payment-card:hover {
+  border-color: #5a78ff; /* MobilePay blue */
+  box-shadow: 0 6px 20px rgba(90, 120, 255, 0.08);
+}
+
+.payment-card__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding-bottom: var(--space-4);
+  border-bottom: 1.5px dashed var(--clr-border);
+}
+
+.mobilepay-logo {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+}
+
+.payment-badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #1a4f8a;
+  background: #eef5fc;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.payment-instructions {
+  font-size: 13.5px;
+  color: var(--clr-text-secondary);
+  line-height: 1.65;
+  text-align: center;
+}
+
+.mobilepay-pay-btn {
+  display: block;
+  text-align: center;
+  background: #5a78ff;
+  color: white;
+  border-radius: var(--radius-full);
+  padding: 13px 36px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-decoration: none !important;
+  width: 100%;
+  max-width: 280px;
+  margin: var(--space-2) auto 0;
+  transition:
+    background   var(--duration-fast) ease,
+    transform    var(--duration-fast) ease,
+    box-shadow   var(--duration-fast) ease;
+  box-shadow: 0 4px 16px rgba(90, 120, 255, 0.28);
+}
+
+.mobilepay-pay-btn:hover {
+  background: #4768ff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(90, 120, 255, 0.36);
+  color: white !important;
+}
+
+.mobilepay-pay-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(90, 120, 255, 0.22);
 }

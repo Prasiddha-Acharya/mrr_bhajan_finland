@@ -6,7 +6,7 @@
  */
 
 /* ── Firebase SDK Imports ─────────────────────────────────── */
-import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getFirestore,
   collection,
@@ -27,25 +27,25 @@ import {
 
 /* ── Firebase Configuration ───────────────────────────────── */
 const firebaseConfig = {
-  apiKey:            "AIzaSyB4wZzceKofQAiVeQMbrkTZBZLXcB9Z5OI",
-  authDomain:        "mrr-bhajan-finland.firebaseapp.com",
-  projectId:         "mrr-bhajan-finland",
-  storageBucket:     "mrr-bhajan-finland.firebasestorage.app",
+  apiKey: "AIzaSyB4wZzceKofQAiVeQMbrkTZBZLXcB9Z5OI",
+  authDomain: "mrr-bhajan-finland.firebaseapp.com",
+  projectId: "mrr-bhajan-finland",
+  storageBucket: "mrr-bhajan-finland.firebasestorage.app",
   messagingSenderId: "913989931388",
-  appId:             "1:913989931388:web:c9be6b50f662ffe65394f9"
+  appId: "1:913989931388:web:c9be6b50f662ffe65394f9"
 };
 
 /* Initialize Firebase services */
-const app     = initializeApp(firebaseConfig);
-const db      = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const storage = getStorage(app);
 
 
 /* ── Constants ────────────────────────────────────────────── */
-const MEMBERS_COLLECTION  = "members";
-const MEMBER_ID_PREFIX    = "MRR-FIN-";
-const MAX_PHOTO_SIZE_MB   = 5;
-const MAX_PHOTO_BYTES     = MAX_PHOTO_SIZE_MB * 1024 * 1024;
+const MEMBERS_COLLECTION = "members";
+const MEMBER_ID_PREFIX = "MRR-FIN-";
+const MAX_PHOTO_SIZE_MB = 5;
+const MAX_PHOTO_BYTES = MAX_PHOTO_SIZE_MB * 1024 * 1024;
 const ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
 /** Validation regex */
@@ -54,27 +54,87 @@ const PHONE_REGEX = /^\+?[0-9\s\-().]{7,20}$/;
 
 
 /* ── DOM References ───────────────────────────────────────── */
-const formCard            = document.getElementById("formCard");
-const successCard         = document.getElementById("successCard");
-const registrationForm    = document.getElementById("registrationForm");
+const formCard = document.getElementById("formCard");
+const successCard = document.getElementById("successCard");
+const registrationForm = document.getElementById("registrationForm");
 
-const fullNameInput       = document.getElementById("fullName");
-const cityInput           = document.getElementById("city");
-const phoneInput          = document.getElementById("phone");
-const emailInput          = document.getElementById("email");
-const passwordInput        = document.getElementById("password");
+const fullNameInput = document.getElementById("fullName");
+const cityInput = document.getElementById("city");
+const phoneInput = document.getElementById("phone");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 const confirmPasswordInput = document.getElementById("confirmPassword");
-const profilePhotoInput   = document.getElementById("profilePhoto");
-const photoDropzone       = document.getElementById("photoDropzone");
-const photoPlaceholder    = document.getElementById("photoPlaceholder");
+const profilePhotoInput = document.getElementById("profilePhoto");
+const photoDropzone = document.getElementById("photoDropzone");
+const photoPlaceholder = document.getElementById("photoPlaceholder");
 const photoPreviewWrapper = document.getElementById("photoPreviewWrapper");
-const photoPreviewImg     = document.getElementById("photoPreview");
-const photoRemoveBtn      = document.getElementById("photoRemoveBtn");
+const photoPreviewImg = document.getElementById("photoPreview");
+const photoRemoveBtn = document.getElementById("photoRemoveBtn");
 
 /* Jersey fields */
-const jerseyDetailsPanel   = document.getElementById("jerseyDetailsPanel");
-const jerseySizeSelect     = document.getElementById("jerseySize");
-const jerseyNumberInput    = document.getElementById("jerseyNumber");
+const jerseyDetailsPanel = document.getElementById("jerseyDetailsPanel");
+const jerseyPriceInfo = document.getElementById("jerseyPriceInfo");
+const jerseySizeSelect = document.getElementById("jerseySize");
+const jerseyNumberInput = document.getElementById("jerseyNumber");
+const paymentGatewayPanel = document.getElementById("paymentGatewayPanel");
+const successPaymentBox = document.getElementById("successPaymentBox");
+
+/** Helper: get the checked jersey type radio value ("player"|"fan"|null) */
+function getJerseyTypeValue() {
+  const checked = document.querySelector('input[name="jerseyType"]:checked');
+  return checked ? checked.value : null;
+}
+
+/* Jersey pricing info content per type */
+const JERSEY_PRICE_DATA = {
+  player: {
+    price: "€20",
+    label: "Player Jersey",
+    desc: "Includes Jersey, Shorts &amp; Track"
+  },
+  fan: {
+    price: "€15",
+    label: "Fan Jersey",
+    desc: "Includes Jersey Set (Jersey &amp; Shorts)"
+  }
+};
+
+/** Shows the pricing info box for the selected jersey type */
+function updateJerseyPriceInfo() {
+  const type = getJerseyTypeValue();
+  if (!type || !JERSEY_PRICE_DATA[type]) {
+    jerseyPriceInfo.style.display = "none";
+    jerseyPriceInfo.innerHTML = "";
+    if (paymentGatewayPanel) paymentGatewayPanel.style.display = "none";
+    return;
+  }
+  const d = JERSEY_PRICE_DATA[type];
+  jerseyPriceInfo.innerHTML = `
+    <span class="jersey-price-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block;">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+    </span>
+    <span class="jersey-price-text">
+      You need to pay <strong>${d.price}</strong> for ${d.label}.
+      <br><span class="jersey-price-includes">${d.desc}</span>
+    </span>
+  `;
+  jerseyPriceInfo.style.display = "flex";
+  if (paymentGatewayPanel) paymentGatewayPanel.style.display = "block";
+}
+
+document.querySelectorAll('input[name="jerseyType"]').forEach((radio) => {
+  radio.addEventListener("change", () => {
+    updateJerseyPriceInfo();
+    /* Clear any type validation error as soon as user picks something */
+    const typeGroup = document.getElementById("fieldJerseyType");
+    const typeError = document.getElementById("jerseyTypeError");
+    if (getJerseyTypeValue()) setFieldValid(typeGroup, typeError);
+  });
+});
 
 /** Helper: get the currently checked jersey interest radio value ("yes"|"no"|null) */
 function getJerseyInterestValue() {
@@ -83,13 +143,13 @@ function getJerseyInterestValue() {
 }
 
 /* Submit */
-const submitBtn        = document.getElementById("submitBtn");
-const submitBtnLabel   = document.getElementById("submitBtnLabel");
+const submitBtn = document.getElementById("submitBtn");
+const submitBtnLabel = document.getElementById("submitBtnLabel");
 const submitBtnSpinner = document.getElementById("submitBtnSpinner");
 
 /* Success card */
-const successMemberId  = document.getElementById("successMemberId");
-const successName      = document.getElementById("successName");
+const successMemberId = document.getElementById("successMemberId");
+const successName = document.getElementById("successName");
 const successJerseyRow = document.getElementById("successJerseyRow");
 const successJerseyInfo = document.getElementById("successJerseyInfo");
 const registerAnotherBtn = document.getElementById("registerAnotherBtn");
@@ -112,7 +172,7 @@ let toastTimer = null;
 function showToast(message, type = "info", duration = 4000) {
   if (toastTimer) clearTimeout(toastTimer);
   toast.textContent = message;
-  toast.className   = `toast toast--${type} toast--visible`;
+  toast.className = `toast toast--${type} toast--visible`;
   toastTimer = setTimeout(() => toast.classList.remove("toast--visible"), duration);
 }
 
@@ -132,16 +192,22 @@ document.querySelectorAll('input[name="jerseyInterest"]').forEach((radio) => {
     if (wantsJersey) {
       jerseyDetailsPanel.classList.add("is-open");
       jerseyDetailsPanel.setAttribute("aria-hidden", "false");
-      jerseySizeSelect.required  = true;
+      jerseySizeSelect.required = true;
       jerseyNumberInput.required = true;
     } else {
       jerseyDetailsPanel.classList.remove("is-open");
       jerseyDetailsPanel.setAttribute("aria-hidden", "true");
-      jerseySizeSelect.required  = false;
+      jerseySizeSelect.required = false;
       jerseyNumberInput.required = false;
-      jerseySizeSelect.value     = "";
-      jerseyNumberInput.value    = "";
-      clearFieldError(document.getElementById("fieldJerseySize"),   document.getElementById("jerseySizeError"));
+      jerseySizeSelect.value = "";
+      jerseyNumberInput.value = "";
+      jerseyPriceInfo.style.display = "none";
+      jerseyPriceInfo.innerHTML = "";
+      if (paymentGatewayPanel) paymentGatewayPanel.style.display = "none";
+      /* Uncheck all jersey type radio buttons */
+      document.querySelectorAll('input[name="jerseyType"]').forEach(r => r.checked = false);
+      clearFieldError(document.getElementById("fieldJerseyType"), document.getElementById("jerseyTypeError"));
+      clearFieldError(document.getElementById("fieldJerseySize"), document.getElementById("jerseySizeError"));
       clearFieldError(document.getElementById("fieldJerseyNumber"), document.getElementById("jerseyNumberError"));
     }
   });
@@ -183,7 +249,7 @@ function validateForm() {
   /* ── Full Name ── */
   const nameGroup = document.getElementById("fieldFullName");
   const nameError = document.getElementById("fullNameError");
-  const nameVal   = fullNameInput.value.trim();
+  const nameVal = fullNameInput.value.trim();
   if (!nameVal) {
     setFieldError(nameGroup, nameError, "Full name is required.");
     isValid = false;
@@ -207,7 +273,7 @@ function validateForm() {
   /* ── Phone ── */
   const phoneGroup = document.getElementById("fieldPhone");
   const phoneError = document.getElementById("phoneError");
-  const rawPhone   = phoneInput.value.trim();
+  const rawPhone = phoneInput.value.trim();
   if (!rawPhone) {
     setFieldError(phoneGroup, phoneError, "Phone number is required.");
     isValid = false;
@@ -221,7 +287,7 @@ function validateForm() {
   /* ── Email ── */
   const emailGroup = document.getElementById("fieldEmail");
   const emailError = document.getElementById("emailError");
-  const rawEmail   = emailInput.value.trim();
+  const rawEmail = emailInput.value.trim();
   if (!rawEmail) {
     setFieldError(emailGroup, emailError, "Email address is required.");
     isValid = false;
@@ -232,29 +298,29 @@ function validateForm() {
     setFieldValid(emailGroup, emailError);
   }
 
-  /* ── Password ── */
+  /* ── 4-Digit PIN ── */
   const pwGroup = document.getElementById("fieldPassword");
   const pwError = document.getElementById("passwordError");
-  const pwVal   = passwordInput.value;
+  const pwVal = passwordInput.value;
   if (!pwVal) {
-    setFieldError(pwGroup, pwError, "Password is required.");
+    setFieldError(pwGroup, pwError, "PIN is required.");
     isValid = false;
-  } else if (pwVal.length < 6) {
-    setFieldError(pwGroup, pwError, "Password must be at least 6 characters.");
+  } else if (!/^[0-9]{4}$/.test(pwVal)) {
+    setFieldError(pwGroup, pwError, "PIN must be exactly 4 numeric digits.");
     isValid = false;
   } else {
     setFieldValid(pwGroup, pwError);
   }
 
-  /* ── Confirm Password ── */
+  /* ── Confirm PIN ── */
   const cpwGroup = document.getElementById("fieldConfirmPassword");
   const cpwError = document.getElementById("confirmPasswordError");
-  const cpwVal   = confirmPasswordInput.value;
+  const cpwVal = confirmPasswordInput.value;
   if (!cpwVal) {
-    setFieldError(cpwGroup, cpwError, "Please confirm your password.");
+    setFieldError(cpwGroup, cpwError, "Please confirm your PIN.");
     isValid = false;
   } else if (cpwVal !== pwVal) {
-    setFieldError(cpwGroup, cpwError, "Passwords do not match.");
+    setFieldError(cpwGroup, cpwError, "PINs do not match.");
     isValid = false;
   } else {
     setFieldValid(cpwGroup, cpwError);
@@ -263,7 +329,7 @@ function validateForm() {
   /* ── Photo (optional — size check only) ── */
   const photoGroup = document.getElementById("fieldPhoto");
   const photoError = document.getElementById("photoError");
-  const photoFile  = profilePhotoInput.files[0];
+  const photoFile = profilePhotoInput.files[0];
   if (photoFile) {
     if (!ALLOWED_PHOTO_TYPES.includes(photoFile.type)) {
       setFieldError(photoGroup, photoError, "Unsupported file type. Use PNG, JPG, or WEBP.");
@@ -291,6 +357,16 @@ function validateForm() {
   /* ── Jersey sub-fields (only required when "yes") ── */
   if (getJerseyInterestValue() === "yes") {
 
+    /* Jersey Type */
+    const typeGroup = document.getElementById("fieldJerseyType");
+    const typeError = document.getElementById("jerseyTypeError");
+    if (!getJerseyTypeValue()) {
+      setFieldError(typeGroup, typeError, "Please select a jersey type.");
+      isValid = false;
+    } else {
+      setFieldValid(typeGroup, typeError);
+    }
+
     const sizeGroup = document.getElementById("fieldJerseySize");
     const sizeError = document.getElementById("jerseySizeError");
     if (!jerseySizeSelect.value) {
@@ -302,7 +378,7 @@ function validateForm() {
 
     const numGroup = document.getElementById("fieldJerseyNumber");
     const numError = document.getElementById("jerseyNumberError");
-    const numVal   = parseInt(jerseyNumberInput.value, 10);
+    const numVal = parseInt(jerseyNumberInput.value, 10);
     if (!jerseyNumberInput.value) {
       setFieldError(numGroup, numError, "Jersey number is required.");
       isValid = false;
@@ -329,7 +405,7 @@ function attachLiveValidation(inputEl, fieldGroupId, errorId, validator) {
   inputEl.addEventListener("blur", () => {
     const msg = validator(inputEl.value.trim());
     if (msg) setFieldError(group, error, msg);
-    else     setFieldValid(group, error);
+    else setFieldValid(group, error);
   });
 
   inputEl.addEventListener("input", () => {
@@ -341,7 +417,7 @@ function attachLiveValidation(inputEl, fieldGroupId, errorId, validator) {
 }
 
 attachLiveValidation(fullNameInput, "fieldFullName", "fullNameError", (v) => {
-  if (!v)          return "Full name is required.";
+  if (!v) return "Full name is required.";
   if (v.length < 2) return "Name must be at least 2 characters.";
   return null;
 });
@@ -351,32 +427,32 @@ attachLiveValidation(cityInput, "fieldCity", "cityError", (v) =>
 );
 
 attachLiveValidation(phoneInput, "fieldPhone", "phoneError", (v) => {
-  if (!v)                   return "Phone number is required.";
+  if (!v) return "Phone number is required.";
   if (!PHONE_REGEX.test(v)) return "Enter a valid phone number (e.g. +358 40 1234567).";
   return null;
 });
 
 attachLiveValidation(emailInput, "fieldEmail", "emailError", (v) => {
-  if (!v)                    return "Email address is required.";
-  if (!EMAIL_REGEX.test(v))  return "Enter a valid email address.";
+  if (!v) return "Email address is required.";
+  if (!EMAIL_REGEX.test(v)) return "Enter a valid email address.";
   return null;
 });
 
 attachLiveValidation(passwordInput, "fieldPassword", "passwordError", (v) => {
-  if (!v)          return "Password is required.";
-  if (v.length < 6) return "Password must be at least 6 characters.";
+  if (!v) return "PIN is required.";
+  if (!/^[0-9]{4}$/.test(v)) return "PIN must be exactly 4 numeric digits.";
   return null;
 });
 
 confirmPasswordInput.addEventListener("blur", () => {
   const cpwGroup = document.getElementById("fieldConfirmPassword");
   const cpwError = document.getElementById("confirmPasswordError");
-  const cpwVal   = confirmPasswordInput.value;
-  const pwVal    = passwordInput.value;
+  const cpwVal = confirmPasswordInput.value;
+  const pwVal = passwordInput.value;
   if (!cpwVal) {
-    setFieldError(cpwGroup, cpwError, "Please confirm your password.");
+    setFieldError(cpwGroup, cpwError, "Please confirm your PIN.");
   } else if (cpwVal !== pwVal) {
-    setFieldError(cpwGroup, cpwError, "Passwords do not match.");
+    setFieldError(cpwGroup, cpwError, "PINs do not match.");
   } else {
     setFieldValid(cpwGroup, cpwError);
   }
@@ -407,24 +483,24 @@ jerseyNumberInput.addEventListener("input", () => {
    ═══════════════════════════════════════════════════════════ */
 
 function showPhotoPreview(file) {
-  const reader  = new FileReader();
+  const reader = new FileReader();
   reader.onload = (e) => {
-    photoPreviewImg.src               = e.target.result;
+    photoPreviewImg.src = e.target.result;
     photoPreviewWrapper.style.display = "flex";
-    photoPlaceholder.style.display    = "none";
+    photoPlaceholder.style.display = "none";
   };
   reader.readAsDataURL(file);
 }
 
 function clearPhotoPreview() {
-  profilePhotoInput.value           = "";
-  photoPreviewImg.src               = "";
+  profilePhotoInput.value = "";
+  photoPreviewImg.src = "";
   photoPreviewWrapper.style.display = "none";
-  photoPlaceholder.style.display    = "flex";
+  photoPlaceholder.style.display = "flex";
 }
 
 profilePhotoInput.addEventListener("change", () => {
-  const file       = profilePhotoInput.files[0];
+  const file = profilePhotoInput.files[0];
   const photoGroup = document.getElementById("fieldPhoto");
   const photoError = document.getElementById("photoError");
 
@@ -489,12 +565,12 @@ photoDropzone.addEventListener("keydown", (e) => {
  */
 async function generateMemberId() {
   try {
-    const q    = query(collection(db, MEMBERS_COLLECTION), orderBy("createdAt", "desc"), limit(50));
+    const q = query(collection(db, MEMBERS_COLLECTION), orderBy("createdAt", "desc"), limit(50));
     const snap = await getDocs(q);
 
     let maxSeq = 0;
     snap.forEach((doc) => {
-      const id    = doc.data().memberId || "";
+      const id = doc.data().memberId || "";
       const match = id.match(/(\d+)$/);
       if (match) {
         const num = parseInt(match[1], 10);
@@ -522,9 +598,9 @@ async function generateMemberId() {
  */
 function uploadProfilePhoto(file, memberId) {
   return new Promise((resolve, reject) => {
-    const ext        = file.name.split(".").pop().toLowerCase() || "jpg";
-    const path       = `profile-photos/${memberId}/photo.${ext}`;
-    const fileRef    = storageRef(storage, path);
+    const ext = file.name.split(".").pop().toLowerCase() || "jpg";
+    const path = `profile-photos/${memberId}/photo.${ext}`;
+    const fileRef = storageRef(storage, path);
     const uploadTask = uploadBytesResumable(fileRef, file, { contentType: file.type });
 
     uploadTask.on(
@@ -542,8 +618,8 @@ function uploadProfilePhoto(file, memberId) {
    ═══════════════════════════════════════════════════════════ */
 
 function setLoading(isLoading) {
-  submitBtn.disabled              = isLoading;
-  submitBtnLabel.style.display   = isLoading ? "none" : "flex";
+  submitBtn.disabled = isLoading;
+  submitBtnLabel.style.display = isLoading ? "none" : "flex";
   submitBtnSpinner.style.display = isLoading ? "flex" : "none";
 }
 
@@ -572,17 +648,18 @@ registrationForm.addEventListener("submit", async (e) => {
     const memberId = await generateMemberId();
 
     /* 4. Collect core form values */
-    const fullName  = fullNameInput.value.trim();
-    const city      = cityInput.value.trim();
-    const phone     = phoneInput.value.trim();
-    const email     = emailInput.value.trim().toLowerCase();
-    const password  = passwordInput.value;
+    const fullName = fullNameInput.value.trim();
+    const city = cityInput.value.trim();
+    const phone = phoneInput.value.trim();
+    const email = emailInput.value.trim().toLowerCase();
+    const pin = passwordInput.value;
     const photoFile = profilePhotoInput.files[0] || null;
 
     /* 5. Collect jersey values */
     const jerseyInterested = getJerseyInterestValue() === "yes";
-    const jerseySize       = jerseyInterested ? jerseySizeSelect.value   : null;
-    const jerseyNumber     = jerseyInterested ? parseInt(jerseyNumberInput.value, 10) : null;
+    const jerseyType = jerseyInterested ? getJerseyTypeValue() : null;
+    const jerseySize = jerseyInterested ? jerseySizeSelect.value : null;
+    const jerseyNumber = jerseyInterested ? parseInt(jerseyNumberInput.value, 10) : null;
 
     /* 6. Upload profile photo (if provided) */
     let profilePhotoURL = null;
@@ -599,13 +676,14 @@ registrationForm.addEventListener("submit", async (e) => {
       city,
       phone,
       email,
-      password,                             // Saved for future updates
-      profilePhoto:     profilePhotoURL,   // null if not provided
+      pin,                                 // 4-digit PIN for future updates
+      profilePhoto: profilePhotoURL,   // null if not provided
       membershipStatus: "Pending",
       jersey: {
         interested: jerseyInterested,
-        size:       jerseySize,             // null if not interested
-        number:     jerseyNumber            // null if not interested
+        type: jerseyType,             // "player" | "fan" | null
+        size: jerseySize,             // null if not interested
+        number: jerseyNumber            // null if not interested
       },
       createdAt: serverTimestamp()
     };
@@ -616,17 +694,21 @@ registrationForm.addEventListener("submit", async (e) => {
 
     /* 9. Update success card */
     successMemberId.textContent = memberId;
-    successName.textContent     = fullName;
+    successName.textContent = fullName;
 
     if (jerseyInterested) {
-      successJerseyRow.style.display  = "flex";
-      successJerseyInfo.textContent   = `Size ${jerseySize}, No. ${jerseyNumber}`;
+      const typeLabel = jerseyType === "player" ? "Player Jersey" : "Fan Jersey";
+      const price = jerseyType === "player" ? "€20" : "€15";
+      successJerseyRow.style.display = "flex";
+      successJerseyInfo.textContent = `${typeLabel} (${price}) · Size ${jerseySize}, No. ${jerseyNumber}`;
+      if (successPaymentBox) successPaymentBox.style.display = "block";
     } else {
-      successJerseyRow.style.display  = "none";
+      successJerseyRow.style.display = "none";
+      if (successPaymentBox) successPaymentBox.style.display = "none";
     }
 
     /* 10. Show success screen */
-    formCard.style.display    = "none";
+    formCard.style.display = "none";
     successCard.style.display = "block";
     showToast("Registration saved successfully! 🎉", "success", 5000);
 
@@ -635,9 +717,14 @@ registrationForm.addEventListener("submit", async (e) => {
     clearPhotoPreview();
     jerseyDetailsPanel.classList.remove("is-open");
     jerseyDetailsPanel.setAttribute("aria-hidden", "true");
-    jerseySizeSelect.required  = false;
+    jerseySizeSelect.required = false;
     jerseyNumberInput.required = false;
-    /* Uncheck all jersey radio buttons */
+    jerseyPriceInfo.style.display = "none";
+    jerseyPriceInfo.innerHTML = "";
+    if (paymentGatewayPanel) paymentGatewayPanel.style.display = "none";
+    /* Uncheck all jersey type radio buttons */
+    document.querySelectorAll('input[name="jerseyType"]').forEach(r => r.checked = false);
+    /* Uncheck all jersey interest radio buttons */
     document.querySelectorAll('input[name="jerseyInterest"]').forEach(r => r.checked = false);
     registrationForm.querySelectorAll(".field-group").forEach((g) =>
       g.classList.remove("has-error", "is-valid")
@@ -659,19 +746,19 @@ registrationForm.addEventListener("submit", async (e) => {
 /* ═══════════════════════════════════════════════════════════
    PASSWORD VISIBILITY TOGGLE (EYE BUTTON)
    ═══════════════════════════════════════════════════════════ */
-const togglePasswordBtn        = document.getElementById("togglePassword");
+const togglePasswordBtn = document.getElementById("togglePassword");
 const toggleConfirmPasswordBtn = document.getElementById("toggleConfirmPassword");
 
 function setupPasswordToggle(btn, inputEl) {
   if (!btn || !inputEl) return;
-  
+
   btn.addEventListener("click", () => {
     const isPassword = inputEl.type === "password";
     inputEl.type = isPassword ? "text" : "password";
-    
+
     // Update SVG and accessibility labels
     btn.setAttribute("aria-label", isPassword ? "Hide password" : "Show password");
-    
+
     if (isPassword) {
       // Switch to hidden slash eye SVG
       btn.innerHTML = `
@@ -701,6 +788,7 @@ setupPasswordToggle(toggleConfirmPasswordBtn, confirmPasswordInput);
 
 registerAnotherBtn.addEventListener("click", () => {
   successCard.style.display = "none";
-  formCard.style.display    = "block";
+  if (successPaymentBox) successPaymentBox.style.display = "none";
+  formCard.style.display = "block";
   formCard.scrollIntoView({ behavior: "smooth", block: "start" });
 });
