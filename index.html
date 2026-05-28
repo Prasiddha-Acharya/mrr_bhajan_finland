@@ -139,8 +139,8 @@
         </div>
 
         <!-- 4-Digit PIN -->
-        <div class="field-group" id="fieldPassword">
-          <label class="field-label" for="password">
+        <div class="field-group" id="fieldPinCode">
+          <label class="field-label" for="pinCode">
             4-Digit PIN <span class="required-star" aria-label="required">*</span>
           </label>
           <div class="input-wrapper">
@@ -151,18 +151,18 @@
                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
             </span>
-            <input type="password" id="password" name="password" class="field-input pin-input" placeholder="••••"
+            <input type="password" id="pinCode" name="pinCode" class="field-input pin-input" placeholder="••••"
               required inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password"
-              aria-describedby="passwordError passwordHint">
+              aria-describedby="pinCodeError pinCodeHint">
           </div>
-          <span class="field-hint" id="passwordHint">You'll need this pin in future if you
+          <span class="field-hint" id="pinCodeHint">You'll need this pin in future if you
             want to update your data.</span>
-          <span class="field-error" id="passwordError" role="alert" aria-live="polite"></span>
+          <span class="field-error" id="pinCodeError" role="alert" aria-live="polite"></span>
         </div>
 
         <!-- Confirm PIN -->
-        <div class="field-group" id="fieldConfirmPassword">
-          <label class="field-label" for="confirmPassword">
+        <div class="field-group" id="fieldConfirmPinCode">
+          <label class="field-label" for="confirmPinCode">
             Confirm PIN <span class="required-star" aria-label="required">*</span>
           </label>
           <div class="input-wrapper">
@@ -173,11 +173,11 @@
                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
             </span>
-            <input type="password" id="confirmPassword" name="confirmPassword" class="field-input pin-input"
+            <input type="password" id="confirmPinCode" name="confirmPinCode" class="field-input pin-input"
               placeholder="••••" required inputmode="numeric" pattern="[0-9]{4}" maxlength="4"
-              autocomplete="new-password" aria-describedby="confirmPasswordError">
+              autocomplete="new-password" aria-describedby="confirmPinCodeError">
           </div>
-          <span class="field-error" id="confirmPasswordError" role="alert" aria-live="polite"></span>
+          <span class="field-error" id="confirmPinCodeError" role="alert" aria-live="polite"></span>
         </div>
 
         <!-- Profile Photo Upload -->
@@ -543,7 +543,7 @@
             </span>
             <input type="password" id="loginPin" class="field-input pin-input" placeholder="••••" inputmode="numeric"
               pattern="[0-9]{4}" maxlength="4" aria-describedby="loginPinError">
-            <button type="button" class="password-toggle-btn" id="toggleLoginPin" aria-label="Show password"
+            <button type="button" class="password-toggle-btn" id="toggleLoginPin" aria-label="Show PIN"
               tabindex="-1">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">

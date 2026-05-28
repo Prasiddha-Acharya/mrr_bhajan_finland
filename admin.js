@@ -74,7 +74,7 @@ const toast             = document.getElementById("toast");
 /* Page Gate Elements */
 const pageGate          = document.getElementById("pageGate");
 const dashboardWrapper  = document.getElementById("dashboardWrapper");
-const gatePasswordInput = document.getElementById("gatePassword");
+const gatePinCodeInput = document.getElementById("gatePinCode");
 const gateErrorText     = document.getElementById("gateError");
 const btnGateSubmit     = document.getElementById("btnGateSubmit");
 
@@ -1047,20 +1047,20 @@ function checkGateAuthorization() {
   } else {
     if (pageGate) pageGate.style.display = "flex";
     if (dashboardWrapper) dashboardWrapper.style.display = "none";
-    if (gatePasswordInput) setTimeout(() => gatePasswordInput.focus(), 100);
+    if (gatePinCodeInput) setTimeout(() => gatePinCodeInput.focus(), 100);
     setupGateListeners();
   }
 }
 
 function handleGateSubmit() {
-  if (!gatePasswordInput || !gateErrorText) return;
-  const enteredCode = gatePasswordInput.value.trim();
-  const fieldGroup = gatePasswordInput.closest(".field-group");
+  if (!gatePinCodeInput || !gateErrorText) return;
+  const enteredCode = gatePinCodeInput.value.trim();
+  const fieldGroup = gatePinCodeInput.closest(".field-group");
   
   if (!enteredCode) {
     gateErrorText.textContent = "Please enter the password.";
     fieldGroup?.classList.add("has-error");
-    gatePasswordInput.focus();
+    gatePinCodeInput.focus();
     return;
   }
   
@@ -1076,8 +1076,8 @@ function handleGateSubmit() {
   } else {
     gateErrorText.textContent = "Access denied. Incorrect security code.";
     fieldGroup?.classList.add("has-error");
-    gatePasswordInput.focus();
-    gatePasswordInput.select();
+    gatePinCodeInput.focus();
+    gatePinCodeInput.select();
   }
 }
 
@@ -1086,17 +1086,17 @@ function setupGateListeners() {
     btnGateSubmit.addEventListener("click", handleGateSubmit);
   }
   
-  if (gatePasswordInput) {
-    gatePasswordInput.addEventListener("keydown", (e) => {
+  if (gatePinCodeInput) {
+    gatePinCodeInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
         handleGateSubmit();
       }
     });
     
-    gatePasswordInput.addEventListener("input", () => {
+    gatePinCodeInput.addEventListener("input", () => {
       gateErrorText.textContent = "";
-      const fieldGroup = gatePasswordInput.closest(".field-group");
+      const fieldGroup = gatePinCodeInput.closest(".field-group");
       fieldGroup?.classList.remove("has-error");
     });
   }

@@ -482,8 +482,8 @@ a:hover { text-decoration: underline; }
 }
 
 /* Custom padding for password inputs to prevent text overlap with the toggle button */
-#password, #confirmPassword {
-  padding-right: 46px;
+#pinCode, #confirmPinCode {
+  padding-right: 48px;
 }
 
 /* Error state */

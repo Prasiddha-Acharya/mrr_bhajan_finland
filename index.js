@@ -65,8 +65,8 @@ const fullNameInput = document.getElementById("fullName");
 const cityInput = document.getElementById("city");
 const phoneInput = document.getElementById("phone");
 const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const confirmPasswordInput = document.getElementById("confirmPassword");
+const pinCodeInput = document.getElementById("pinCode");
+const confirmPinCodeInput = document.getElementById("confirmPinCode");
 const profilePhotoInput = document.getElementById("profilePhoto");
 const photoDropzone = document.getElementById("photoDropzone");
 const photoPlaceholder = document.getElementById("photoPlaceholder");
@@ -87,13 +87,13 @@ const openLoginModalBtn = document.getElementById("openLoginModalBtn");
 const loginModal = document.getElementById("loginModal");
 const closeLoginModalBtn = document.getElementById("closeLoginModalBtn");
 const loginEmailInput = document.getElementById("loginEmail");
-const loginPinInput = document.getElementById("loginPin");
+const modalPinCodeInput = document.getElementById("modalPinCode");
 const toggleLoginPinBtn = document.getElementById("toggleLoginPin");
 const loginSubmitBtn = document.getElementById("loginSubmitBtn");
 const loginSubmitBtnLabel = document.getElementById("loginSubmitBtnLabel");
 const loginSubmitBtnSpinner = document.getElementById("loginSubmitBtnSpinner");
 const loginEmailError = document.getElementById("loginEmailError");
-const loginPinError = document.getElementById("loginPinError");
+const modalPinCodeError = document.getElementById("modalPinCodeError");
 
 /* Edit Mode State */
 let currentEditMemberId = null;
@@ -342,31 +342,31 @@ function validateForm() {
   }
 
   /* ── 4-Digit PIN ── */
-  const pwGroup = document.getElementById("fieldPassword");
-  const pwError = document.getElementById("passwordError");
-  const pwVal = passwordInput.value;
-  if (!pwVal) {
-    setFieldError(pwGroup, pwError, "PIN is required.");
+  const pinGroup = document.getElementById("fieldPinCode");
+  const pinError = document.getElementById("pinCodeError");
+  const pinVal = pinCodeInput.value;
+  if (!pinVal) {
+    setFieldError(pinGroup, pinError, "PIN is required.");
     isValid = false;
-  } else if (!/^[0-9]{4}$/.test(pwVal)) {
-    setFieldError(pwGroup, pwError, "PIN must be exactly 4 numeric digits.");
+  } else if (!/^[0-9]{4}$/.test(pinVal)) {
+    setFieldError(pinGroup, pinError, "PIN must be exactly 4 numeric digits.");
     isValid = false;
   } else {
-    setFieldValid(pwGroup, pwError);
+    setFieldValid(pinGroup, pinError);
   }
 
   /* ── Confirm PIN ── */
-  const cpwGroup = document.getElementById("fieldConfirmPassword");
-  const cpwError = document.getElementById("confirmPasswordError");
-  const cpwVal = confirmPasswordInput.value;
-  if (!cpwVal) {
-    setFieldError(cpwGroup, cpwError, "Please confirm your PIN.");
+  const cpinGroup = document.getElementById("fieldConfirmPinCode");
+  const cpinError = document.getElementById("confirmPinCodeError");
+  const cpinVal = confirmPinCodeInput.value;
+  if (!cpinVal) {
+    setFieldError(cpinGroup, cpinError, "Please confirm your PIN.");
     isValid = false;
-  } else if (cpwVal !== pwVal) {
-    setFieldError(cpwGroup, cpwError, "PINs do not match.");
+  } else if (cpinVal !== pinVal) {
+    setFieldError(cpinGroup, cpinError, "PINs do not match.");
     isValid = false;
   } else {
-    setFieldValid(cpwGroup, cpwError);
+    setFieldValid(cpinGroup, cpinError);
   }
 
   /* ── Photo (optional — size check only) ── */
@@ -491,32 +491,32 @@ attachLiveValidation(emailInput, "fieldEmail", "emailError", (v) => {
   return null;
 });
 
-attachLiveValidation(passwordInput, "fieldPassword", "passwordError", (v) => {
+attachLiveValidation(pinCodeInput, "fieldPinCode", "pinCodeError", (v) => {
   if (!v) return "PIN is required.";
   if (!/^[0-9]{4}$/.test(v)) return "PIN must be exactly 4 numeric digits.";
   return null;
 });
 
-confirmPasswordInput.addEventListener("blur", () => {
-  const cpwGroup = document.getElementById("fieldConfirmPassword");
-  const cpwError = document.getElementById("confirmPasswordError");
-  const cpwVal = confirmPasswordInput.value;
-  const pwVal = passwordInput.value;
-  if (!cpwVal) {
-    setFieldError(cpwGroup, cpwError, "Please confirm your PIN.");
-  } else if (cpwVal !== pwVal) {
-    setFieldError(cpwGroup, cpwError, "PINs do not match.");
+confirmPinCodeInput.addEventListener("blur", () => {
+  const cpinGroup = document.getElementById("fieldConfirmPinCode");
+  const cpinError = document.getElementById("confirmPinCodeError");
+  const cpinVal = confirmPinCodeInput.value;
+  const pinVal = pinCodeInput.value;
+  if (!cpinVal) {
+    setFieldError(cpinGroup, cpinError, "Please confirm your PIN.");
+  } else if (cpinVal !== pinVal) {
+    setFieldError(cpinGroup, cpinError, "PINs do not match.");
   } else {
-    setFieldValid(cpwGroup, cpwError);
+    setFieldValid(cpinGroup, cpinError);
   }
 });
 
-confirmPasswordInput.addEventListener("input", () => {
-  const cpwGroup = document.getElementById("fieldConfirmPassword");
-  const cpwError = document.getElementById("confirmPasswordError");
-  if (cpwGroup.classList.contains("has-error")) {
-    if (confirmPasswordInput.value === passwordInput.value) {
-      setFieldValid(cpwGroup, cpwError);
+confirmPinCodeInput.addEventListener("input", () => {
+  const cpinGroup = document.getElementById("fieldConfirmPinCode");
+  const cpinError = document.getElementById("confirmPinCodeError");
+  if (cpinGroup.classList.contains("has-error")) {
+    if (confirmPinCodeInput.value === pinCodeInput.value) {
+      setFieldValid(cpinGroup, cpinError);
     }
   }
 });
@@ -705,7 +705,7 @@ registrationForm.addEventListener("submit", async (e) => {
     const city = cityInput.value.trim();
     const phone = phoneInput.value.trim();
     const email = emailInput.value.trim().toLowerCase();
-    const pin = passwordInput.value;
+    const pin = await hashPin(pinCodeInput.value);
     const photoFile = profilePhotoInput.files[0] || null;
 
     /* 5. Collect jersey values */
@@ -818,10 +818,10 @@ registrationForm.addEventListener("submit", async (e) => {
 /* ═══════════════════════════════════════════════════════════
    PASSWORD VISIBILITY TOGGLE (EYE BUTTON)
    ═══════════════════════════════════════════════════════════ */
-const togglePasswordBtn = document.getElementById("togglePassword");
-const toggleConfirmPasswordBtn = document.getElementById("toggleConfirmPassword");
+const togglePinCodeBtn = document.getElementById("togglePinCode");
+const toggleConfirmPinCodeBtn = document.getElementById("toggleConfirmPinCode");
 
-function setupPasswordToggle(btn, inputEl) {
+function setupPinCodeToggle(btn, inputEl) {
   if (!btn || !inputEl) return;
 
   btn.addEventListener("click", () => {
@@ -850,8 +850,8 @@ function setupPasswordToggle(btn, inputEl) {
   });
 }
 
-setupPasswordToggle(togglePasswordBtn, passwordInput);
-setupPasswordToggle(toggleConfirmPasswordBtn, confirmPasswordInput);
+setupPinCodeToggle(togglePinCodeBtn, pinCodeInput);
+setupPinCodeToggle(toggleConfirmPinCodeBtn, confirmPinCodeInput);
 
 
 
@@ -865,9 +865,9 @@ if (openLoginModalBtn) {
   openLoginModalBtn.addEventListener("click", () => {
     loginModal.style.display = "flex";
     loginEmailInput.value = "";
-    loginPinInput.value = "";
+    modalPinCodeInput.value = "";
     clearFieldError(document.getElementById("loginFieldEmail"), loginEmailError);
-    clearFieldError(document.getElementById("loginFieldPin"), loginPinError);
+    clearFieldError(document.getElementById("loginFieldPin"), modalPinCodeError);
   });
 }
 
@@ -877,12 +877,12 @@ if (closeLoginModalBtn) {
   });
 }
 
-setupPasswordToggle(toggleLoginPinBtn, loginPinInput);
+setupPinCodeToggle(toggleLoginPinBtn, modalPinCodeInput);
 
 if (loginSubmitBtn) {
   loginSubmitBtn.addEventListener("click", async () => {
     const email = loginEmailInput.value.trim().toLowerCase();
-    const pin = loginPinInput.value;
+    const pin = modalPinCodeInput.value;
     const emailGroup = document.getElementById("loginFieldEmail");
     const pinGroup = document.getElementById("loginFieldPin");
     
@@ -895,10 +895,10 @@ if (loginSubmitBtn) {
     }
     
     if (!pin || !/^[0-9]{4}$/.test(pin)) {
-      setFieldError(pinGroup, loginPinError, "PIN must be exactly 4 numeric digits.");
+      setFieldError(pinGroup, modalPinCodeError, "PIN must be exactly 4 numeric digits.");
       valid = false;
     } else {
-      setFieldValid(pinGroup, loginPinError);
+      setFieldValid(pinGroup, modalPinCodeError);
     }
     
     if (!valid) return;
@@ -920,8 +920,8 @@ if (loginSubmitBtn) {
       const memberDoc = snap.docs[0];
       const data = memberDoc.data();
       
-      if (data.pin !== pin) {
-        setFieldError(pinGroup, loginPinError, "Incorrect PIN.");
+      if (data.pin !== await hashPin(pin)) {
+        setFieldError(pinGroup, modalPinCodeError, "Incorrect PIN.");
         return;
       }
       
@@ -934,16 +934,16 @@ if (loginSubmitBtn) {
       cityInput.value = data.city || "";
       phoneInput.value = data.phone || "";
       emailInput.value = data.email || "";
-      passwordInput.value = data.pin || "";
-      confirmPasswordInput.value = data.pin || "";
+      pinCodeInput.value = "";
+      confirmPinCodeInput.value = "";
       
       // Validate inputs natively
       fullNameInput.dispatchEvent(new Event('input'));
       cityInput.dispatchEvent(new Event('input'));
       phoneInput.dispatchEvent(new Event('input'));
       emailInput.dispatchEvent(new Event('input'));
-      passwordInput.dispatchEvent(new Event('input'));
-      confirmPasswordInput.dispatchEvent(new Event('input'));
+      pinCodeInput.dispatchEvent(new Event('input'));
+      confirmPinCodeInput.dispatchEvent(new Event('input'));
       
       // Jersey Logic
       if (data.jersey && data.jersey.interested) {
@@ -982,8 +982,8 @@ if (loginSubmitBtn) {
         document.getElementById("fieldCity").style.display = "none";
         document.getElementById("fieldPhone").style.display = "none";
         document.getElementById("fieldEmail").style.display = "none";
-        document.getElementById("fieldPassword").style.display = "none";
-        document.getElementById("fieldConfirmPassword").style.display = "none";
+        document.getElementById("fieldPinCode").style.display = "none";
+        document.getElementById("fieldConfirmPinCode").style.display = "none";
         document.getElementById("fieldPhoto").style.display = "none";
         
         const loginPrompt = document.querySelector(".header-login-prompt");

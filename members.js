@@ -76,8 +76,8 @@ const editModal           = document.getElementById("editModal");
 const phaseVerify         = document.getElementById("phaseVerify");
 const phaseEdit           = document.getElementById("phaseEdit");
 const verifyMemberName    = document.getElementById("verifyMemberName");
-const verifyPasswordInput = document.getElementById("verifyPassword");
-const verifyPasswordError = document.getElementById("verifyPasswordError");
+const verifyPinCodeInput = document.getElementById("verifyPinCode");
+const verifyPinCodeError = document.getElementById("verifyPinCodeError");
 
 const btnSubmitVerify     = document.getElementById("btnSubmitVerify");
 const btnCancelVerify1    = document.getElementById("btnCancelVerify1");
@@ -395,9 +395,9 @@ function closeModal() {
   setTimeout(() => {
     editModal.style.display = "none";
     // Reset Verification phase
-    verifyPasswordInput.value = "";
-    verifyPasswordError.textContent = "";
-    document.getElementById("fieldVerifyPassword")?.classList.remove("has-error");
+    verifyPinCodeInput.value = "";
+    verifyPinCodeError.textContent = "";
+    document.getElementById("fieldVerifyPinCode")?.classList.remove("has-error");
 
     // Reset Form phase
     editMemberForm.reset();
@@ -428,8 +428,8 @@ function attachUpdateClickHandlers() {
 
       // Prefill names for verify challenge
       verifyMemberName.textContent = selectedMemberData.fullName;
-      verifyPasswordInput.value = "";
-      verifyPasswordError.textContent = "";
+      verifyPinCodeInput.value = "";
+      verifyPinCodeError.textContent = "";
 
       // Show modal & Verification phase
       editModal.style.display = "flex";
@@ -438,7 +438,7 @@ function attachUpdateClickHandlers() {
         editModal.classList.add("is-open");
         phaseVerify.style.display = "block";
         phaseEdit.style.display = "none";
-        verifyPasswordInput.focus();
+        verifyPinCodeInput.focus();
       }, 20);
     });
   });
@@ -459,40 +459,40 @@ editModal.addEventListener("click", (e) => {
 /* ═══════════════════════════════════════════════════════════
    PHASE 1: PASSKEY CHALLENGE
    ═══════════════════════════════════════════════════════════ */
-btnSubmitVerify.addEventListener("click", () => {
-  const inputPw = verifyPasswordInput.value;
-  const targetGroup = verifyPasswordInput.closest(".field-group");
+btnSubmitVerify.addEventListener("click", async () => {
+  const inputPw = verifyPinCodeInput.value;
+  const targetGroup = verifyPinCodeInput.closest(".field-group");
   
   if (!inputPw) {
-    verifyPasswordError.textContent = "Please enter your passkey.";
+    verifyPinCodeError.textContent = "Please enter your passkey.";
     targetGroup?.classList.add("has-error");
     return;
   }
 
   // Compare challenge password (secure check in memory)
-  if (inputPw === selectedMemberData.password) {
+  if (await hashPin(inputPw) === selectedMemberData.pin) {
     // Correct! Transition to Phase 2 Form Editor
     phaseVerify.style.display = "none";
     phaseEdit.style.display = "block";
     prefillEditForm();
   } else {
     // Incorrect password
-    verifyPasswordError.textContent = "Incorrect passkey. Please try again.";
+    verifyPinCodeError.textContent = "Incorrect passkey. Please try again.";
     targetGroup?.classList.add("has-error");
-    verifyPasswordInput.focus();
+    verifyPinCodeInput.focus();
   }
 });
 
-verifyPasswordInput.addEventListener("keydown", (e) => {
+verifyPinCodeInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
     btnSubmitVerify.click();
   }
 });
 
-verifyPasswordInput.addEventListener("input", () => {
-  verifyPasswordError.textContent = "";
-  verifyPasswordInput.closest(".field-group")?.classList.remove("has-error");
+verifyPinCodeInput.addEventListener("input", () => {
+  verifyPinCodeError.textContent = "";
+  verifyPinCodeInput.closest(".field-group")?.classList.remove("has-error");
 });
 
 /* ═══════════════════════════════════════════════════════════
