@@ -50,7 +50,20 @@ const MAX_PHOTO_SIZE_MB   = 5;
 const MAX_PHOTO_BYTES     = MAX_PHOTO_SIZE_MB * 1024 * 1024;
 const ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
+/* ═══════════════════════════════════════════════════════════
+   PIN HASHING UTILITY
+   ═══════════════════════════════════════════════════════════ */
+async function hashPin(pin) {
+  if (!pin) return "";
+  const encoder = new TextEncoder();
+  const data = encoder.encode(pin);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 /* ── DOM References ───────────────────────────────────────── */
+const loginStateBadge = document.getElementById("loginStateBadge");
 const membersGrid         = document.getElementById("membersGrid");
 const loadingState        = document.getElementById("loadingState");
 const noResultsState      = document.getElementById("noResultsState");

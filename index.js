@@ -56,6 +56,18 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^\+?[0-9\s\-().]{7,20}$/;
 
 
+/* ═══════════════════════════════════════════════════════════
+   PIN HASHING UTILITY
+   ═══════════════════════════════════════════════════════════ */
+async function hashPin(pin) {
+  if (!pin) return "";
+  const encoder = new TextEncoder();
+  const data = encoder.encode(pin);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 /* ── DOM References ───────────────────────────────────────── */
 const formCard = document.getElementById("formCard");
 const successCard = document.getElementById("successCard");
