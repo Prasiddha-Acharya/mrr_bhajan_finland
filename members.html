@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +15,7 @@
   <!-- Stylesheet -->
   <link rel="stylesheet" href="members.css">
 </head>
+
 <body>
 
   <!-- Background Decoration Orbs -->
@@ -25,21 +27,27 @@
   <div class="page-gate-overlay" id="pageGate">
     <div class="gate-card">
       <div class="gate-icon" aria-hidden="true">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
         </svg>
       </div>
       <h2 class="gate-title">Restricted Directory</h2>
-      <p class="gate-desc">This member directory is password-protected. Please enter the security code to view the database.</p>
-      
+      <p class="gate-desc">This member directory of MRR TEAM FINLAND is password-protected. Please enter the password to
+        view the database.</p>
+
       <div class="field-group" style="width: 100%;">
         <div class="input-wrapper">
           <span class="input-icon" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
             </svg>
           </span>
-          <input type="password" id="gatePassword" class="field-input" placeholder="Enter security code" aria-label="Enter security code">
+          <input type="password" id="gatePassword" class="field-input" placeholder="Enter security code"
+            aria-label="Enter security code">
         </div>
         <span class="field-error" id="gateError" role="alert" style="text-align: left;"></span>
       </div>
@@ -67,8 +75,12 @@
       <!-- Nav Button to Register -->
       <div class="header-nav">
         <a href="index.html" class="nav-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <line x1="19" y1="8" x2="19" y2="14" />
+            <line x1="16" y1="11" x2="22" y2="11" />
           </svg>
           Register New Member
         </a>
@@ -77,11 +89,15 @@
 
     <!-- Stats Dashboard Section -->
     <section class="stats-grid" aria-label="Database statistics">
-      
+
       <div class="stat-card" id="statTotal">
         <div class="stat-icon" aria-hidden="true">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
         </div>
         <div class="stat-info">
@@ -92,8 +108,10 @@
 
       <div class="stat-card" id="statJersey">
         <div class="stat-icon" aria-hidden="true">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z" />
           </svg>
         </div>
         <div class="stat-info">
@@ -107,17 +125,14 @@
     <section class="toolbar-section" aria-label="Search and filter controls">
       <div class="search-box">
         <span class="search-icon" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
         </span>
-        <input
-          type="text"
-          id="searchInput"
-          class="search-input"
-          placeholder="Search members by name or email…"
-          aria-label="Search members"
-        >
+        <input type="text" id="searchInput" class="search-input" placeholder="Search members by name or email…"
+          aria-label="Search members">
       </div>
 
       <div class="filter-controls">
@@ -136,12 +151,13 @@
     <!-- Member Directory Grid -->
     <section class="directory-section" aria-label="Members Directory">
       <div class="members-grid" id="membersGrid">
-        
+
         <!-- Loading State -->
         <div class="loading-state" id="loadingState">
-          <svg class="spinner-svg" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" stroke="rgba(192,11,11,0.15)" stroke-width="3"/>
-            <path d="M12 2a10 10 0 0 1 10 10" stroke="var(--clr-accent)" stroke-width="3" stroke-linecap="round"/>
+          <svg class="spinner-svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="rgba(192,11,11,0.15)" stroke-width="3" />
+            <path d="M12 2a10 10 0 0 1 10 10" stroke="var(--clr-accent)" stroke-width="3" stroke-linecap="round" />
           </svg>
           <p class="loading-text">Loading registered members from database…</p>
         </div>
@@ -149,8 +165,10 @@
         <!-- No Results State (Hidden by default) -->
         <div class="no-results-state" id="noResultsState" style="display: none;">
           <div class="no-results-icon">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="8" y1="12" x2="16" y2="12" />
             </svg>
           </div>
           <h3 class="no-results-title">No matching members found</h3>
@@ -168,9 +186,10 @@
   </footer>
 
   <!-- Edit Member Modal Overlay -->
-  <div class="edit-modal-backdrop" id="editModal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="edit-modal-backdrop" id="editModal" style="display: none;" role="dialog" aria-modal="true"
+    aria-labelledby="modalTitle">
     <div class="modal-card">
-      
+
       <!-- PHASE 1: PASSKEY VERIFICATION -->
       <div class="modal-phase" id="phaseVerify">
         <div class="modal-header">
@@ -178,14 +197,17 @@
           <button class="modal-close-btn" id="btnCancelVerify1" aria-label="Close dialog">&times;</button>
         </div>
         <div class="modal-body">
-          <p class="modal-instruction">Enter the passkey to authorize updates for <strong id="verifyMemberName">Member</strong>.</p>
-          
+          <p class="modal-instruction">Enter the passkey to authorize updates for <strong
+              id="verifyMemberName">Member</strong>.</p>
+
           <div class="field-group">
             <label class="field-label" for="verifyPassword">Passkey <span class="required-star">*</span></label>
             <div class="input-wrapper">
               <span class="input-icon" aria-hidden="true">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
               </span>
               <input type="password" id="verifyPassword" class="field-input" placeholder="••••••••" required>
@@ -207,7 +229,7 @@
         </div>
         <div class="modal-body">
           <form id="editMemberForm" class="edit-form" novalidate>
-            
+
             <!-- Grid Fields Layout -->
             <div class="edit-form-grid">
               <!-- Full Name -->
@@ -247,23 +269,29 @@
                 <div class="photo-preview-wrapper" id="editPhotoPreviewWrapper">
                   <img id="editPhotoPreview" class="photo-preview-img" src="" alt="Profile preview">
                   <button type="button" class="photo-remove-btn" id="editPhotoRemoveBtn" aria-label="Remove photo">
-                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                       <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                     </svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
                   </button>
                 </div>
-                
+
                 <!-- Placeholder -->
                 <div class="photo-placeholder" id="editPhotoPlaceholder" style="display: none;">
                   <div class="photo-placeholder-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <polyline points="21 15 16 10 5 21" />
                     </svg>
                   </div>
                   <p class="photo-placeholder-text">Click to upload photo</p>
                 </div>
 
-                <input type="file" id="editProfilePhoto" class="photo-file-input" accept="image/png,image/jpeg,image/webp,image/gif">
+                <input type="file" id="editProfilePhoto" class="photo-file-input"
+                  accept="image/png,image/jpeg,image/webp,image/gif">
               </div>
               <span class="field-error" id="editPhotoError" role="alert"></span>
             </div>
@@ -273,20 +301,24 @@
               <label class="field-label">Interested in MRR Jersey?</label>
               <div class="radio-pill-group" role="radiogroup">
                 <label class="radio-pill" id="editRadioLabelYes">
-                  <input type="radio" id="editJerseyInterestYes" name="editJerseyInterest" value="yes" class="radio-pill__input">
+                  <input type="radio" id="editJerseyInterestYes" name="editJerseyInterest" value="yes"
+                    class="radio-pill__input">
                   <span class="radio-pill__check" aria-hidden="true">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="20 6 9 17 4 12"/>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
                     </svg>
                   </span>
                   <span class="radio-pill__text">Yes</span>
                 </label>
 
                 <label class="radio-pill" id="editRadioLabelNo">
-                  <input type="radio" id="editJerseyInterestNo" name="editJerseyInterest" value="no" class="radio-pill__input">
+                  <input type="radio" id="editJerseyInterestNo" name="editJerseyInterest" value="no"
+                    class="radio-pill__input">
                   <span class="radio-pill__check" aria-hidden="true">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="20 6 9 17 4 12"/>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
                     </svg>
                   </span>
                   <span class="radio-pill__text">No</span>
@@ -295,16 +327,20 @@
             </div>
 
             <!-- Jersey Subfields Panel -->
-            <div class="jersey-details-panel" id="editJerseyDetailsPanel" aria-hidden="true" style="margin-top: var(--space-4);">
+            <div class="jersey-details-panel" id="editJerseyDetailsPanel" aria-hidden="true"
+              style="margin-top: var(--space-4);">
               <div class="jersey-panel-header">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path
+                    d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z" />
                 </svg>
                 Jersey Details
               </div>
               <div class="edit-form-grid" style="margin-top: var(--space-3);">
                 <div class="field-group">
-                  <label class="field-label" for="editJerseySize">Jersey Size (Nepal Size) <span class="required-star">*</span></label>
+                  <label class="field-label" for="editJerseySize">Jersey Size (Nepal Size) <span
+                      class="required-star">*</span></label>
                   <select id="editJerseySize" class="field-input field-select">
                     <option value="" disabled>Select size…</option>
                     <option value="XS">XS — Extra Small</option>
@@ -318,7 +354,8 @@
                   <span class="field-error" id="editJerseySizeError" role="alert"></span>
                 </div>
                 <div class="field-group">
-                  <label class="field-label" for="editJerseyNumber">Jersey Number <span class="required-star">*</span></label>
+                  <label class="field-label" for="editJerseyNumber">Jersey Number <span
+                      class="required-star">*</span></label>
                   <input type="number" id="editJerseyNumber" class="field-input" placeholder="e.g. 10" min="1" max="99">
                   <span class="field-error" id="editJerseyNumberError" role="alert"></span>
                 </div>
@@ -332,9 +369,10 @@
           <button type="button" class="btn-primary" id="btnSaveChanges">
             <span id="saveBtnLabel">Save Changes</span>
             <span id="saveBtnSpinner" style="display: none;" class="submit-btn__spinner">
-              <svg class="spinner-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
-                <path d="M12 2a10 10 0 0 1 10 10" stroke="white" stroke-width="3" stroke-linecap="round"/>
+              <svg class="spinner-svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" stroke-width="3" />
+                <path d="M12 2a10 10 0 0 1 10 10" stroke="white" stroke-width="3" stroke-linecap="round" />
               </svg>
               Saving…
             </span>
@@ -352,4 +390,5 @@
   <script type="module" src="members.js"></script>
 
 </body>
+
 </html>

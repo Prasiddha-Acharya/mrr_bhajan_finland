@@ -681,7 +681,7 @@ a:hover { text-decoration: underline; }
 }
 
 .jersey-details-panel.is-open {
-  max-height: 900px;   /* large enough to never clip */
+  max-height: 1800px;   /* large enough to never clip on stacked mobile layouts */
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
@@ -1019,52 +1019,9 @@ a:hover { text-decoration: underline; }
 
   .header-logo { max-width: 280px; }
 
+  /* Collapse the main form into a single column at 768px to ensure spacious, readable inputs */
   .reg-form {
-    padding: var(--space-7) var(--space-6);
-    gap: var(--space-5);
-  }
-
-  /* Side-by-side PIN fields collapse to full width */
-  #fieldPassword,
-  #fieldConfirmPassword {
-    grid-column: span 2;
-  }
-
-  /* Payment card: stack logo + body vertically */
-  .payment-card {
-    flex-direction: column;
-    gap: var(--space-4);
-  }
-
-  .mobilepay-logo { max-height: 38px; }
-
-  .mobilepay-pay-btn {
-    max-width: 100%;
-  }
-}
-
-
-/* ─── Large mobile: 640px and below ───────────────────────── */
-@media (max-width: 640px) {
-  body {
-    padding: var(--space-3) var(--space-3) 0;
-    font-size: 14px;
-  }
-
-  .page-wrapper { max-width: 100%; }
-
-  /* ── Card header ── */
-  .card-header {
-    padding: var(--space-6) var(--space-5) var(--space-6);
-  }
-  .header-logo-wrap { justify-content: center; }
-  .header-logo { max-width: 240px; }
-  .header-title { font-size: clamp(18px, 5vw, 24px); }
-  .header-desc  { font-size: 12.5px; }
-
-  /* ── Form grid → single column ── */
-  .reg-form {
-    padding: var(--space-5) var(--space-4);
+    padding: var(--space-6) var(--space-5);
     gap: var(--space-4);
     grid-template-columns: 1fr;
   }
@@ -1076,28 +1033,6 @@ a:hover { text-decoration: underline; }
   #fieldPassword,
   #fieldConfirmPassword {
     grid-column: span 1;
-  }
-
-  /* ── Inputs: slightly shorter on mobile ── */
-  .field-input {
-    padding: 11px 12px 11px 42px;
-    font-size: 15px;   /* prevents iOS auto-zoom (≥16px is safest, 15 is fine) */
-  }
-
-  select.field-input {
-    padding-left: 42px;
-  }
-
-  /* ── Radio pill groups ── */
-  .radio-pill-group {
-    gap: var(--space-2);
-  }
-
-  .radio-pill {
-    padding: 9px 16px;
-    font-size: 13.5px;
-    flex: 1 1 auto;      /* pills share row evenly */
-    justify-content: center;
   }
 
   /* ── Jersey details panel ── */
@@ -1128,22 +1063,18 @@ a:hover { text-decoration: underline; }
     grid-column: span 1;
   }
 
+  /* Payment card: stack logo + body vertically */
   .payment-card {
     flex-direction: column;
-    padding: var(--space-4);
     gap: var(--space-4);
+    padding: var(--space-4);
   }
 
   .payment-card__header {
     justify-content: center;
   }
 
-  .mobilepay-logo { max-height: 34px; }
-
-  .payment-instructions {
-    font-size: 12.5px;
-    text-align: center;
-  }
+  .mobilepay-logo { max-height: 38px; }
 
   .mobilepay-pay-btn {
     max-width: 100%;
@@ -1160,6 +1091,59 @@ a:hover { text-decoration: underline; }
     width: 100%;
     padding: 14px 20px;
     font-size: 14.5px;
+  }
+}
+
+
+/* ─── Large mobile: 640px and below ───────────────────────── */
+@media (max-width: 640px) {
+  body {
+    padding: var(--space-3) var(--space-3) 0;
+    font-size: 14px;
+  }
+
+  .page-wrapper { max-width: 100%; }
+
+  /* ── Card header ── */
+  .card-header {
+    padding: var(--space-6) var(--space-5) var(--space-6);
+  }
+  .header-logo-wrap { justify-content: center; }
+  .header-logo { max-width: 240px; }
+  .header-title { font-size: clamp(18px, 5vw, 24px); }
+  .header-desc  { font-size: 12.5px; }
+
+  .reg-form {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  /* ── Inputs: slightly shorter on mobile ── */
+  .field-input {
+    padding: 11px 12px 11px 42px;
+    font-size: 15px;   /* prevents iOS auto-zoom */
+  }
+
+  select.field-input {
+    padding-left: 42px;
+  }
+
+  /* ── Radio pill groups ── */
+  .radio-pill-group {
+    gap: var(--space-2);
+  }
+
+  .radio-pill {
+    padding: 9px 16px;
+    font-size: 13.5px;
+    flex: 1 1 auto;      /* pills share row evenly */
+    justify-content: center;
+  }
+
+  .mobilepay-logo { max-height: 34px; }
+
+  .payment-instructions {
+    font-size: 12.5px;
+    text-align: center;
   }
 
   /* ── Success card ── */

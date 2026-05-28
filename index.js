@@ -124,7 +124,7 @@ function updateJerseyPriceInfo() {
     </span>
   `;
   jerseyPriceInfo.style.display = "flex";
-  if (paymentGatewayPanel) paymentGatewayPanel.style.display = "block";
+  if (paymentGatewayPanel) paymentGatewayPanel.style.display = "flex";
 }
 
 document.querySelectorAll('input[name="jerseyType"]').forEach((radio) => {
