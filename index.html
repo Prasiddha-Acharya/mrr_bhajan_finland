@@ -299,6 +299,41 @@
             </div>
             <span class="field-error" id="jerseyTypeError" role="alert" aria-live="polite"></span>
           </div>
+
+          <!-- Jersey Sleeve Type -->
+          <div class="field-group" id="fieldJerseySleeve">
+            <label class="field-label">
+              Sleeve Type
+              <span class="required-star" aria-label="required">*</span>
+            </label>
+            <div class="radio-pill-group" role="radiogroup" aria-describedby="jerseySleeveError">
+
+              <label class="radio-pill" id="radioLabelHalfSleeve">
+                <input type="radio" id="jerseySleeveHalf" name="jerseySleeve" value="half" class="radio-pill__input">
+                <span class="radio-pill__check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+                <span class="radio-pill__text">Half Sleeve</span>
+              </label>
+
+              <label class="radio-pill" id="radioLabelFullSleeve">
+                <input type="radio" id="jerseySleeveFull" name="jerseySleeve" value="full" class="radio-pill__input">
+                <span class="radio-pill__check" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+                <span class="radio-pill__text">Full Sleeve</span>
+              </label>
+
+            </div>
+            <span class="field-error" id="jerseySleeveError" role="alert" aria-live="polite"></span>
+          </div>
+
           <!-- Jersey Size (Nepal Size) -->
           <div class="field-group" id="fieldJerseySize">
             <label class="field-label" for="jerseySize">

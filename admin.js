@@ -259,9 +259,13 @@ function renderAdminGrid(membersList) {
     const isJerseyInterested = member.jersey && member.jersey.interested === true;
     
     if (isJerseyInterested) {
+      const jType = member.jersey.type === "player" ? "Player" : (member.jersey.type === "fan" ? "Fan" : "Jersey");
+      const jSleeve = member.jersey.sleeve === "full" ? "Full-slv" : (member.jersey.sleeve === "half" ? "Half-slv" : "");
+      
       jerseyBadgeHTML = `
         <div class="jersey-pill-badge jersey-pill-badge--yes">
-          <span>Jersey size <strong>${member.jersey.size || "N/A"}</strong></span>
+          <span><strong>${jType}</strong> ${jSleeve ? '('+jSleeve+')' : ''}</span>
+          <span>&nbsp;&#8231;&nbsp; Size <strong>${member.jersey.size || "N/A"}</strong></span>
           <span>&nbsp;&#8231;&nbsp; No. <strong>${member.jersey.number || "—"}</strong></span>
         </div>
       `;
