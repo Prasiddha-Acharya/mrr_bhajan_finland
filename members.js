@@ -264,12 +264,35 @@ function renderMembers(membersList) {
 
     // Jersey Badge HTML
     let jerseyBadgeHTML = "";
+    let paymentBadgeHTML = "";
     if (member.jersey && member.jersey.interested === true) {
       jerseyBadgeHTML = `
         <div class="jersey-pill-badge jersey-pill-badge--yes">
           <span>Jersey Ordered</span>
         </div>
       `;
+
+      // Determine Payment Status
+      const pStatus = member.paymentStatus || "No";
+      let badgeClass = "payment-badge--no";
+      let badgeLabel = "Pending";
+      let badgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+
+      if (pStatus === "Done" || pStatus === "Paid") {
+        badgeClass = "payment-badge--done";
+        badgeLabel = "Done";
+        badgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><polyline points="20 6 9 17 4 12"/></svg>`;
+      }
+      
+      paymentBadgeHTML = `
+        <div class="payment-badge-wrapper" style="margin-top: 8px;">
+          <div class="payment-pill-badge ${badgeClass}">
+            ${badgeIcon}
+            <span>Payment: <strong style="text-transform: capitalize;">${badgeLabel}</strong></span>
+          </div>
+        </div>
+      `;
+
     } else {
       jerseyBadgeHTML = `
         <div class="jersey-pill-badge jersey-pill-badge--no">
@@ -321,6 +344,7 @@ function renderMembers(membersList) {
 
       <div class="jersey-badge-wrapper">
         ${jerseyBadgeHTML}
+        ${paymentBadgeHTML}
       </div>
 
       <div class="update-btn-wrapper">
