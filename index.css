@@ -997,6 +997,144 @@ a:hover { text-decoration: underline; }
 *:focus:not(:focus-visible) { outline: none; }
 
 
+/* ── 18. Footer ───────────────────────────────────────────── */
+.site-footer {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--clr-text-muted);
+  letter-spacing: 0.02em;
+  padding: var(--space-4) var(--space-4) var(--space-6);
+  user-select: none;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;       /* never squish the footer */
+}
+
+.site-footer p {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 7px 20px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 157, 157, 0.22);
+  box-shadow: 0 2px 10px rgba(192, 11, 11, 0.07);
+  white-space: nowrap;
+}
+
+/* ── 19. MobilePay Payment Gateway ─────────────────────────── */
+.payment-gateway-panel {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-3);
+  animation: fadeSlideIn 0.35s var(--ease-out) both;
+}
+
+.payment-gateway-header {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--clr-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.payment-gateway-header svg {
+  color: var(--clr-accent);
+}
+
+.payment-card {
+  background: var(--clr-bg-card);
+  border: 1.5px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  transition: border-color var(--duration-normal) ease, box-shadow var(--duration-normal) ease;
+}
+
+.payment-card:hover {
+  border-color: #5a78ff; /* MobilePay blue */
+  box-shadow: 0 6px 20px rgba(90, 120, 255, 0.08);
+}
+
+.payment-card__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding-bottom: var(--space-4);
+  border-bottom: 1.5px dashed var(--clr-border);
+}
+
+.mobilepay-logo {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+}
+
+.payment-badge {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #1a4f8a;
+  background: #eef5fc;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.payment-instructions {
+  font-size: 13.5px;
+  color: var(--clr-text-secondary);
+  line-height: 1.65;
+  text-align: center;
+}
+
+.mobilepay-pay-btn {
+  display: block;
+  text-align: center;
+  background: #5a78ff;
+  color: white;
+  border-radius: var(--radius-full);
+  padding: 13px 36px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-decoration: none !important;
+  width: 100%;
+  max-width: 280px;
+  margin: var(--space-2) auto 0;
+  transition:
+    background   var(--duration-fast) ease,
+    transform    var(--duration-fast) ease,
+    box-shadow   var(--duration-fast) ease;
+  box-shadow: 0 4px 16px rgba(90, 120, 255, 0.28);
+}
+
+.mobilepay-pay-btn:hover {
+  background: #4768ff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(90, 120, 255, 0.36);
+  color: white !important;
+}
+
+.mobilepay-pay-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(90, 120, 255, 0.22);
+}
+
 /* ── 17. Responsive ───────────────────────────────────────── */
 
 /* ─── Tablet: 768px and below ─────────────────────────────── */
@@ -1108,7 +1246,7 @@ a:hover { text-decoration: underline; }
   .card-header {
     padding: var(--space-6) var(--space-5) var(--space-6);
   }
-  .header-logo-wrap { justify-content: center; }
+  .header-logo-wrap { justify-content: flex-start; }
   .header-logo { max-width: 240px; }
   .header-title { font-size: clamp(18px, 5vw, 24px); }
   .header-desc  { font-size: 12.5px; }
@@ -1282,140 +1420,3 @@ a:hover { text-decoration: underline; }
 
 
 
-/* ── 18. Footer ───────────────────────────────────────────── */
-.site-footer {
-  width: 100%;
-  max-width: 600px;
-  text-align: center;
-  font-size: 12.5px;
-  color: var(--clr-text-muted);
-  letter-spacing: 0.02em;
-  padding: var(--space-4) var(--space-4) var(--space-6);
-  user-select: none;
-  position: relative;
-  z-index: 1;
-  flex-shrink: 0;       /* never squish the footer */
-}
-
-.site-footer p {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  background: rgba(255,255,255,0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 7px 20px;
-  border-radius: var(--radius-full);
-  border: 1px solid rgba(255, 157, 157, 0.22);
-  box-shadow: 0 2px 10px rgba(192, 11, 11, 0.07);
-  white-space: nowrap;
-}
-
-/* ── 19. MobilePay Payment Gateway ─────────────────────────── */
-.payment-gateway-panel {
-  grid-column: span 2;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  margin-top: var(--space-5);
-  margin-bottom: var(--space-3);
-  animation: fadeSlideIn 0.35s var(--ease-out) both;
-}
-
-.payment-gateway-header {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--clr-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.payment-gateway-header svg {
-  color: var(--clr-accent);
-}
-
-.payment-card {
-  background: var(--clr-bg-card);
-  border: 1.5px solid var(--clr-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  transition: border-color var(--duration-normal) ease, box-shadow var(--duration-normal) ease;
-}
-
-.payment-card:hover {
-  border-color: #5a78ff; /* MobilePay blue */
-  box-shadow: 0 6px 20px rgba(90, 120, 255, 0.08);
-}
-
-.payment-card__header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-  padding-bottom: var(--space-4);
-  border-bottom: 1.5px dashed var(--clr-border);
-}
-
-.mobilepay-logo {
-  height: 42px;
-  width: auto;
-  object-fit: contain;
-}
-
-.payment-badge {
-  font-size: 10.5px;
-  font-weight: 600;
-  color: #1a4f8a;
-  background: #eef5fc;
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.payment-instructions {
-  font-size: 13.5px;
-  color: var(--clr-text-secondary);
-  line-height: 1.65;
-  text-align: center;
-}
-
-.mobilepay-pay-btn {
-  display: block;
-  text-align: center;
-  background: #5a78ff;
-  color: white;
-  border-radius: var(--radius-full);
-  padding: 13px 36px;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  text-decoration: none !important;
-  width: 100%;
-  max-width: 280px;
-  margin: var(--space-2) auto 0;
-  transition:
-    background   var(--duration-fast) ease,
-    transform    var(--duration-fast) ease,
-    box-shadow   var(--duration-fast) ease;
-  box-shadow: 0 4px 16px rgba(90, 120, 255, 0.28);
-}
-
-.mobilepay-pay-btn:hover {
-  background: #4768ff;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(90, 120, 255, 0.36);
-  color: white !important;
-}
-
-.mobilepay-pay-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 3px 10px rgba(90, 120, 255, 0.22);
-}
