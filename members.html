@@ -392,6 +392,35 @@
               </div>
             </div>
 
+            <!-- Payment Gateway Section (shown dynamically by JS) -->
+            <div class="payment-gateway-panel" id="editPaymentGatewayPanel" style="display:none; margin-top: 2rem;">
+              <div class="payment-gateway-header">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <line x1="2" y1="10" x2="22" y2="10" />
+                </svg>
+                Complete Payment
+              </div>
+              <div class="payment-card">
+                <div class="payment-card__header">
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/MobilePay_logo.svg/1280px-MobilePay_logo.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=index&amp;utm_content=thumbnail"
+                    alt="MobilePay Logo" class="mobilepay-logo">
+                </div>
+                <div class="payment-card__body">
+                  <p class="payment-instructions">We are using MobilePay as our payment partner. All payments will be
+                    collected through a dedicated MobilePay Box named <strong>&quot;MRR TEAM FINLAND
+                      JERSEY&quot;</strong>
+                    to ensure transparency and fair accounting. After completing your payment in MobilePay, please
+                    return to this page and finish filling out the form to complete your registration.</p>
+                  <a href="https://qr.mobilepay.fi/box/a26a22b5-7c49-47fc-b2d8-ab34f4d1d875/pay-in" id="editMobilePayBtn"
+                    target="_blank" rel="noopener noreferrer" class="mobilepay-pay-btn">
+                    Pay with MobilePay
+                  </a>
+                </div>
+              </div>
+            </div>
           </form>
         </div>
         <div class="modal-footer">

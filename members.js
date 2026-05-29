@@ -114,6 +114,15 @@ const editJerseyDetailsPanel   = document.getElementById("editJerseyDetailsPanel
 const editJerseySizeSelect     = document.getElementById("editJerseySize");
 const editJerseyNumberInput    = document.getElementById("editJerseyNumber");
 const editJerseyNameInput      = document.getElementById("editJerseyName");
+const editPaymentGatewayPanel  = document.getElementById("editPaymentGatewayPanel");
+const editMobilePayBtn         = document.getElementById("editMobilePayBtn");
+
+let editMobilePayClicked = false;
+if (editMobilePayBtn) {
+  editMobilePayBtn.addEventListener("click", () => {
+    editMobilePayClicked = true;
+  });
+}
 
 const btnSaveChanges          = document.getElementById("btnSaveChanges");
 const saveBtnLabel            = document.getElementById("saveBtnLabel");
@@ -541,7 +550,7 @@ function prefillEditForm() {
 
   // 3. Prefill jersey preference
   const jerseyInterested = m.jersey && m.jersey.interested === true;
-  
+  editMobilePayClicked = false; // reset
   if (jerseyInterested) {
     document.getElementById("editJerseyInterestYes").checked = true;
     editJerseyDetailsPanel.classList.add("is-open");
@@ -556,6 +565,12 @@ function prefillEditForm() {
     editJerseySizeSelect.value   = m.jersey.size || "";
     editJerseyNumberInput.value  = m.jersey.number || "";
     editJerseyNameInput.value    = m.jersey.name || "";
+
+    if (editPaymentGatewayPanel && m.paymentStatus !== "Yes") {
+      editPaymentGatewayPanel.style.display = "block";
+    } else if (editPaymentGatewayPanel) {
+      editPaymentGatewayPanel.style.display = "none";
+    }
   } else {
     document.getElementById("editJerseyInterestNo").checked = true;
     editJerseyDetailsPanel.classList.remove("is-open");
@@ -567,6 +582,10 @@ function prefillEditForm() {
     editJerseySizeSelect.value   = "";
     editJerseyNumberInput.value  = "";
     editJerseyNameInput.value    = "";
+
+    if (editPaymentGatewayPanel) {
+      editPaymentGatewayPanel.style.display = "none";
+    }
   }
 }
 
@@ -578,6 +597,9 @@ document.querySelectorAll('input[name="editJerseyInterest"]').forEach((radio) =>
     if (wantsJersey) {
       editJerseyDetailsPanel.classList.add("is-open");
       editJerseyDetailsPanel.setAttribute("aria-hidden", "false");
+      if (selectedMemberData && selectedMemberData.paymentStatus !== "Yes" && editPaymentGatewayPanel) {
+        editPaymentGatewayPanel.style.display = "block";
+      }
     } else {
       editJerseyDetailsPanel.classList.remove("is-open");
       editJerseyDetailsPanel.setAttribute("aria-hidden", "true");
@@ -586,6 +608,9 @@ document.querySelectorAll('input[name="editJerseyInterest"]').forEach((radio) =>
       editJerseySizeSelect.value  = "";
       editJerseyNumberInput.value = "";
       editJerseyNameInput.value   = "";
+      if (editPaymentGatewayPanel) {
+        editPaymentGatewayPanel.style.display = "none";
+      }
     }
   });
 });
@@ -859,11 +884,21 @@ btnSaveChanges.addEventListener("click", async () => {
     // 3. Collect updated data
     const wantsJersey = document.querySelector('input[name="editJerseyInterest"]:checked')?.value === "yes";
     
+    let newPaymentStatus = selectedMemberData.paymentStatus;
+    if (!wantsJersey) {
+      newPaymentStatus = "N/A";
+    } else if (wantsJersey && selectedMemberData.paymentStatus !== "Yes" && editMobilePayClicked) {
+      newPaymentStatus = "Maybe";
+    } else if (wantsJersey && selectedMemberData.paymentStatus === "N/A") {
+      newPaymentStatus = "No";
+    }
+    
     const updatedData = {
       fullName:     editFullNameInput.value.trim(),
       city:         editCityInput.value.trim(),
       phone:        editPhoneInput.value.trim(),
       email:        editEmailInput.value.trim().toLowerCase(),
+      paymentStatus: newPaymentStatus,
       profilePhoto: photoURL,
       jersey: {
         interested: wantsJersey,
