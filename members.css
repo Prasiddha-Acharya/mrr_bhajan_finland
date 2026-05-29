@@ -877,6 +877,20 @@ a:hover { text-decoration: underline; }
     padding: 8px 16px;
     line-height: 1.5;
   }
+  .modal-body {
+    max-height: 80vh;
+    padding: var(--space-4);
+  }
+  .modal-header {
+    padding: var(--space-4);
+  }
+  .modal-footer {
+    padding: var(--space-3) var(--space-4);
+    flex-direction: column-reverse;
+  }
+  .modal-footer button {
+    width: 100%;
+  }
 }
 
 /* ── 12. Footer ───────────────────────────────────────────── */
@@ -1368,7 +1382,7 @@ a:hover { text-decoration: underline; }
 }
 
 .jersey-details-panel.is-open {
-  max-height: 300px;
+  max-height: 1000px;
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
