@@ -91,6 +91,7 @@ const jerseyDetailsPanel = document.getElementById("jerseyDetailsPanel");
 const jerseyPriceInfo = document.getElementById("jerseyPriceInfo");
 const jerseySizeSelect = document.getElementById("jerseySize");
 const jerseyNumberInput = document.getElementById("jerseyNumber");
+const jerseyNameInput = document.getElementById("jerseyName");
 const paymentGatewayPanel = document.getElementById("paymentGatewayPanel");
 const mobilePayBtn = document.getElementById("mobilePayBtn");
 
@@ -249,13 +250,16 @@ document.querySelectorAll('input[name="jerseyInterest"]').forEach((radio) => {
       jerseyDetailsPanel.setAttribute("aria-hidden", "false");
       jerseySizeSelect.required = true;
       jerseyNumberInput.required = true;
+      jerseyNameInput.required = true;
     } else {
       jerseyDetailsPanel.classList.remove("is-open");
       jerseyDetailsPanel.setAttribute("aria-hidden", "true");
       jerseySizeSelect.required = false;
       jerseyNumberInput.required = false;
+      jerseyNameInput.required = false;
       jerseySizeSelect.value = "";
       jerseyNumberInput.value = "";
+      jerseyNameInput.value = "";
       jerseyPriceInfo.style.display = "none";
       jerseyPriceInfo.innerHTML = "";
       if (paymentGatewayPanel) paymentGatewayPanel.style.display = "none";
@@ -264,6 +268,7 @@ document.querySelectorAll('input[name="jerseyInterest"]').forEach((radio) => {
       clearFieldError(document.getElementById("fieldJerseyType"), document.getElementById("jerseyTypeError"));
       clearFieldError(document.getElementById("fieldJerseySize"), document.getElementById("jerseySizeError"));
       clearFieldError(document.getElementById("fieldJerseyNumber"), document.getElementById("jerseyNumberError"));
+      clearFieldError(document.getElementById("fieldJerseyName"), document.getElementById("jerseyNameError"));
     }
   });
 });
@@ -453,6 +458,15 @@ function validateForm() {
     } else {
       setFieldValid(numGroup, numError);
     }
+
+    const nameGroup = document.getElementById("fieldJerseyName");
+    const nameError = document.getElementById("jerseyNameError");
+    if (!jerseyNameInput.value.trim()) {
+      setFieldError(nameGroup, nameError, "Name on jersey is required.");
+      isValid = false;
+    } else {
+      setFieldValid(nameGroup, nameError);
+    }
   }
 
   return isValid;
@@ -540,6 +554,14 @@ jerseyNumberInput.addEventListener("input", () => {
   if (!numGroup.classList.contains("has-error")) return;
   const v = parseInt(jerseyNumberInput.value, 10);
   if (!isNaN(v) && v >= 1 && v <= 99) setFieldValid(numGroup, numError);
+});
+
+/* Live validation for jersey name */
+jerseyNameInput.addEventListener("input", () => {
+  const nameGroup = document.getElementById("fieldJerseyName");
+  const nameError = document.getElementById("jerseyNameError");
+  if (!nameGroup.classList.contains("has-error")) return;
+  if (jerseyNameInput.value.trim()) setFieldValid(nameGroup, nameError);
 });
 
 
@@ -726,6 +748,7 @@ registrationForm.addEventListener("submit", async (e) => {
     const jerseySleeve = jerseyInterested ? getJerseySleeveValue() : null;
     const jerseySize = jerseyInterested ? jerseySizeSelect.value : null;
     const jerseyNumber = jerseyInterested ? parseInt(jerseyNumberInput.value, 10) : null;
+    const jerseyName = jerseyInterested ? jerseyNameInput.value.trim().toUpperCase() : null;
 
     /* 6. Upload profile photo (if provided) */
     let profilePhotoURL = null;
@@ -751,7 +774,8 @@ registrationForm.addEventListener("submit", async (e) => {
         type: jerseyType,             // "player" | "fan" | null
         sleeve: jerseySleeve,         // "half" | "full" | null
         size: jerseySize,             // null if not interested
-        number: jerseyNumber            // null if not interested
+        number: jerseyNumber,           // null if not interested
+        name: jerseyName
       },
       createdAt: currentEditMemberId ? currentEditMemberData.createdAt : serverTimestamp()
     };
@@ -774,7 +798,7 @@ registrationForm.addEventListener("submit", async (e) => {
       const sleeveLabel = jerseySleeve === "full" ? "Full Sleeve" : "Half Sleeve";
       const price = jerseyType === "player" ? "€20" : "€15";
       successJerseyRow.style.display = "flex";
-      successJerseyInfo.textContent = `${typeLabel} (${sleeveLabel}) · ${price} · Size ${jerseySize}, No. ${jerseyNumber}`;
+      successJerseyInfo.textContent = `${typeLabel} (${sleeveLabel}) · ${price} · Size ${jerseySize}, No. ${jerseyNumber}, Name: ${jerseyName}`;
     } else {
       successJerseyRow.style.display = "none";
     }
@@ -801,6 +825,7 @@ registrationForm.addEventListener("submit", async (e) => {
     jerseyDetailsPanel.setAttribute("aria-hidden", "true");
     jerseySizeSelect.required = false;
     jerseyNumberInput.required = false;
+    jerseyNameInput.required = false;
     jerseyPriceInfo.style.display = "none";
     jerseyPriceInfo.innerHTML = "";
     if (paymentGatewayPanel) paymentGatewayPanel.style.display = "none";
