@@ -312,6 +312,57 @@
                 Jersey Details
               </div>
               <div class="edit-form-grid" style="margin-top: var(--space-3);">
+
+                <!-- Jersey Type -->
+                <div class="field-group" id="fieldEditJerseyType">
+                  <label class="field-label">
+                    Jersey Type
+                    <span class="required-star" aria-label="required">*</span>
+                  </label>
+                  <div class="radio-pill-group" role="radiogroup" aria-describedby="editJerseyTypeError">
+                    <label class="radio-pill" id="editRadioLabelPlayer">
+                      <input type="radio" id="editJerseyTypePlayer" name="editJerseyType" value="player" class="radio-pill__input">
+                      <span class="radio-pill__check" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                      </span>
+                      <span class="radio-pill__text">Player Jersey</span>
+                    </label>
+                    <label class="radio-pill" id="editRadioLabelFan">
+                      <input type="radio" id="editJerseyTypeFan" name="editJerseyType" value="fan" class="radio-pill__input">
+                      <span class="radio-pill__check" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                      </span>
+                      <span class="radio-pill__text">Fan Jersey</span>
+                    </label>
+                  </div>
+                  <span class="field-error" id="editJerseyTypeError" role="alert"></span>
+                </div>
+
+                <!-- Jersey Sleeve Type -->
+                <div class="field-group" id="fieldEditJerseySleeve">
+                  <label class="field-label">
+                    Sleeve Type
+                    <span class="required-star" aria-label="required">*</span>
+                  </label>
+                  <div class="radio-pill-group" role="radiogroup" aria-describedby="editJerseySleeveError">
+                    <label class="radio-pill" id="editRadioLabelHalfSleeve">
+                      <input type="radio" id="editJerseySleeveHalf" name="editJerseySleeve" value="half" class="radio-pill__input">
+                      <span class="radio-pill__check" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                      </span>
+                      <span class="radio-pill__text">Half Sleeve</span>
+                    </label>
+                    <label class="radio-pill" id="editRadioLabelFullSleeve">
+                      <input type="radio" id="editJerseySleeveFull" name="editJerseySleeve" value="full" class="radio-pill__input">
+                      <span class="radio-pill__check" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                      </span>
+                      <span class="radio-pill__text">Full Sleeve</span>
+                    </label>
+                  </div>
+                  <span class="field-error" id="editJerseySleeveError" role="alert"></span>
+                </div>
+
                 <div class="field-group">
                   <label class="field-label" for="editJerseySize">Jersey Size (Nepal Size) <span
                       class="required-star">*</span></label>

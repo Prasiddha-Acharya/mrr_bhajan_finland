@@ -319,28 +319,7 @@ function renderMembers(membersList) {
         </div>
       </div>
 
-      <div class="member-details">
-        <div class="detail-item">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-          </svg>
-          <span>City: <strong>${member.city || "Finland"}</strong></span>
-        </div>
 
-        <div class="detail-item">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-          </svg>
-          <a href="${emailMailtoUrl}" title="Email ${member.fullName}">${member.email}</a>
-        </div>
-
-        <div class="detail-item">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.29 6.29l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-          </svg>
-          <a href="${phoneCallUrl}" title="Call ${member.fullName}">${member.phone}</a>
-        </div>
-      </div>
 
       <div class="jersey-badge-wrapper">
         ${jerseyBadgeHTML}
@@ -566,12 +545,23 @@ function prefillEditForm() {
     document.getElementById("editJerseyInterestYes").checked = true;
     editJerseyDetailsPanel.classList.add("is-open");
     editJerseyDetailsPanel.setAttribute("aria-hidden", "false");
+    
+    if (m.jersey.type === "player") document.getElementById("editJerseyTypePlayer").checked = true;
+    else if (m.jersey.type === "fan") document.getElementById("editJerseyTypeFan").checked = true;
+
+    if (m.jersey.sleeve === "full") document.getElementById("editJerseySleeveFull").checked = true;
+    else if (m.jersey.sleeve === "half") document.getElementById("editJerseySleeveHalf").checked = true;
+
     editJerseySizeSelect.value   = m.jersey.size || "";
     editJerseyNumberInput.value  = m.jersey.number || "";
   } else {
     document.getElementById("editJerseyInterestNo").checked = true;
     editJerseyDetailsPanel.classList.remove("is-open");
     editJerseyDetailsPanel.setAttribute("aria-hidden", "true");
+    
+    document.querySelectorAll('input[name="editJerseyType"]').forEach(r => r.checked = false);
+    document.querySelectorAll('input[name="editJerseySleeve"]').forEach(r => r.checked = false);
+    
     editJerseySizeSelect.value   = "";
     editJerseyNumberInput.value  = "";
   }
@@ -588,6 +578,8 @@ document.querySelectorAll('input[name="editJerseyInterest"]').forEach((radio) =>
     } else {
       editJerseyDetailsPanel.classList.remove("is-open");
       editJerseyDetailsPanel.setAttribute("aria-hidden", "true");
+      document.querySelectorAll('input[name="editJerseyType"]').forEach(r => r.checked = false);
+      document.querySelectorAll('input[name="editJerseySleeve"]').forEach(r => r.checked = false);
       editJerseySizeSelect.value  = "";
       editJerseyNumberInput.value = "";
     }
@@ -752,6 +744,24 @@ function validateEditForm() {
   /* Jersey sub-fields (only required when "yes") */
   const editJerseyInterested = document.querySelector('input[name="editJerseyInterest"]:checked')?.value === "yes";
   if (editJerseyInterested) {
+    const typeGroup = document.getElementById("fieldEditJerseyType");
+    const typeError = document.getElementById("editJerseyTypeError");
+    if (!document.querySelector('input[name="editJerseyType"]:checked')) {
+      setFieldError(typeGroup, typeError, "Select a jersey type.");
+      isValid = false;
+    } else {
+      setFieldValid(typeGroup, typeError);
+    }
+
+    const sleeveGroup = document.getElementById("fieldEditJerseySleeve");
+    const sleeveError = document.getElementById("editJerseySleeveError");
+    if (!document.querySelector('input[name="editJerseySleeve"]:checked')) {
+      setFieldError(sleeveGroup, sleeveError, "Select a sleeve type.");
+      isValid = false;
+    } else {
+      setFieldValid(sleeveGroup, sleeveError);
+    }
+
     const sizeGroup = editJerseySizeSelect.closest(".field-group");
     const sizeError = document.getElementById("editJerseySizeError");
     if (!editJerseySizeSelect.value) {
@@ -844,6 +854,8 @@ btnSaveChanges.addEventListener("click", async () => {
       profilePhoto: photoURL,
       jersey: {
         interested: wantsJersey,
+        type:       wantsJersey ? (document.querySelector('input[name="editJerseyType"]:checked')?.value || null) : null,
+        sleeve:     wantsJersey ? (document.querySelector('input[name="editJerseySleeve"]:checked')?.value || null) : null,
         size:       wantsJersey ? editJerseySizeSelect.value   : null,
         number:     wantsJersey ? parseInt(editJerseyNumberInput.value, 10) : null
       }

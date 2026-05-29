@@ -742,6 +742,13 @@ function prefillEditForm() {
     document.getElementById("editJerseyInterestYes").checked = true;
     editJerseyDetailsPanel.classList.add("is-open");
     editJerseyDetailsPanel.setAttribute("aria-hidden", "false");
+    
+    if (m.jersey.type === "player") document.getElementById("editJerseyTypePlayer").checked = true;
+    else if (m.jersey.type === "fan") document.getElementById("editJerseyTypeFan").checked = true;
+
+    if (m.jersey.sleeve === "full") document.getElementById("editJerseySleeveFull").checked = true;
+    else if (m.jersey.sleeve === "half") document.getElementById("editJerseySleeveHalf").checked = true;
+
     editJerseySizeSelect.value   = m.jersey.size || "";
     editJerseyNumberInput.value  = m.jersey.number || "";
     
@@ -752,6 +759,10 @@ function prefillEditForm() {
     document.getElementById("editJerseyInterestNo").checked = true;
     editJerseyDetailsPanel.classList.remove("is-open");
     editJerseyDetailsPanel.setAttribute("aria-hidden", "true");
+    
+    document.querySelectorAll('input[name="editJerseyType"]').forEach(r => r.checked = false);
+    document.querySelectorAll('input[name="editJerseySleeve"]').forEach(r => r.checked = false);
+    
     editJerseySizeSelect.value   = "";
     editJerseyNumberInput.value  = "";
     
@@ -775,6 +786,8 @@ document.querySelectorAll('input[name="editJerseyInterest"]').forEach((radio) =>
     } else {
       editJerseyDetailsPanel.classList.remove("is-open");
       editJerseyDetailsPanel.setAttribute("aria-hidden", "true");
+      document.querySelectorAll('input[name="editJerseyType"]').forEach(r => r.checked = false);
+      document.querySelectorAll('input[name="editJerseySleeve"]').forEach(r => r.checked = false);
       editJerseySizeSelect.value  = "";
       editJerseyNumberInput.value = "";
       if (editPaymentStatusSelect) {
@@ -930,6 +943,24 @@ function validateEditForm() {
 
   const editJerseyInterested = document.querySelector('input[name="editJerseyInterest"]:checked')?.value === "yes";
   if (editJerseyInterested) {
+    const typeGroup = document.getElementById("fieldEditJerseyType");
+    const typeError = document.getElementById("editJerseyTypeError");
+    if (!document.querySelector('input[name="editJerseyType"]:checked')) {
+      setFieldError(typeGroup, typeError, "Select a jersey type.");
+      isValid = false;
+    } else {
+      setFieldValid(typeGroup, typeError);
+    }
+
+    const sleeveGroup = document.getElementById("fieldEditJerseySleeve");
+    const sleeveError = document.getElementById("editJerseySleeveError");
+    if (!document.querySelector('input[name="editJerseySleeve"]:checked')) {
+      setFieldError(sleeveGroup, sleeveError, "Select a sleeve type.");
+      isValid = false;
+    } else {
+      setFieldValid(sleeveGroup, sleeveError);
+    }
+
     const sizeGroup = editJerseySizeSelect.closest(".field-group");
     const sizeError = document.getElementById("editJerseySizeError");
     if (!editJerseySizeSelect.value) {
@@ -1012,6 +1043,8 @@ btnSaveChanges.addEventListener("click", async () => {
       paymentStatus: wantsJersey ? (editPaymentStatusSelect ? editPaymentStatusSelect.value : "No") : "N/A",
       jersey: {
         interested: wantsJersey,
+        type:       wantsJersey ? (document.querySelector('input[name="editJerseyType"]:checked')?.value || null) : null,
+        sleeve:     wantsJersey ? (document.querySelector('input[name="editJerseySleeve"]:checked')?.value || null) : null,
         size:       wantsJersey ? editJerseySizeSelect.value   : null,
         number:     wantsJersey ? parseInt(editJerseyNumberInput.value, 10) : null
       }
