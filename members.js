@@ -88,7 +88,7 @@ const btnGateSubmit       = document.getElementById("btnGateSubmit");
 const editModal           = document.getElementById("editModal");
 const phaseVerify         = document.getElementById("phaseVerify");
 const phaseEdit           = document.getElementById("phaseEdit");
-const verifyMemberName    = document.getElementById("verifyMemberName");
+
 const verifyPinCodeInput = document.getElementById("verifyPinCode");
 const verifyPinCodeError = document.getElementById("verifyPinCodeError");
 
@@ -247,7 +247,7 @@ function renderMembers(membersList) {
     // Avatar HTML: check if profile photo exists
     let avatarHTML = "";
     if (member.profilePhoto) {
-      avatarHTML = `<img src="${member.profilePhoto}" alt="${member.fullName}" class="avatar-img">`;
+      avatarHTML = `<img src="${member.profilePhoto}" alt="Member Avatar" class="avatar-img">`;
     } else {
       avatarHTML = `
         <div class="avatar-placeholder" aria-hidden="true">
@@ -308,7 +308,7 @@ function renderMembers(membersList) {
           ${avatarHTML}
         </div>
         <div class="member-title-area">
-          <h2 class="member-name" title="${member.fullName}">${member.fullName}</h2>
+          <h2 class="member-name" title="MRR Member">MRR Member</h2>
           <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
             <span class="member-id-badge" style="margin-top: 0;">${member.memberId || "MRRR-FIN"}</span>
             <span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 9999px; background: rgba(16, 185, 129, 0.1); color: #10b981; font-size: 11.5px; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.2);">
@@ -319,7 +319,14 @@ function renderMembers(membersList) {
         </div>
       </div>
 
-
+      <div class="member-details">
+        <div class="detail-item">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span>City: <strong>${member.city || "Finland"}</strong></span>
+        </div>
+      </div>
 
       <div class="jersey-badge-wrapper">
         ${jerseyBadgeHTML}
@@ -327,11 +334,12 @@ function renderMembers(membersList) {
       </div>
 
       <div class="update-btn-wrapper">
-        <button type="button" class="update-btn" data-id="${member.id}" aria-label="Update Information for ${member.fullName}">
+        <button type="button" class="update-btn" data-id="${member.id}" aria-label="View Details for Member">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
           </svg>
-          Update Information
+          View Details
         </button>
       </div>
 
@@ -442,8 +450,7 @@ function attachUpdateClickHandlers() {
       
       if (!selectedMemberData) return;
 
-      // Prefill names for verify challenge
-      verifyMemberName.textContent = selectedMemberData.fullName;
+      // Prefill verify challenge (name removed to maintain privacy)
       verifyPinCodeInput.value = "";
       verifyPinCodeError.textContent = "";
 
