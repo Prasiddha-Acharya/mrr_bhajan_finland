@@ -247,7 +247,7 @@ function renderMembers(membersList) {
     // Avatar HTML: check if profile photo exists
     let avatarHTML = "";
     if (member.profilePhoto) {
-      avatarHTML = `<img src="${member.profilePhoto}" alt="Member Avatar" class="avatar-img">`;
+      avatarHTML = `<img src="${member.profilePhoto}" alt="${member.fullName}" class="avatar-img">`;
     } else {
       avatarHTML = `
         <div class="avatar-placeholder" aria-hidden="true">
@@ -308,7 +308,7 @@ function renderMembers(membersList) {
           ${avatarHTML}
         </div>
         <div class="member-title-area">
-          <h2 class="member-name" title="MRR Member">MRR Member</h2>
+          <h2 class="member-name" title="${member.fullName}">${member.fullName}</h2>
           <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
             <span class="member-id-badge" style="margin-top: 0;">${member.memberId || "MRRR-FIN"}</span>
             <span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 9999px; background: rgba(16, 185, 129, 0.1); color: #10b981; font-size: 11.5px; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.2);">
