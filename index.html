@@ -53,9 +53,9 @@
         <div class="header-divider" aria-hidden="true"></div>
         <p class="header-desc">Fill in the details below to join our community. All fields marked with <span
             class="required-star">*</span> are required.</p>
-        <!--  <div class="header-login-prompt">
-          Already a member? <button type="button" id="openLoginModalBtn" class="login-text-btn">Login here</button>
-        </div>-->
+        <div class="header-login-prompt">
+          Already registered? <button type="button" id="openLoginModalBtn" class="login-text-btn">Login here</button>
+        </div>
       </div>
 
       <!-- Registration Form -->
@@ -151,8 +151,8 @@
                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
             </span>
-            <input type="password" id="pinCode" name="pinCode" class="field-input pin-input" placeholder="••••"
-              required inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password"
+            <input type="password" id="pinCode" name="pinCode" class="field-input pin-input" placeholder="••••" required
+              inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="new-password"
               aria-describedby="pinCodeError pinCodeHint">
           </div>
           <span class="field-hint" id="pinCodeHint">You'll need this pin in future if you
@@ -462,7 +462,7 @@
         activated soon...</p>
       <p class="success-update-text"
         style="font-size: 13.5px; color: var(--clr-text-secondary); margin-top: -12px; margin-bottom: var(--space-6); line-height: 1.5;">
-        If you want to edit or update your information, <a href="members.html"
+        If you want to edit or update your information, <a href="/members"
           style="color: var(--clr-accent); font-weight: 600; text-decoration: underline;">click here to update</a>.
       </p>
 
@@ -543,8 +543,7 @@
             </span>
             <input type="password" id="loginPin" class="field-input pin-input" placeholder="••••" inputmode="numeric"
               pattern="[0-9]{4}" maxlength="4" aria-describedby="loginPinError">
-            <button type="button" class="password-toggle-btn" id="toggleLoginPin" aria-label="Show PIN"
-              tabindex="-1">
+            <button type="button" class="password-toggle-btn" id="toggleLoginPin" aria-label="Show PIN" tabindex="-1">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />

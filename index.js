@@ -99,13 +99,13 @@ const openLoginModalBtn = document.getElementById("openLoginModalBtn");
 const loginModal = document.getElementById("loginModal");
 const closeLoginModalBtn = document.getElementById("closeLoginModalBtn");
 const loginEmailInput = document.getElementById("loginEmail");
-const modalPinCodeInput = document.getElementById("modalPinCode");
+const modalPinCodeInput = document.getElementById("loginPin");
 const toggleLoginPinBtn = document.getElementById("toggleLoginPin");
 const loginSubmitBtn = document.getElementById("loginSubmitBtn");
 const loginSubmitBtnLabel = document.getElementById("loginSubmitBtnLabel");
 const loginSubmitBtnSpinner = document.getElementById("loginSubmitBtnSpinner");
 const loginEmailError = document.getElementById("loginEmailError");
-const modalPinCodeError = document.getElementById("modalPinCodeError");
+const modalPinCodeError = document.getElementById("loginPinError");
 
 /* Edit Mode State */
 let currentEditMemberId = null;
