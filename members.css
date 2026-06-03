@@ -257,7 +257,7 @@ a:hover { text-decoration: underline; }
 /* ── 6. Statistics Grid ───────────────────────────────────── */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--space-4);
 }
 
@@ -987,7 +987,8 @@ a:hover { text-decoration: underline; }
   border: 1px solid rgba(255, 157, 157, 0.25);
   box-shadow: var(--shadow-xl);
   width: 100%;
-  max-width: 580px;
+  max-width: 600px;
+  max-height: 92vh;
   overflow: hidden;
   transform: translateY(24px) scale(0.97);
   transition:
@@ -1034,7 +1035,8 @@ a:hover { text-decoration: underline; }
 
 .modal-body {
   padding: var(--space-6);
-  max-height: 68vh;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   /* Custom scrollbar for premium feel */
   scrollbar-width: thin;
@@ -1072,10 +1074,64 @@ a:hover { text-decoration: underline; }
   gap: var(--space-4);
 }
 
-@media (max-width: 520px) {
+/* Modal form grid — collapses to 1 col below 580px */
+@media (max-width: 580px) {
   .edit-form-grid {
     grid-template-columns: 1fr;
     gap: var(--space-3);
+  }
+}
+
+/* ── Modal small-screen responsive ─────────────────────────── */
+@media (max-width: 640px) {
+  .edit-modal-backdrop {
+    padding: var(--space-2);
+    align-items: flex-end;    /* sheet slides up from bottom */
+  }
+
+  .modal-card {
+    max-width: 100%;
+    max-height: 94vh;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    transform: translateY(100%);
+  }
+
+  .edit-modal-backdrop.is-open .modal-card {
+    transform: translateY(0);
+  }
+
+  .modal-header {
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .modal-title {
+    font-size: 16px;
+  }
+
+  .modal-body {
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .modal-footer {
+    padding: var(--space-3) var(--space-5);
+    flex-direction: column-reverse;
+    gap: var(--space-2);
+  }
+
+  .modal-footer button {
+    width: 100%;
+  }
+
+  /* Radio pills wrap gracefully */
+  .radio-pill-group {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .radio-pill {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
   }
 }
 

@@ -262,6 +262,38 @@
           <span class="stat-number" id="countActive">—</span>
         </div>
       </div>
+
+      <div class="stat-card" id="statAdminPaymentDone">
+        <div class="stat-icon" aria-hidden="true"
+          style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); color: #059669;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <line x1="2" y1="10" x2="22" y2="10" />
+            <polyline points="6 15 9 18 14 13" />
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Payment Done</span>
+          <span class="stat-number" id="countAdminPaymentDone" style="color:#059669;">—</span>
+        </div>
+      </div>
+
+      <div class="stat-card" id="statAdminPaymentPending">
+        <div class="stat-icon" aria-hidden="true"
+          style="background: linear-gradient(135deg, #fef2f2, #fee2e2); color: #dc2626;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <line x1="2" y1="10" x2="22" y2="10" />
+            <circle cx="12" cy="15" r="1.5" />
+          </svg>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Payment Pending</span>
+          <span class="stat-number" id="countAdminPaymentPending" style="color:#dc2626;">—</span>
+        </div>
+      </div>
     </section>
 
     <!-- Admin View Switcher Tabs -->
@@ -298,6 +330,17 @@
             <option value="oldest">Oldest First</option>
             <option value="nameAsc">Name: A to Z</option>
             <option value="nameDesc">Name: Z to A</option>
+          </select>
+        </div>
+
+        <!-- Jersey / Payment Filter Control -->
+        <div class="select-wrapper">
+          <select id="adminJerseyFilterControl" class="filter-select" aria-label="Filter by jersey or payment">
+            <option value="all">All Members</option>
+            <option value="ordered">Jersey Ordered</option>
+            <option value="payment_done">Jersey Payment Done</option>
+            <option value="payment_pending">Jersey Payment Pending</option>
+            <option value="none">No Jersey</option>
           </select>
         </div>
       </div>
@@ -467,21 +510,62 @@
                 </label>
                 <div class="radio-pill-group" role="radiogroup" aria-describedby="editJerseyTypeError">
                   <label class="radio-pill" id="editRadioLabelPlayer">
-                    <input type="radio" id="editJerseyTypePlayer" name="editJerseyType" value="player" class="radio-pill__input">
+                    <input type="radio" id="editJerseyTypePlayer" name="editJerseyType" value="player"
+                      class="radio-pill__input">
                     <span class="radio-pill__check" aria-hidden="true">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </span>
                     <span class="radio-pill__text">Player Jersey</span>
                   </label>
                   <label class="radio-pill" id="editRadioLabelFan">
-                    <input type="radio" id="editJerseyTypeFan" name="editJerseyType" value="fan" class="radio-pill__input">
+                    <input type="radio" id="editJerseyTypeFan" name="editJerseyType" value="fan"
+                      class="radio-pill__input">
                     <span class="radio-pill__check" aria-hidden="true">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </span>
                     <span class="radio-pill__text">Fan Jersey</span>
                   </label>
                 </div>
                 <span class="field-error" id="editJerseyTypeError" role="alert"></span>
+              </div>
+
+              <!-- Jersey Style -->
+              <div class="field-group" id="fieldEditJerseyStyle">
+                <label class="field-label">
+                  Jersey Style
+                  <span class="required-star" aria-label="required">*</span>
+                </label>
+                <div class="radio-pill-group" role="radiogroup" aria-describedby="editJerseyStyleError">
+                  <label class="radio-pill" id="editRadioLabelButtonCollar">
+                    <input type="radio" id="editJerseyStyleButtonCollar" name="editJerseyStyle" value="button_collar"
+                      class="radio-pill__input">
+                    <span class="radio-pill__check" aria-hidden="true">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <span class="radio-pill__text">Button Collar</span>
+                  </label>
+                  <label class="radio-pill" id="editRadioLabelPlainNeck">
+                    <input type="radio" id="editJerseyStylePlainNeck" name="editJerseyStyle" value="plain_neck"
+                      class="radio-pill__input">
+                    <span class="radio-pill__check" aria-hidden="true">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                    <span class="radio-pill__text">Plain Neck</span>
+                  </label>
+                </div>
+                <span class="field-error" id="editJerseyStyleError" role="alert"></span>
               </div>
 
               <!-- Jersey Sleeve Type -->
@@ -492,16 +576,24 @@
                 </label>
                 <div class="radio-pill-group" role="radiogroup" aria-describedby="editJerseySleeveError">
                   <label class="radio-pill" id="editRadioLabelHalfSleeve">
-                    <input type="radio" id="editJerseySleeveHalf" name="editJerseySleeve" value="half" class="radio-pill__input">
+                    <input type="radio" id="editJerseySleeveHalf" name="editJerseySleeve" value="half"
+                      class="radio-pill__input">
                     <span class="radio-pill__check" aria-hidden="true">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </span>
                     <span class="radio-pill__text">Half Sleeve</span>
                   </label>
                   <label class="radio-pill" id="editRadioLabelFullSleeve">
-                    <input type="radio" id="editJerseySleeveFull" name="editJerseySleeve" value="full" class="radio-pill__input">
+                    <input type="radio" id="editJerseySleeveFull" name="editJerseySleeve" value="full"
+                      class="radio-pill__input">
                     <span class="radio-pill__check" aria-hidden="true">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
                     </span>
                     <span class="radio-pill__text">Full Sleeve</span>
                   </label>
