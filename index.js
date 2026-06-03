@@ -68,6 +68,7 @@ async function hashPin(pin) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+
 /* ── DOM References ───────────────────────────────────────── */
 const formCard = document.getElementById("formCard");
 const successCard = document.getElementById("successCard");
@@ -805,7 +806,7 @@ registrationForm.addEventListener("submit", async (e) => {
       phone,
       email,
       pin,                                 // 4-digit PIN for future updates
-      profilePhoto: profilePhotoURL || (currentEditMemberId ? currentEditMemberData.profilePhoto : null),   
+      profilePhoto: profilePhotoURL || (currentEditMemberId ? currentEditMemberData.profilePhoto : null),
       membershipStatus: currentEditMemberId ? currentEditMemberData.membershipStatus : "Pending",
       paymentStatus: currentEditMemberId ? currentEditMemberData.paymentStatus : (jerseyInterested ? (mobilePayClicked ? "Maybe" : "No") : "N/A"),
       jersey: {
@@ -963,7 +964,7 @@ if (loginSubmitBtn) {
     const pin = modalPinCodeInput.value;
     const emailGroup = document.getElementById("loginFieldEmail");
     const pinGroup = document.getElementById("loginFieldPin");
-    
+
     let valid = true;
     if (!email || !EMAIL_REGEX.test(email)) {
       setFieldError(emailGroup, loginEmailError, "Enter a valid email address.");
@@ -971,42 +972,42 @@ if (loginSubmitBtn) {
     } else {
       setFieldValid(emailGroup, loginEmailError);
     }
-    
+
     if (!pin || !/^[0-9]{4}$/.test(pin)) {
       setFieldError(pinGroup, modalPinCodeError, "PIN must be exactly 4 numeric digits.");
       valid = false;
     } else {
       setFieldValid(pinGroup, modalPinCodeError);
     }
-    
+
     if (!valid) return;
-    
+
     // Auth
     loginSubmitBtn.disabled = true;
     loginSubmitBtnLabel.style.display = "none";
     loginSubmitBtnSpinner.style.display = "flex";
-    
+
     try {
       const q = query(collection(db, MEMBERS_COLLECTION), where("email", "==", email), limit(1));
       const snap = await getDocs(q);
-      
+
       if (snap.empty) {
         setFieldError(emailGroup, loginEmailError, "No member found with this email.");
         return;
       }
-      
+
       const memberDoc = snap.docs[0];
       const data = memberDoc.data();
-      
+
       if (data.pin !== await hashPin(pin)) {
         setFieldError(pinGroup, modalPinCodeError, "Incorrect PIN.");
         return;
       }
-      
+
       // Success! Enter Edit Mode
       currentEditMemberId = memberDoc.id;
       currentEditMemberData = data;
-      
+
       // Populate Form
       fullNameInput.value = data.fullName || "";
       cityInput.value = data.city || "";
@@ -1014,7 +1015,7 @@ if (loginSubmitBtn) {
       emailInput.value = data.email || "";
       pinCodeInput.value = "";
       confirmPinCodeInput.value = "";
-      
+
       // Validate inputs natively
       fullNameInput.dispatchEvent(new Event('input'));
       cityInput.dispatchEvent(new Event('input'));
@@ -1022,38 +1023,38 @@ if (loginSubmitBtn) {
       emailInput.dispatchEvent(new Event('input'));
       pinCodeInput.dispatchEvent(new Event('input'));
       confirmPinCodeInput.dispatchEvent(new Event('input'));
-      
+
       // Jersey Logic
       if (data.jersey && data.jersey.interested) {
         // SCENARIO A: Already registered for a jersey
         // Close modal
         loginModal.style.display = "none";
-        
+
         // Hide form and show success card with custom message
         formCard.style.display = "none";
         successCard.style.display = "block";
-        
+
         const successTitle = document.querySelector(".success-title");
         const successDesc = document.querySelector(".success-desc");
-        
+
         if (successTitle) successTitle.textContent = "Nothing to do for now!";
         if (successDesc) successDesc.innerHTML = "Everything is filled already. You have successfully completed your details and selected your jersey preference.";
-        
+
         successMemberId.textContent = data.memberId || "";
         successName.textContent = data.fullName || "";
-        
-        const typeLabel  = data.jersey.type === "player" ? "Player Jersey" : "Fan Jersey";
+
+        const typeLabel = data.jersey.type === "player" ? "Player Jersey" : "Fan Jersey";
         const styleLabel = data.jersey.style === "button_collar" ? "Button Collar" : (data.jersey.style === "plain_neck" ? "Plain Neck" : (data.jersey.type === "player" ? "Button Collar" : "Plain Neck"));
         const sleeveLabel = data.jersey.sleeve === "full" ? "Full Sleeve" : "Half Sleeve";
         const price = data.jersey.type === "player" ? "€20" : "€15";
         successJerseyRow.style.display = "flex";
         successJerseyInfo.textContent = `${typeLabel} · ${styleLabel} · ${sleeveLabel} · ${price} · Size ${data.jersey.size}, No. ${data.jersey.number}`;
-        
+
         // Ensure spinner resets since we return early
         loginSubmitBtn.disabled = false;
         loginSubmitBtnLabel.style.display = "flex";
         loginSubmitBtnSpinner.style.display = "none";
-        return; 
+        return;
       } else {
         // SCENARIO B: Registered but no jersey preference yet
         // Hide the top information form fields
@@ -1064,13 +1065,13 @@ if (loginSubmitBtn) {
         document.getElementById("fieldPinCode").style.display = "none";
         document.getElementById("fieldConfirmPinCode").style.display = "none";
         document.getElementById("fieldPhoto").style.display = "none";
-        
+
         const loginPrompt = document.querySelector(".header-login-prompt");
         if (loginPrompt) loginPrompt.style.display = "none";
-        
+
         const headerDesc = document.querySelector(".header-desc");
         if (headerDesc) headerDesc.innerHTML = "Please select your jersey preference below to complete your order.";
-        
+
         // Ensure jersey is unselected initially (so they have to select "Yes")
         if (data.jersey) {
           if (data.jersey.type === "player") document.getElementById("jerseyTypePlayer").checked = true;
@@ -1089,13 +1090,13 @@ if (loginSubmitBtn) {
 
           if (data.jersey.sleeve === "full") document.getElementById("jerseySleeveFull").checked = true;
           else if (data.jersey.sleeve === "half") document.getElementById("jerseySleeveHalf").checked = true;
-          
+
           jerseySizeSelect.value = data.jersey.size || "";
         }
         document.getElementById("jerseyInterestNo").checked = true;
         document.getElementById("jerseyInterestYes").checked = false;
         document.getElementById("jerseyInterestNo").dispatchEvent(new Event("change"));
-        
+
         // Change Submit button text
         submitBtnLabel.innerHTML = `
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1103,13 +1104,13 @@ if (loginSubmitBtn) {
           </svg>
           Confirm Jersey Selection
         `;
-        
+
         // Close modal & scroll to top
         loginModal.style.display = "none";
         showToast("Identity verified! Please select your jersey preference below.", "success", 6000);
         formCard.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-      
+
     } catch (err) {
       console.error("Login error:", err);
       showToast("Authentication failed. Please try again.", "error");
