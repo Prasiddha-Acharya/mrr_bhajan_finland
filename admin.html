@@ -17,6 +17,54 @@
 
   <!-- Add custom admin layout and action styles -->
   <style>
+    .download-btn-group {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-5);
+      grid-column: span 2;
+    }
+
+    .btn-download-excel {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform var(--duration-fast) var(--ease-out),
+                  box-shadow var(--duration-fast) var(--ease-out),
+                  opacity var(--duration-fast) ease;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .btn-download-excel--summary {
+      background: linear-gradient(135deg, #0369a1, #38bdf8);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.28);
+    }
+
+    .btn-download-excel--summary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 20px rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-download-excel:active {
+      transform: translateY(0);
+    }
+
+    .btn-download-excel:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
     .admin-tabs {
       display: flex;
       gap: var(--space-3);
@@ -305,6 +353,18 @@
       <button type="button" class="admin-tab active" id="tabActive" role="tab" aria-selected="true"
         aria-controls="membersGrid">
         Active Members
+      </button>
+    </div>
+
+    <!-- Excel Download Buttons -->
+    <div class="download-btn-group" role="group" aria-label="Download jersey data as Excel">
+      <button type="button" class="btn-download-excel btn-download-excel--summary" id="btnDownloadSummaryExcel">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Download Jersey Order Sheet
       </button>
     </div>
 

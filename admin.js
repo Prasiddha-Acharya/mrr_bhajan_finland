@@ -1213,9 +1213,200 @@ function setupGateListeners() {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   JERSEY ORDER SHEET — BEAUTIFUL EXCEL DOWNLOAD
+   ═══════════════════════════════════════════════════════════ */
+
+/**
+ * Generates a beautifully styled Excel (.xls) file using the
+ * HTML-table-to-Excel technique. Excel and LibreOffice Calc
+ * both open this format and render the inline CSS colours,
+ * fonts, borders, and widths natively.
+ *
+ * Columns: #  |  Full Name  |  Track  |  Jersey Style  |
+ *          Sleeve  |  Size  |  Jersey No.  |  Name on Jersey
+ */
+function downloadJerseySummaryExcel() {
+  const jerseyMembers = activeMembers.filter(
+    m => m.jersey && m.jersey.interested === true
+  );
+
+  if (jerseyMembers.length === 0) {
+    showToast("No active members with jersey orders found.", "error");
+    return;
+  }
+
+  /* ── Colour palette (MRR brand) ─────────────────────────── */
+  const C = {
+    headerBg:     "#8a0505",   // MRR red — column header (solid fallback)
+    headerText:   "#ffffff",
+    titleGrad:    "linear-gradient(135deg, #8a0505 0%, #c00b0b 45%, #e51111 75%, #f83232 100%)",
+    titleText:    "#ffffff",
+    rowEven:      "#ffffff",
+    rowOdd:       "#fff5f5",   // very light blush alternate row
+    border:       "#e8c5c5",
+    trackYesBg:   "#dcfce7",   // green tint  — Player jersey (Track=Yes)
+    trackYesFg:   "#14532d",
+    trackNoBg:    "#fef9c3",   // amber tint  — Fan jersey   (Track=No)
+    trackNoFg:    "#78350f",
+    seqFg:        "#9b1c1c",   // row index number
+    nameFg:       "#1e3a8a",   // name on jersey — deep navy
+    styleFg:      "#6b21a8",   // jersey style — purple
+    sleeveFg:     "#0f766e",   // sleeve — teal
+    sizeFg:       "#1e40af",   // size — blue
+    numFg:        "#1e40af",   // jersey number — blue
+    sizeBg:       "#eff6ff",
+    fullNameFg:   "#1e293b",   // full name — dark slate
+  };
+
+  /* ── Header cell style ───────────────────────────────────── */
+  const headerCell = "font-family:'Segoe UI',Arial,sans-serif; font-size:11pt; font-weight:bold; vertical-align:middle; padding:8px 12px; text-align:center; background:#8a0505; color:#ffffff; border:1.5px solid #5a0000;";
+
+  /* ── Build data rows ────────────────────────────────────── */
+  const now      = new Date();
+  const fileDate = now.toISOString().slice(0, 10);
+
+  const dataRows = jerseyMembers.map((m, i) => {
+    const isPlayer = m.jersey.type === "player";
+    const track    = isPlayer ? "Yes" : "No";
+    // Alternating row background — white vs visible blush
+    const rowBg   = i % 2 === 0 ? "#ffffff" : "#fde8e8";
+
+    const jerseyStyle = m.jersey.style === "button_collar" ? "Button Collar"
+                      : m.jersey.style === "plain_neck"    ? "Plain Neck"
+                      : isPlayer                           ? "Button Collar"
+                      : "Plain Neck";
+
+    const sleeve = m.jersey.sleeve === "full" ? "Full Sleeve"
+                 : m.jersey.sleeve === "half" ? "Half Sleeve"
+                 : "—";
+
+    const jerseyName = (m.jersey.name && m.jersey.name.trim())
+      ? m.jersey.name.trim().toUpperCase()
+      : (m.fullName ? m.fullName.trim().split(/\s+/)[0].toUpperCase() : "—");
+
+    // Per-row background — white vs. visible blush
+    const B  = rowBg;  // shorthand
+    const BD = "border:1px solid #e0b4b4;";
+    const FN = "font-family:'Segoe UI',Arial,sans-serif;";
+    const PA = "padding:7px 11px;";
+    const VM = "vertical-align:middle;";
+
+    // Track cell colours
+    const trackBg = isPlayer ? "#d1fae5" : "#fef3c7";
+    const trackFg = isPlayer ? "#065f46" : "#92400e";
+
+    // Size/Number cell
+    const numBg = "#dbeafe";
+
+    return `
+      <tr>
+        <td style="${FN} ${BD} ${PA} ${VM} background:${B}; color:#b91c1c; font-weight:800; font-size:12pt; text-align:center; width:36px;">${i + 1}</td>
+        <td style="${FN} ${BD} ${PA} ${VM} background:${B}; color:#0f172a; font-weight:700; font-size:11pt; min-width:160px;">${m.fullName || "—"}</td>
+        <td style="${FN} ${BD} ${PA} ${VM} background:${trackBg}; color:${trackFg}; font-weight:800; font-size:12pt; text-align:center; width:58px;">${track}</td>
+        <td style="${FN} ${BD} ${PA} ${VM} background:${B}; color:#6d28d9; font-weight:700; font-size:11pt; text-align:center; min-width:120px;">${jerseyStyle}</td>
+        <td style="${FN} ${BD} ${PA} ${VM} background:${B}; color:#0f766e; font-weight:700; font-size:11pt; text-align:center; min-width:100px;">${sleeve}</td>
+        <td style="${FN} ${BD} ${PA} ${VM} background:${numBg}; color:#1e40af; font-weight:800; font-size:12pt; text-align:center; width:54px;">${m.jersey.size || "—"}</td>
+        <td style="${FN} ${BD} ${PA} ${VM} background:${numBg}; color:#1e40af; font-weight:800; font-size:12pt; text-align:center; width:54px;">${m.jersey.number || "—"}</td>
+        <td style="${FN} ${BD} ${PA} ${VM} background:${B}; color:#9f1239; font-weight:800; font-size:12pt; letter-spacing:1.5px; min-width:130px;">${jerseyName}</td>
+      </tr>`;
+  }).join("\n");
+
+  /* ── Full HTML document ─────────────────────────────────── */
+  const html = `
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:x="urn:schemas-microsoft-com:office:excel">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <!--[if gte mso 9]><xml>
+    <x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+      <x:Name>Jersey Orders</x:Name>
+      <x:WorksheetOptions>
+        <x:FreezePanes/>
+        <x:FrozenNoSplit/>
+        <x:SplitHorizontal>5</x:SplitHorizontal>
+        <x:TopRowBottomPane>5</x:TopRowBottomPane>
+        <x:ActivePane>2</x:ActivePane>
+      </x:WorksheetOptions>
+    </x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook>
+  </xml><![endif]-->
+  <style>
+    body { margin:0; padding:0; font-family:"Segoe UI",Arial,sans-serif; }
+    table { border-collapse: collapse; width: 100%; }
+  </style>
+</head>
+<body>
+<table>
+
+  <!-- ── TITLE BANNER ────────────────────────────────────── -->
+  <tr>
+    <td colspan="8" style="
+      background: ${C.headerBg};
+      mso-pattern: auto none;
+      color: ${C.titleText};
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 18pt;
+      font-weight: bold;
+      text-align: center;
+      padding: 16px 16px;
+      letter-spacing: 2px;
+      border: 2px solid #5a0000;
+    ">MRR TEAM FINLAND &#8212; Jersey Order Sheet</td>
+  </tr>
+
+  <!-- ── SPACER ───────────────────────────────────────────── -->
+  <tr><td colspan="8" style="height:8px; background:#fff; border:none;"></td></tr>
+
+  <!-- ── COLUMN HEADERS ───────────────────────────────────── -->
+  <tr>
+    <td style="${headerCell} width:36px;">SN</td>
+    <td style="${headerCell} min-width:160px; text-align:left; padding-left:14px;">Full Name</td>
+    <td style="${headerCell} width:58px;">Track</td>
+    <td style="${headerCell} min-width:120px;">Jersey Style</td>
+    <td style="${headerCell} min-width:100px;">Sleeve</td>
+    <td style="${headerCell} width:54px;">Size</td>
+    <td style="${headerCell} width:54px;">No.</td>
+    <td style="${headerCell} min-width:130px; text-align:left; padding-left:14px;">Name on Jersey</td>
+  </tr>
+
+  <!-- ── DATA ROWS ────────────────────────────────────────── -->
+  ${dataRows}
+
+</table>
+</body>
+</html>`.trim();
+
+  /* ── Trigger download ───────────────────────────────────── */
+  const blob = new Blob([html], {
+    type: "application/vnd.ms-excel;charset=UTF-8"
+  });
+  const url  = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href     = url;
+  link.download = `MRR_Jersey_Order_Sheet_${fileDate}.xls`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+
+  showToast(`Jersey order sheet downloaded — ${jerseyMembers.length} member(s). ✅`, "success");
+}
+
+/* Wire up download button */
+const btnDownloadSummaryExcel = document.getElementById("btnDownloadSummaryExcel");
+if (btnDownloadSummaryExcel) {
+  btnDownloadSummaryExcel.addEventListener("click", downloadJerseySummaryExcel);
+}
+
+/* ═══════════════════════════════════════════════════════════
    INITIAL LOAD
    ═══════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", () => {
   setupTabs();
   checkGateAuthorization();
 });
+
+
+
