@@ -1227,11 +1227,12 @@ function setupGateListeners() {
  */
 function downloadJerseySummaryExcel() {
   const jerseyMembers = activeMembers.filter(
-    m => m.jersey && m.jersey.interested === true
+    m => m.jersey && m.jersey.interested === true &&
+         (m.paymentStatus === "Done" || m.paymentStatus === "Paid")
   );
 
   if (jerseyMembers.length === 0) {
-    showToast("No active members with jersey orders found.", "error");
+    showToast("No active members with paid jersey orders found.", "error");
     return;
   }
 
