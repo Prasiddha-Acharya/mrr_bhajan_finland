@@ -390,10 +390,6 @@ function applyFiltersAndSort() {
     
     if (jerseyFilter === "ordered") {
       matchesJersey = isJerseyInterested;
-    } else if (jerseyFilter === "payment_done") {
-      matchesJersey = isPaymentDone;
-    } else if (jerseyFilter === "payment_pending") {
-      matchesJersey = isJerseyInterested && !isPaymentDone;
     } else if (jerseyFilter === "none") {
       matchesJersey = !isJerseyInterested;
     } else if (jerseyFilter === "addl_paid") {
