@@ -386,6 +386,7 @@ function applyFiltersAndSort() {
     const isJerseyInterested = member.jersey && member.jersey.interested === true;
     const isPaymentDone = isJerseyInterested &&
       (member.paymentStatus === "Done" || member.paymentStatus === "Paid");
+    const isAddlPaid = isJerseyInterested && member.additionalPaymentStatus === "Paid";
     
     if (jerseyFilter === "ordered") {
       matchesJersey = isJerseyInterested;
@@ -395,6 +396,10 @@ function applyFiltersAndSort() {
       matchesJersey = isJerseyInterested && !isPaymentDone;
     } else if (jerseyFilter === "none") {
       matchesJersey = !isJerseyInterested;
+    } else if (jerseyFilter === "addl_paid") {
+      matchesJersey = isAddlPaid;
+    } else if (jerseyFilter === "addl_unpaid") {
+      matchesJersey = isJerseyInterested && !isAddlPaid;
     }
 
     return matchesSearch && matchesJersey;
