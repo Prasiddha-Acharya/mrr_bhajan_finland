@@ -681,13 +681,14 @@ a:hover { text-decoration: underline; }
 }
 
 .jersey-details-panel.is-open {
-  max-height: 1800px;   /* large enough to never clip on stacked mobile layouts */
+  max-height: 2400px;  /* enough room for the scroll container + all other fields */
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-5);
+  overflow: visible;   /* let the scroll container handle its own overflow */
 }
 
 .jersey-panel-header {
@@ -766,6 +767,107 @@ a:hover { text-decoration: underline; }
 
 .jersey-details-panel .field-group {
   margin-top: 0 !important;
+}
+
+/* ── Extra Jersey Panels (qty > 1) ───────────────────────── */
+.jersey-extra-panel {
+  grid-column: span 2;
+  margin-top: var(--space-5);
+  padding: var(--space-5);
+  border: 1.5px solid rgba(192, 11, 11, 0.25);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(192, 11, 11, 0.03), rgba(248, 50, 50, 0.04));
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+  animation: extraPanelIn 0.32s var(--ease-out) both;
+}
+
+@keyframes extraPanelIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.jersey-extra-panel__header {
+  grid-column: span 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--clr-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: var(--space-3) var(--space-4);
+  background: linear-gradient(135deg, var(--clr-red-50), #fff0f0);
+  border: 1.5px solid var(--clr-red-200);
+  border-radius: var(--radius-md);
+}
+
+.jersey-extra-panel__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--clr-accent);
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.jersey-extra-panel .field-group {
+  margin-top: 0 !important;
+}
+
+/* Full-width fields inside extra panels */
+.jersey-extra-panel [class*="fieldType"],
+.jersey-extra-panel [id*="FieldType"] {
+  grid-column: span 2;
+}
+
+/* ── Scrollable extra-jersey wrapper ─────────────────────── */
+#additionalJerseyPanels {
+  grid-column: span 2;
+  display: block;
+  max-height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  padding-right: 6px;          /* gap so scrollbar doesn't overlap content */
+  border-radius: var(--radius-lg);
+}
+
+/* Only show scrollbar when there is something to scroll */
+#additionalJerseyPanels:empty {
+  display: none;
+}
+
+/* Custom webkit scrollbar */
+#additionalJerseyPanels::-webkit-scrollbar {
+  width: 6px;
+}
+#additionalJerseyPanels::-webkit-scrollbar-track {
+  background: transparent;
+}
+#additionalJerseyPanels::-webkit-scrollbar-thumb {
+  background: rgba(192, 11, 11, 0.30);
+  border-radius: 99px;
+}
+#additionalJerseyPanels::-webkit-scrollbar-thumb:hover {
+  background: rgba(192, 11, 11, 0.55);
+}
+
+/* Extra panels are now block children of the scroll container,
+   so remove the span-2 grid placement (no parent grid) and
+   ensure each takes full width */
+#additionalJerseyPanels > .jersey-extra-panel {
+  grid-column: unset;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: var(--space-4);
 }
 
 

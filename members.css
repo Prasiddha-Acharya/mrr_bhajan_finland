@@ -638,6 +638,49 @@ a:hover { text-decoration: underline; }
   border-color: #fca5a5;
 }
 
+/* ── Additional Payment Badge ──────────────────────────── */
+.addl-payment-badge-wrapper {
+  margin-top: var(--space-2);
+}
+
+.addl-payment-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-weight: 700;
+  border: 1.5px dashed transparent;
+  letter-spacing: 0.01em;
+}
+
+.addl-payment-badge--unpaid {
+  background: linear-gradient(135deg, #fdf4ff, #f3e8ff);
+  color: #6b21a8;
+  border-color: #d8b4fe;
+}
+
+.addl-payment-badge--paid {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  color: #065f46;
+  border-color: #6ee7b7;
+  border-style: solid;
+}
+
+.addl-payment-badge--partial {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  color: #92400e;
+  border-color: #fcd34d;
+}
+
+.addl-payment-badge--waived {
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  color: #475569;
+  border-color: #94a3b8;
+  border-style: solid;
+}
+
 
 /* Password secure reveal styling */
 .password-box {
@@ -1457,6 +1500,99 @@ a:hover { text-decoration: underline; }
   background: linear-gradient(135deg, var(--clr-red-50), #fff0f0);
   border: 1px solid var(--clr-red-200);
   border-radius: var(--radius-md);
+}
+
+/* ── Extra Jersey Panels for Admin Modal (qty > 1) ─────────── */
+.jersey-extra-panel {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border: 1.5px solid rgba(192, 11, 11, 0.22);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(192, 11, 11, 0.03), rgba(248, 50, 50, 0.04));
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  animation: extraPanelIn 0.32s ease both;
+}
+
+@keyframes extraPanelIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.jersey-extra-panel__header {
+  grid-column: span 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--clr-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 8px var(--space-3);
+  background: linear-gradient(135deg, var(--clr-red-50), #fff0f0);
+  border: 1px solid var(--clr-red-200);
+  border-radius: var(--radius-md);
+}
+
+.jersey-extra-panel__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--clr-accent);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.jersey-extra-panel .field-group {
+  margin-top: 0 !important;
+}
+
+#editAdditionalJerseyPanels > .jersey-extra-panel > [id*="FieldType"],
+#editAdditionalJerseyPanels > .jersey-extra-panel > [id*="fieldType"] {
+  grid-column: span 2;
+}
+
+/* ── Scrollable wrapper for admin modal extra panels ─────── */
+#editAdditionalJerseyPanels {
+  display: block;
+  max-height: 440px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  padding-right: 5px;
+  border-radius: var(--radius-lg);
+  grid-column: span 2;
+}
+
+#editAdditionalJerseyPanels:empty {
+  display: none;
+}
+
+#editAdditionalJerseyPanels::-webkit-scrollbar {
+  width: 5px;
+}
+#editAdditionalJerseyPanels::-webkit-scrollbar-track {
+  background: transparent;
+}
+#editAdditionalJerseyPanels::-webkit-scrollbar-thumb {
+  background: rgba(192, 11, 11, 0.28);
+  border-radius: 99px;
+}
+#editAdditionalJerseyPanels::-webkit-scrollbar-thumb:hover {
+  background: rgba(192, 11, 11, 0.52);
+}
+
+#editAdditionalJerseyPanels > .jersey-extra-panel {
+  grid-column: unset;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* ── 15. Page Protection Overlay (Gate Lock) ───────────────── */

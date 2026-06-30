@@ -93,6 +93,7 @@ const jerseyPriceInfo = document.getElementById("jerseyPriceInfo");
 const jerseySizeSelect = document.getElementById("jerseySize");
 const jerseyNumberInput = document.getElementById("jerseyNumber");
 const jerseyNameInput = document.getElementById("jerseyName");
+const jerseyQuantityInput = document.getElementById("jerseyQuantity");
 const paymentGatewayPanel = document.getElementById("paymentGatewayPanel");
 const mobilePayBtn = document.getElementById("mobilePayBtn");
 
@@ -155,6 +156,10 @@ function updateJerseyPriceInfo() {
     return;
   }
   const d = JERSEY_PRICE_DATA[type];
+  const qty = parseInt(jerseyQuantityInput?.value, 10) || 1;
+  const unitPrice = parseFloat(d.price.replace(/[^0-9.]/g, ""));
+  const totalPrice = `€${(unitPrice * qty).toFixed(0)}`;
+  const qtyNote = qty > 1 ? ` × ${qty} = <strong>${totalPrice}</strong>` : "";
   jerseyPriceInfo.innerHTML = `
     <span class="jersey-price-icon">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block;">
@@ -164,7 +169,7 @@ function updateJerseyPriceInfo() {
       </svg>
     </span>
     <span class="jersey-price-text">
-      You need to pay <strong>${d.price}</strong> for ${d.label}.
+      You need to pay <strong>${d.price}</strong> per jersey for ${d.label}${qtyNote}.
       <br><span class="jersey-price-includes">${d.desc}</span>
     </span>
   `;
@@ -209,6 +214,260 @@ document.querySelectorAll('input[name="jerseySleeve"]').forEach((radio) => {
     if (getJerseySleeveValue()) setFieldValid(sleeveGroup, sleeveError);
   });
 });
+
+/* ═══════════════════════════════════════════════════════════
+   EXTRA JERSEY PANELS — HTML BUILDER
+   ═══════════════════════════════════════════════════════════ */
+
+const CHECK_SVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
+const JERSEY_ICON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg>`;
+
+/**
+ * Builds the full HTML for one additional jersey panel.
+ * idx: 1-based extra index (so jersey #(idx+1) overall)
+ */
+function buildExtraJerseyPanelHTML(idx, prefill) {
+  const num = idx + 1;
+  const p   = `jEx${idx}`;           // prefix e.g. jEx1, jEx2…
+  const f   = prefill || {};          // optional prefill data
+
+  return `
+<div class="jersey-extra-panel" id="jerseyExtraPanel_${idx}" data-extra-index="${idx}">
+
+  <!-- Header -->
+  <div class="jersey-extra-panel__header">
+    ${JERSEY_ICON}
+    <span class="jersey-extra-panel__badge">${num}</span>
+    Jersey #${num} — Details
+  </div>
+
+  <!-- Jersey Type -->
+  <div class="field-group" id="${p}_fieldType" style="grid-column:span 2;">
+    <label class="field-label">Jersey Type <span class="required-star" aria-label="required">*</span></label>
+    <div class="radio-pill-group" role="radiogroup" aria-describedby="${p}_typeError">
+      <label class="radio-pill">
+        <input type="radio" id="${p}_typePlayer" name="${p}_type" value="player" class="radio-pill__input"${f.type === "player" ? " checked" : ""}>
+        <span class="radio-pill__check" aria-hidden="true">${CHECK_SVG}</span>
+        <span class="radio-pill__text">Player Jersey</span>
+      </label>
+      <label class="radio-pill">
+        <input type="radio" id="${p}_typeFan" name="${p}_type" value="fan" class="radio-pill__input"${f.type === "fan" ? " checked" : ""}>
+        <span class="radio-pill__check" aria-hidden="true">${CHECK_SVG}</span>
+        <span class="radio-pill__text">Fan Jersey</span>
+      </label>
+    </div>
+    <span class="field-error" id="${p}_typeError" role="alert" aria-live="polite"></span>
+  </div>
+
+  <!-- Jersey Style -->
+  <div class="field-group" id="${p}_fieldStyle" style="grid-column:span 2;">
+    <label class="field-label">Jersey Style <span class="required-star" aria-label="required">*</span></label>
+    <div class="radio-pill-group" role="radiogroup" aria-describedby="${p}_styleError">
+      <label class="radio-pill">
+        <input type="radio" id="${p}_styleButtonCollar" name="${p}_style" value="button_collar" class="radio-pill__input"${f.style === "button_collar" ? " checked" : ""}>
+        <span class="radio-pill__check" aria-hidden="true">${CHECK_SVG}</span>
+        <span class="radio-pill__text">Button Collar</span>
+      </label>
+      <label class="radio-pill">
+        <input type="radio" id="${p}_stylePlainNeck" name="${p}_style" value="plain_neck" class="radio-pill__input"${f.style === "plain_neck" ? " checked" : ""}>
+        <span class="radio-pill__check" aria-hidden="true">${CHECK_SVG}</span>
+        <span class="radio-pill__text">Plain Neck</span>
+      </label>
+    </div>
+    <span class="field-error" id="${p}_styleError" role="alert" aria-live="polite"></span>
+  </div>
+
+  <!-- Sleeve Type -->
+  <div class="field-group" id="${p}_fieldSleeve" style="grid-column:span 2;">
+    <label class="field-label">Sleeve Type <span class="required-star" aria-label="required">*</span></label>
+    <div class="radio-pill-group" role="radiogroup" aria-describedby="${p}_sleeveError">
+      <label class="radio-pill">
+        <input type="radio" id="${p}_sleeveHalf" name="${p}_sleeve" value="half" class="radio-pill__input"${f.sleeve === "half" ? " checked" : ""}>
+        <span class="radio-pill__check" aria-hidden="true">${CHECK_SVG}</span>
+        <span class="radio-pill__text">Half Sleeve</span>
+      </label>
+      <label class="radio-pill">
+        <input type="radio" id="${p}_sleeveFull" name="${p}_sleeve" value="full" class="radio-pill__input"${f.sleeve === "full" ? " checked" : ""}>
+        <span class="radio-pill__check" aria-hidden="true">${CHECK_SVG}</span>
+        <span class="radio-pill__text">Full Sleeve</span>
+      </label>
+    </div>
+    <span class="field-error" id="${p}_sleeveError" role="alert" aria-live="polite"></span>
+  </div>
+
+  <!-- Jersey Size -->
+  <div class="field-group" id="${p}_fieldSize">
+    <label class="field-label" for="${p}_size">Jersey Size <span class="required-star" aria-label="required">*</span></label>
+    <div class="select-wrapper">
+      <select id="${p}_size" name="${p}_size" class="field-input field-select" aria-describedby="${p}_sizeError">
+        <option value="" disabled${!f.size ? " selected" : ""}>Select size…</option>
+        <option value="XS"${f.size==="XS"?" selected":""}>XS — Extra Small</option>
+        <option value="S"${f.size==="S"?" selected":""}>S — Small</option>
+        <option value="M"${f.size==="M"?" selected":""}>M — Medium</option>
+        <option value="L"${f.size==="L"?" selected":""}>L — Large</option>
+        <option value="XL"${f.size==="XL"?" selected":""}>XL — Extra Large</option>
+        <option value="XXL"${f.size==="XXL"?" selected":""}>XXL — Double Extra Large</option>
+        <option value="XXXL"${f.size==="XXXL"?" selected":""}>XXXL — Triple Extra Large</option>
+      </select>
+    </div>
+    <span class="field-error" id="${p}_sizeError" role="alert" aria-live="polite"></span>
+  </div>
+
+  <!-- Jersey Number -->
+  <div class="field-group" id="${p}_fieldNumber">
+    <label class="field-label" for="${p}_number">Jersey Number <span class="required-star" aria-label="required">*</span></label>
+    <div class="input-wrapper">
+      <input type="number" id="${p}_number" name="${p}_number" class="field-input"
+        placeholder="1–99" min="1" max="99"${f.number ? ` value="${f.number}"` : ""} aria-describedby="${p}_numberError">
+    </div>
+    <span class="field-error" id="${p}_numberError" role="alert" aria-live="polite"></span>
+  </div>
+
+  <!-- Name on Jersey -->
+  <div class="field-group" id="${p}_fieldName" style="grid-column:span 2;">
+    <label class="field-label" for="${p}_name">Name on Jersey <span class="required-star" aria-label="required">*</span></label>
+    <div class="input-wrapper">
+      <span class="input-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </span>
+      <input type="text" id="${p}_name" name="${p}_name" class="field-input"
+        placeholder="e.g. RAM, MESSI, RONALDO…"${f.name ? ` value="${f.name}"` : ""} aria-describedby="${p}_nameError">
+    </div>
+    <span class="field-error" id="${p}_nameError" role="alert" aria-live="polite"></span>
+  </div>
+
+</div>`;
+}
+
+/**
+ * Renders extra panels for jerseys 2..qty.
+ * Clears previous panels, inserts fresh HTML, attaches listeners.
+ */
+function renderAdditionalJerseyPanels(qty, prefillExtras) {
+  const container = document.getElementById("additionalJerseyPanels");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  for (let i = 1; i < qty; i++) {
+    const prefill = prefillExtras && prefillExtras[i - 1] ? prefillExtras[i - 1] : null;
+    container.insertAdjacentHTML("beforeend", buildExtraJerseyPanelHTML(i, prefill));
+
+    const p = `jEx${i}`;
+
+    /* Auto-select style when type is picked */
+    document.querySelectorAll(`input[name="${p}_type"]`).forEach(radio => {
+      radio.addEventListener("change", () => {
+        const type = document.querySelector(`input[name="${p}_type"]:checked`)?.value;
+        if (type === "player") {
+          const el = document.getElementById(`${p}_styleButtonCollar`);
+          if (el) el.checked = true;
+        } else if (type === "fan") {
+          const el = document.getElementById(`${p}_stylePlainNeck`);
+          if (el) el.checked = true;
+        }
+      });
+    });
+  }
+}
+
+/**
+ * Validates all extra jersey panels.
+ * Returns true if all pass.
+ */
+function validateExtraPanels(qty) {
+  let isValid = true;
+  for (let i = 1; i < qty; i++) {
+    const p = `jEx${i}`;
+
+    /* Type */
+    const typeGroup = document.getElementById(`${p}_fieldType`);
+    const typeError = document.getElementById(`${p}_typeError`);
+    if (!document.querySelector(`input[name="${p}_type"]:checked`)) {
+      if (typeGroup && typeError) setFieldError(typeGroup, typeError, "Please select a jersey type.");
+      isValid = false;
+    } else if (typeGroup && typeError) setFieldValid(typeGroup, typeError);
+
+    /* Style */
+    const styleGroup = document.getElementById(`${p}_fieldStyle`);
+    const styleError = document.getElementById(`${p}_styleError`);
+    if (!document.querySelector(`input[name="${p}_style"]:checked`)) {
+      if (styleGroup && styleError) setFieldError(styleGroup, styleError, "Please select a jersey style.");
+      isValid = false;
+    } else if (styleGroup && styleError) setFieldValid(styleGroup, styleError);
+
+    /* Sleeve */
+    const sleeveGroup = document.getElementById(`${p}_fieldSleeve`);
+    const sleeveError = document.getElementById(`${p}_sleeveError`);
+    if (!document.querySelector(`input[name="${p}_sleeve"]:checked`)) {
+      if (sleeveGroup && sleeveError) setFieldError(sleeveGroup, sleeveError, "Please select a sleeve type.");
+      isValid = false;
+    } else if (sleeveGroup && sleeveError) setFieldValid(sleeveGroup, sleeveError);
+
+    /* Size */
+    const sizeEl    = document.getElementById(`${p}_size`);
+    const sizeGroup = document.getElementById(`${p}_fieldSize`);
+    const sizeError = document.getElementById(`${p}_sizeError`);
+    if (sizeEl && !sizeEl.value) {
+      if (sizeGroup && sizeError) setFieldError(sizeGroup, sizeError, "Please select your jersey size.");
+      isValid = false;
+    } else if (sizeGroup && sizeError) setFieldValid(sizeGroup, sizeError);
+
+    /* Number */
+    const numEl    = document.getElementById(`${p}_number`);
+    const numGroup = document.getElementById(`${p}_fieldNumber`);
+    const numError = document.getElementById(`${p}_numberError`);
+    if (numEl) {
+      const nv = parseInt(numEl.value, 10);
+      if (!numEl.value || isNaN(nv) || nv < 1 || nv > 99) {
+        if (numGroup && numError) setFieldError(numGroup, numError, "Jersey number must be between 1 and 99.");
+        isValid = false;
+      } else if (numGroup && numError) setFieldValid(numGroup, numError);
+    }
+
+    /* Name */
+    const nameEl    = document.getElementById(`${p}_name`);
+    const nameGroup = document.getElementById(`${p}_fieldName`);
+    const nameError = document.getElementById(`${p}_nameError`);
+    if (nameEl && !nameEl.value.trim()) {
+      if (nameGroup && nameError) setFieldError(nameGroup, nameError, "Name on jersey is required.");
+      isValid = false;
+    } else if (nameGroup && nameError) setFieldValid(nameGroup, nameError);
+  }
+  return isValid;
+}
+
+/**
+ * Collects data from all extra panels (indexes 1..qty-1).
+ * Returns an array of jersey objects.
+ */
+function collectExtraPanelsData(qty) {
+  const extras = [];
+  for (let i = 1; i < qty; i++) {
+    const p = `jEx${i}`;
+    const numEl = document.getElementById(`${p}_number`);
+    extras.push({
+      type:   document.querySelector(`input[name="${p}_type"]:checked`)?.value   || null,
+      style:  document.querySelector(`input[name="${p}_style"]:checked`)?.value  || null,
+      sleeve: document.querySelector(`input[name="${p}_sleeve"]:checked`)?.value || null,
+      size:   document.getElementById(`${p}_size`)?.value || null,
+      number: numEl ? (parseInt(numEl.value, 10) || null) : null,
+      name:   document.getElementById(`${p}_name`)?.value?.trim()?.toUpperCase() || null
+    });
+  }
+  return extras;
+}
+
+/* Update price info AND extra panels when quantity changes */
+if (jerseyQuantityInput) {
+  jerseyQuantityInput.addEventListener("input", () => {
+    updateJerseyPriceInfo();
+    const qty = parseInt(jerseyQuantityInput.value, 10) || 1;
+    if (qty >= 1 && qty <= 10) renderAdditionalJerseyPanels(qty);
+  });
+}
 
 /** Helper: get the currently checked jersey interest radio value ("yes"|"no"|null) */
 function getJerseyInterestValue() {
@@ -278,15 +537,18 @@ document.querySelectorAll('input[name="jerseyInterest"]').forEach((radio) => {
       jerseySizeSelect.required = true;
       jerseyNumberInput.required = true;
       jerseyNameInput.required = true;
+      if (jerseyQuantityInput) jerseyQuantityInput.required = true;
     } else {
       jerseyDetailsPanel.classList.remove("is-open");
       jerseyDetailsPanel.setAttribute("aria-hidden", "true");
       jerseySizeSelect.required = false;
       jerseyNumberInput.required = false;
       jerseyNameInput.required = false;
+      if (jerseyQuantityInput) jerseyQuantityInput.required = false;
       jerseySizeSelect.value = "";
       jerseyNumberInput.value = "";
       jerseyNameInput.value = "";
+      if (jerseyQuantityInput) jerseyQuantityInput.value = "1";
       jerseyPriceInfo.style.display = "none";
       jerseyPriceInfo.innerHTML = "";
       if (paymentGatewayPanel) paymentGatewayPanel.style.display = "none";
@@ -298,6 +560,9 @@ document.querySelectorAll('input[name="jerseyInterest"]').forEach((radio) => {
       clearFieldError(document.getElementById("fieldJerseySize"), document.getElementById("jerseySizeError"));
       clearFieldError(document.getElementById("fieldJerseyNumber"), document.getElementById("jerseyNumberError"));
       clearFieldError(document.getElementById("fieldJerseyName"), document.getElementById("jerseyNameError"));
+      if (document.getElementById("fieldJerseyQuantity")) {
+        clearFieldError(document.getElementById("fieldJerseyQuantity"), document.getElementById("jerseyQuantityError"));
+      }
     }
   });
 });
@@ -505,6 +770,18 @@ function validateForm() {
       isValid = false;
     } else {
       setFieldValid(nameGroup, nameError);
+    }
+
+    const qtyGroup = document.getElementById("fieldJerseyQuantity");
+    const qtyError = document.getElementById("jerseyQuantityError");
+    if (qtyGroup && jerseyQuantityInput) {
+      const qtyVal = parseInt(jerseyQuantityInput.value, 10);
+      if (!jerseyQuantityInput.value || isNaN(qtyVal) || qtyVal < 1 || qtyVal > 10) {
+        setFieldError(qtyGroup, qtyError, "Enter a quantity between 1 and 10.");
+        isValid = false;
+      } else {
+        setFieldValid(qtyGroup, qtyError);
+      }
     }
   }
 
@@ -758,9 +1035,10 @@ registrationForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   /* 1. Validate all fields */
-  if (!validateForm()) {
+  const jerseyQty = parseInt(jerseyQuantityInput?.value, 10) || 1;
+  if (!validateForm() || (getJerseyInterestValue() === "yes" && !validateExtraPanels(jerseyQty))) {
     showToast("Please fix the errors highlighted above.", "error");
-    const firstError = registrationForm.querySelector(".field-group.has-error");
+    const firstError = document.querySelector(".field-group.has-error");
     if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
     return;
   }
@@ -789,6 +1067,8 @@ registrationForm.addEventListener("submit", async (e) => {
     const jerseySize = jerseyInterested ? jerseySizeSelect.value : null;
     const jerseyNumber = jerseyInterested ? parseInt(jerseyNumberInput.value, 10) : null;
     const jerseyName = jerseyInterested ? jerseyNameInput.value.trim().toUpperCase() : null;
+    const jerseyQuantity = jerseyInterested ? (parseInt(jerseyQuantityInput?.value, 10) || 1) : null;
+    const jerseyExtras  = jerseyInterested && jerseyQuantity > 1 ? collectExtraPanelsData(jerseyQuantity) : [];
 
     /* 6. Upload profile photo (if provided) */
     let profilePhotoURL = null;
@@ -815,8 +1095,10 @@ registrationForm.addEventListener("submit", async (e) => {
         style: jerseyStyle,           // "button_collar" | "plain_neck" | null
         sleeve: jerseySleeve,         // "half" | "full" | null
         size: jerseySize,             // null if not interested
-        number: jerseyNumber,           // null if not interested
-        name: jerseyName
+        number: jerseyNumber,         // null if not interested
+        name: jerseyName,
+        quantity: jerseyQuantity,     // null if not interested
+        extras: jerseyExtras          // [] or array of extra jersey objects
       },
       createdAt: currentEditMemberId ? currentEditMemberData.createdAt : serverTimestamp()
     };
@@ -838,9 +1120,10 @@ registrationForm.addEventListener("submit", async (e) => {
       const typeLabel = jerseyType === "player" ? "Player Jersey" : "Fan Jersey";
       const styleLabel = jerseyStyle === "button_collar" ? "Button Collar" : (jerseyStyle === "plain_neck" ? "Plain Neck" : "");
       const sleeveLabel = jerseySleeve === "full" ? "Full Sleeve" : "Half Sleeve";
-      const price = jerseyType === "player" ? "€20" : "€15";
+      const unitPrice = jerseyType === "player" ? 20 : 15;
+      const totalLabel = jerseyQuantity > 1 ? ` · Qty: ${jerseyQuantity} · Total: €${unitPrice * jerseyQuantity}` : ` · €${unitPrice}`;
       successJerseyRow.style.display = "flex";
-      successJerseyInfo.textContent = `${typeLabel} · ${styleLabel} · ${sleeveLabel} · ${price} · Size ${jerseySize}, No. ${jerseyNumber}, Name: ${jerseyName}`;
+      successJerseyInfo.textContent = `${typeLabel} · ${styleLabel} · ${sleeveLabel}${totalLabel} · Size ${jerseySize}, No. ${jerseyNumber}, Name: ${jerseyName}`;
     } else {
       successJerseyRow.style.display = "none";
     }
@@ -863,11 +1146,15 @@ registrationForm.addEventListener("submit", async (e) => {
     mobilePayClicked = false;
     registrationForm.reset();
     clearPhotoPreview();
+    /* Clear extra panels */
+    const extraContainer = document.getElementById("additionalJerseyPanels");
+    if (extraContainer) extraContainer.innerHTML = "";
     jerseyDetailsPanel.classList.remove("is-open");
     jerseyDetailsPanel.setAttribute("aria-hidden", "true");
     jerseySizeSelect.required = false;
     jerseyNumberInput.required = false;
     jerseyNameInput.required = false;
+    if (jerseyQuantityInput) { jerseyQuantityInput.required = false; jerseyQuantityInput.value = "1"; }
     jerseyPriceInfo.style.display = "none";
     jerseyPriceInfo.innerHTML = "";
     if (paymentGatewayPanel) paymentGatewayPanel.style.display = "none";
@@ -1092,6 +1379,12 @@ if (loginSubmitBtn) {
           else if (data.jersey.sleeve === "half") document.getElementById("jerseySleeveHalf").checked = true;
 
           jerseySizeSelect.value = data.jersey.size || "";
+          const savedQty = data.jersey.quantity || 1;
+          if (jerseyQuantityInput) jerseyQuantityInput.value = savedQty;
+          /* Render any saved extra panels */
+          if (savedQty > 1) {
+            renderAdditionalJerseyPanels(savedQty, data.jersey.extras || []);
+          }
         }
         document.getElementById("jerseyInterestNo").checked = true;
         document.getElementById("jerseyInterestYes").checked = false;

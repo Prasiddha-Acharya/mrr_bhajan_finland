@@ -221,6 +221,7 @@
           <span class="field-error" id="photoError" role="alert" aria-live="polite"></span>
         </div>
 
+
         <!-- ── Jersey Interest ── -->
         <div class="field-group" id="fieldJerseyInterest">
           <label class="field-label">
@@ -309,7 +310,8 @@
             <div class="radio-pill-group" role="radiogroup" aria-describedby="jerseyStyleError">
 
               <label class="radio-pill" id="radioLabelButtonCollar">
-                <input type="radio" id="jerseyStyleButtonCollar" name="jerseyStyle" value="button_collar" class="radio-pill__input">
+                <input type="radio" id="jerseyStyleButtonCollar" name="jerseyStyle" value="button_collar"
+                  class="radio-pill__input">
                 <span class="radio-pill__check" aria-hidden="true">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -320,7 +322,8 @@
               </label>
 
               <label class="radio-pill" id="radioLabelPlainNeck">
-                <input type="radio" id="jerseyStylePlainNeck" name="jerseyStyle" value="plain_neck" class="radio-pill__input">
+                <input type="radio" id="jerseyStylePlainNeck" name="jerseyStyle" value="plain_neck"
+                  class="radio-pill__input">
                 <span class="radio-pill__check" aria-hidden="true">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -439,8 +442,32 @@
             <span class="field-error" id="jerseyNameError" role="alert" aria-live="polite"></span>
           </div>
 
+          <!-- Number of Jerseys -->
+          <div class="field-group" id="fieldJerseyQuantity">
+            <label class="field-label" for="jerseyQuantity">
+              Number of Jerseys <span class="required-star" aria-label="required">*</span>
+            </label>
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                  <line x1="8" y1="21" x2="16" y2="21" />
+                  <line x1="12" y1="17" x2="12" y2="21" />
+                </svg>
+              </span>
+              <input type="number" id="jerseyQuantity" name="jerseyQuantity" class="field-input"
+                placeholder="e.g. 1, 2, 3…" min="1" max="10" value="1" aria-describedby="jerseyQuantityError">
+            </div>
+            <span class="field-hint">How many jerseys do you want to order? (default: 1)</span>
+            <span class="field-error" id="jerseyQuantityError" role="alert" aria-live="polite"></span>
+          </div>
+
           <!-- Jersey Pricing Info Box (shown dynamically by JS) -->
           <div class="jersey-price-info" id="jerseyPriceInfo" style="display:none;" aria-live="polite"></div>
+
+          <!-- Additional Jersey Panels (dynamically rendered by JS when qty > 1) -->
+          <div id="additionalJerseyPanels"></div>
 
           <!-- Payment Gateway Section (shown dynamically by JS) -->
           <div class="payment-gateway-panel" id="paymentGatewayPanel" style="display:none;">

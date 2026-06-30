@@ -689,6 +689,17 @@
                 <span class="field-error" id="editJerseyNameError" role="alert"></span>
               </div>
 
+              <!-- Number of Jerseys -->
+              <div class="field-group" id="fieldEditJerseyQuantity">
+                <label class="field-label" for="editJerseyQuantity">Number of Jerseys <span
+                    class="required-star">*</span></label>
+                <input type="number" id="editJerseyQuantity" class="field-input" placeholder="e.g. 1" min="1" max="10" value="1">
+                <span class="field-error" id="editJerseyQuantityError" role="alert"></span>
+              </div>
+
+              <!-- Additional Jersey Panels (dynamically rendered by JS when qty > 1) -->
+              <div id="editAdditionalJerseyPanels" style="grid-column: span 2;"></div>
+
               <!-- Manual payment status control -->
               <div class="field-group" style="grid-column: span 2; margin-top: var(--space-3);">
                 <label class="field-label" for="editPaymentStatus">Payment Status</label>
@@ -697,6 +708,20 @@
                   <option value="Maybe">Clicked Pay (Maybe)</option>
                   <option value="Done">Paid (Done)</option>
                   <option value="N/A">Not Applicable (N/A)</option>
+                </select>
+              </div>
+
+              <!-- Additional Payment Status (Admin-only) -->
+              <div class="field-group" style="grid-column: span 2; margin-top: var(--space-3);">
+                <label class="field-label" for="editAdditionalPaymentStatus">
+                  Additional Payment Status
+                  <span class="field-optional" style="margin-left:6px; font-size:11px; color:#dc2626; font-weight:600; background:rgba(220,38,38,0.08); padding:2px 8px; border-radius:4px;">Admin Only</span>
+                </label>
+                <select id="editAdditionalPaymentStatus" class="field-input field-select">
+                  <option value="Unpaid">Unpaid</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Partial">Partially Paid</option>
+                  <option value="Waived">Waived</option>
                 </select>
               </div>
             </div>

@@ -100,7 +100,9 @@ const editJerseyDetailsPanel   = document.getElementById("editJerseyDetailsPanel
 const editJerseySizeSelect     = document.getElementById("editJerseySize");
 const editJerseyNumberInput    = document.getElementById("editJerseyNumber");
 const editJerseyNameInput      = document.getElementById("editJerseyName");
+const editJerseyQuantityInput  = document.getElementById("editJerseyQuantity");
 const editPaymentStatusSelect  = document.getElementById("editPaymentStatus");
+const editAdditionalPaymentStatusSelect = document.getElementById("editAdditionalPaymentStatus");
 
 const btnSaveChanges          = document.getElementById("btnSaveChanges");
 const saveBtnLabel            = document.getElementById("saveBtnLabel");
@@ -115,6 +117,169 @@ let editPhotoState = {
   removedOld: false,
   currentUrl: null
 };
+
+/* ═══════════════════════════════════════════════════════════
+   ADMIN EXTRA JERSEY PANELS — HTML BUILDER
+   ═══════════════════════════════════════════════════════════ */
+
+const ADMIN_CHECK_SVG = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`;
+const ADMIN_JERSEY_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg>`;
+
+function buildEditExtraJerseyPanelHTML(idx, prefill) {
+  const num = idx + 1;
+  const p   = `eEx${idx}`;
+  const f   = prefill || {};
+
+  return `
+<div class="jersey-extra-panel" id="editExtraPanel_${idx}" data-extra-index="${idx}">
+  <div class="jersey-extra-panel__header">
+    ${ADMIN_JERSEY_ICON}
+    <span class="jersey-extra-panel__badge">${num}</span>
+    Jersey #${num} — Details
+  </div>
+
+  <!-- Type -->
+  <div class="field-group" id="${p}_fieldType" style="grid-column:span 2;">
+    <label class="field-label">Jersey Type <span class="required-star">*</span></label>
+    <div class="radio-pill-group" role="radiogroup" aria-describedby="${p}_typeError">
+      <label class="radio-pill"><input type="radio" id="${p}_typePlayer" name="${p}_type" value="player" class="radio-pill__input"${f.type==="player"?" checked":""}><span class="radio-pill__check">${ADMIN_CHECK_SVG}</span><span class="radio-pill__text">Player</span></label>
+      <label class="radio-pill"><input type="radio" id="${p}_typeFan" name="${p}_type" value="fan" class="radio-pill__input"${f.type==="fan"?" checked":""}><span class="radio-pill__check">${ADMIN_CHECK_SVG}</span><span class="radio-pill__text">Fan</span></label>
+    </div>
+    <span class="field-error" id="${p}_typeError" role="alert"></span>
+  </div>
+
+  <!-- Style -->
+  <div class="field-group" id="${p}_fieldStyle" style="grid-column:span 2;">
+    <label class="field-label">Jersey Style <span class="required-star">*</span></label>
+    <div class="radio-pill-group" role="radiogroup" aria-describedby="${p}_styleError">
+      <label class="radio-pill"><input type="radio" id="${p}_styleBtn" name="${p}_style" value="button_collar" class="radio-pill__input"${f.style==="button_collar"?" checked":""}><span class="radio-pill__check">${ADMIN_CHECK_SVG}</span><span class="radio-pill__text">Button Collar</span></label>
+      <label class="radio-pill"><input type="radio" id="${p}_stylePlain" name="${p}_style" value="plain_neck" class="radio-pill__input"${f.style==="plain_neck"?" checked":""}><span class="radio-pill__check">${ADMIN_CHECK_SVG}</span><span class="radio-pill__text">Plain Neck</span></label>
+    </div>
+    <span class="field-error" id="${p}_styleError" role="alert"></span>
+  </div>
+
+  <!-- Sleeve -->
+  <div class="field-group" id="${p}_fieldSleeve" style="grid-column:span 2;">
+    <label class="field-label">Sleeve <span class="required-star">*</span></label>
+    <div class="radio-pill-group" role="radiogroup" aria-describedby="${p}_sleeveError">
+      <label class="radio-pill"><input type="radio" id="${p}_sleeveHalf" name="${p}_sleeve" value="half" class="radio-pill__input"${f.sleeve==="half"?" checked":""}><span class="radio-pill__check">${ADMIN_CHECK_SVG}</span><span class="radio-pill__text">Half</span></label>
+      <label class="radio-pill"><input type="radio" id="${p}_sleeveFull" name="${p}_sleeve" value="full" class="radio-pill__input"${f.sleeve==="full"?" checked":""}><span class="radio-pill__check">${ADMIN_CHECK_SVG}</span><span class="radio-pill__text">Full</span></label>
+    </div>
+    <span class="field-error" id="${p}_sleeveError" role="alert"></span>
+  </div>
+
+  <!-- Size -->
+  <div class="field-group" id="${p}_fieldSize">
+    <label class="field-label" for="${p}_size">Size <span class="required-star">*</span></label>
+    <select id="${p}_size" class="field-input" aria-describedby="${p}_sizeError">
+      <option value="" disabled${!f.size?" selected":""}>Select…</option>
+      <option value="XS"${f.size==="XS"?" selected":""}>XS</option>
+      <option value="S"${f.size==="S"?" selected":""}>S</option>
+      <option value="M"${f.size==="M"?" selected":""}>M</option>
+      <option value="L"${f.size==="L"?" selected":""}>L</option>
+      <option value="XL"${f.size==="XL"?" selected":""}>XL</option>
+      <option value="XXL"${f.size==="XXL"?" selected":""}>XXL</option>
+      <option value="XXXL"${f.size==="XXXL"?" selected":""}>XXXL</option>
+    </select>
+    <span class="field-error" id="${p}_sizeError" role="alert"></span>
+  </div>
+
+  <!-- Number -->
+  <div class="field-group" id="${p}_fieldNumber">
+    <label class="field-label" for="${p}_number">No. <span class="required-star">*</span></label>
+    <input type="number" id="${p}_number" class="field-input" placeholder="1–99" min="1" max="99"${f.number ? ` value="${f.number}"` : ""}>
+    <span class="field-error" id="${p}_numberError" role="alert"></span>
+  </div>
+
+  <!-- Name -->
+  <div class="field-group" id="${p}_fieldName" style="grid-column:span 2;">
+    <label class="field-label" for="${p}_name">Name on Jersey <span class="required-star">*</span></label>
+    <input type="text" id="${p}_name" class="field-input" placeholder="e.g. ACHARYA"${f.name ? ` value="${f.name}"` : ""}>
+    <span class="field-error" id="${p}_nameError" role="alert"></span>
+  </div>
+</div>`;
+}
+
+function renderEditAdditionalJerseyPanels(qty, prefillExtras) {
+  const container = document.getElementById("editAdditionalJerseyPanels");
+  if (!container) return;
+  container.innerHTML = "";
+  for (let i = 1; i < qty; i++) {
+    const prefill = prefillExtras && prefillExtras[i - 1] ? prefillExtras[i - 1] : null;
+    container.insertAdjacentHTML("beforeend", buildEditExtraJerseyPanelHTML(i, prefill));
+    const p = `eEx${i}`;
+    document.querySelectorAll(`input[name="${p}_type"]`).forEach(radio => {
+      radio.addEventListener("change", () => {
+        const type = document.querySelector(`input[name="${p}_type"]:checked`)?.value;
+        if (type === "player") { const el = document.getElementById(`${p}_styleBtn`); if (el) el.checked = true; }
+        else if (type === "fan") { const el = document.getElementById(`${p}_stylePlain`); if (el) el.checked = true; }
+      });
+    });
+  }
+}
+
+function validateEditExtraPanels(qty) {
+  let isValid = true;
+  for (let i = 1; i < qty; i++) {
+    const p = `eEx${i}`;
+    if (!document.querySelector(`input[name="${p}_type"]:checked`)) {
+      const g = document.getElementById(`${p}_fieldType`); const e = document.getElementById(`${p}_typeError`);
+      if (g && e) setFieldError(g, e, "Select a jersey type."); isValid = false;
+    } else { const g = document.getElementById(`${p}_fieldType`); const e = document.getElementById(`${p}_typeError`); if (g && e) setFieldValid(g, e); }
+    if (!document.querySelector(`input[name="${p}_style"]:checked`)) {
+      const g = document.getElementById(`${p}_fieldStyle`); const e = document.getElementById(`${p}_styleError`);
+      if (g && e) setFieldError(g, e, "Select a jersey style."); isValid = false;
+    } else { const g = document.getElementById(`${p}_fieldStyle`); const e = document.getElementById(`${p}_styleError`); if (g && e) setFieldValid(g, e); }
+    if (!document.querySelector(`input[name="${p}_sleeve"]:checked`)) {
+      const g = document.getElementById(`${p}_fieldSleeve`); const e = document.getElementById(`${p}_sleeveError`);
+      if (g && e) setFieldError(g, e, "Select a sleeve."); isValid = false;
+    } else { const g = document.getElementById(`${p}_fieldSleeve`); const e = document.getElementById(`${p}_sleeveError`); if (g && e) setFieldValid(g, e); }
+    const sizeEl = document.getElementById(`${p}_size`);
+    if (sizeEl && !sizeEl.value) {
+      const g = document.getElementById(`${p}_fieldSize`); const e = document.getElementById(`${p}_sizeError`);
+      if (g && e) setFieldError(g, e, "Select size."); isValid = false;
+    } else { const g = document.getElementById(`${p}_fieldSize`); const e = document.getElementById(`${p}_sizeError`); if (g && e) setFieldValid(g, e); }
+    const numEl = document.getElementById(`${p}_number`);
+    if (numEl) {
+      const nv = parseInt(numEl.value, 10);
+      if (!numEl.value || isNaN(nv) || nv < 1 || nv > 99) {
+        const g = document.getElementById(`${p}_fieldNumber`); const e = document.getElementById(`${p}_numberError`);
+        if (g && e) setFieldError(g, e, "Number must be 1–99."); isValid = false;
+      } else { const g = document.getElementById(`${p}_fieldNumber`); const e = document.getElementById(`${p}_numberError`); if (g && e) setFieldValid(g, e); }
+    }
+    const nameEl = document.getElementById(`${p}_name`);
+    if (nameEl && !nameEl.value.trim()) {
+      const g = document.getElementById(`${p}_fieldName`); const e = document.getElementById(`${p}_nameError`);
+      if (g && e) setFieldError(g, e, "Name is required."); isValid = false;
+    } else { const g = document.getElementById(`${p}_fieldName`); const e = document.getElementById(`${p}_nameError`); if (g && e) setFieldValid(g, e); }
+  }
+  return isValid;
+}
+
+function collectEditExtraPanelsData(qty) {
+  const extras = [];
+  for (let i = 1; i < qty; i++) {
+    const p = `eEx${i}`;
+    const numEl = document.getElementById(`${p}_number`);
+    extras.push({
+      type:   document.querySelector(`input[name="${p}_type"]:checked`)?.value   || null,
+      style:  document.querySelector(`input[name="${p}_style"]:checked`)?.value  || null,
+      sleeve: document.querySelector(`input[name="${p}_sleeve"]:checked`)?.value || null,
+      size:   document.getElementById(`${p}_size`)?.value || null,
+      number: numEl ? (parseInt(numEl.value, 10) || null) : null,
+      name:   document.getElementById(`${p}_name`)?.value?.trim()?.toUpperCase() || null
+    });
+  }
+  return extras;
+}
+
+/* Quantity listener — render extra panels live in admin modal */
+if (editJerseyQuantityInput) {
+  editJerseyQuantityInput.addEventListener("input", () => {
+    const qty = parseInt(editJerseyQuantityInput.value, 10) || 1;
+    if (qty >= 1 && qty <= 10) renderEditAdditionalJerseyPanels(qty);
+  });
+}
 
 /* ═══════════════════════════════════════════════════════════
    TOAST UTILITY
@@ -276,9 +441,10 @@ function renderAdminGrid(membersList) {
     const isJerseyInterested = member.jersey && member.jersey.interested === true;
     
     if (isJerseyInterested) {
-      const jType   = member.jersey.type === "player" ? "Player" : (member.jersey.type === "fan" ? "Fan" : "Jersey");
+          const jType   = member.jersey.type === "player" ? "Player" : (member.jersey.type === "fan" ? "Fan" : "Jersey");
       const jStyle  = member.jersey.style === "button_collar" ? "Btn-Collar" : (member.jersey.style === "plain_neck" ? "Plain-Neck" : (member.jersey.type === "player" ? "Btn-Collar" : "Plain-Neck"));
       const jSleeve = member.jersey.sleeve === "full" ? "Full-slv" : (member.jersey.sleeve === "half" ? "Half-slv" : "");
+      const jQty    = member.jersey.quantity || 1;
       
       jerseyBadgeHTML = `
         <div class="jersey-pill-badge jersey-pill-badge--yes">
@@ -286,6 +452,7 @@ function renderAdminGrid(membersList) {
           <span>&nbsp;&#8231;&nbsp; ${jSleeve}</span>
           <span>&nbsp;&#8231;&nbsp; Size <strong>${member.jersey.size || "N/A"}</strong></span>
           <span>&nbsp;&#8231;&nbsp; No. <strong>${member.jersey.number || "—"}</strong></span>
+          ${jQty > 1 ? `<span>&nbsp;&#8231;&nbsp; Qty: <strong>${jQty}</strong></span>` : ""}
         </div>
       `;
       
@@ -328,6 +495,36 @@ function renderAdminGrid(membersList) {
         </div>
       `;
     }
+
+    // Additional Payment Badge (always shown, defaults to Unpaid)
+    const addlPayStatus = member.additionalPaymentStatus || "Unpaid";
+    let addlBadgeClass = "addl-payment-badge--unpaid";
+    let addlBadgeLabel = "Unpaid";
+    let addlBadgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+
+    if (addlPayStatus === "Paid") {
+      addlBadgeClass = "addl-payment-badge--paid";
+      addlBadgeLabel = "Paid";
+      addlBadgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><polyline points="20 6 9 17 4 12"/></svg>`;
+    } else if (addlPayStatus === "Partial") {
+      addlBadgeClass = "addl-payment-badge--partial";
+      addlBadgeLabel = "Partially Paid";
+      addlBadgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+    } else if (addlPayStatus === "Waived") {
+      addlBadgeClass = "addl-payment-badge--waived";
+      addlBadgeLabel = "Waived";
+      addlBadgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>`;
+    }
+
+    const addlPaymentBadgeHTML = `
+      <div class="addl-payment-badge-wrapper">
+        <div class="addl-payment-pill-badge ${addlBadgeClass}">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;opacity:0.7;"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          <span>Add. Payment: <strong>${addlBadgeLabel}</strong></span>
+          ${addlBadgeIcon}
+        </div>
+      </div>
+    `;
 
     // Determine card action layout based on active Tab
     let actionsHTML = "";
@@ -428,6 +625,7 @@ function renderAdminGrid(membersList) {
       <div class="jersey-badge-wrapper">
         ${jerseyBadgeHTML}
         ${paymentBadgeHTML}
+        ${addlPaymentBadgeHTML}
       </div>
 
       ${actionsHTML}
@@ -735,6 +933,8 @@ function closeModal() {
     editModal.style.display = "none";
     editMemberForm.reset();
     clearPhotoPreview();
+    const editExtraCont = document.getElementById("editAdditionalJerseyPanels");
+    if (editExtraCont) editExtraCont.innerHTML = "";
     
     selectedMemberId   = null;
     selectedMemberData = null;
@@ -805,9 +1005,17 @@ function prefillEditForm() {
     editJerseySizeSelect.value   = m.jersey.size || "";
     editJerseyNumberInput.value  = m.jersey.number || "";
     editJerseyNameInput.value    = m.jersey.name || "";
+    const prefillQty = m.jersey.quantity || 1;
+    if (editJerseyQuantityInput) editJerseyQuantityInput.value = prefillQty;
+    /* Render saved extra panels */
+    if (prefillQty > 1) renderEditAdditionalJerseyPanels(prefillQty, m.jersey.extras || []);
+    else { const c = document.getElementById("editAdditionalJerseyPanels"); if (c) c.innerHTML = ""; }
     
     if (editPaymentStatusSelect) {
       editPaymentStatusSelect.value = m.paymentStatus || "No";
+    }
+    if (editAdditionalPaymentStatusSelect) {
+      editAdditionalPaymentStatusSelect.value = m.additionalPaymentStatus || "Unpaid";
     }
   } else {
     document.getElementById("editJerseyInterestNo").checked = true;
@@ -820,9 +1028,15 @@ function prefillEditForm() {
     editJerseySizeSelect.value   = "";
     editJerseyNumberInput.value  = "";
     editJerseyNameInput.value    = "";
+    if (editJerseyQuantityInput) editJerseyQuantityInput.value = "1";
+    const editExtraCont = document.getElementById("editAdditionalJerseyPanels");
+    if (editExtraCont) editExtraCont.innerHTML = "";
     
     if (editPaymentStatusSelect) {
       editPaymentStatusSelect.value = m.paymentStatus || "N/A";
+    }
+    if (editAdditionalPaymentStatusSelect) {
+      editAdditionalPaymentStatusSelect.value = m.additionalPaymentStatus || "Unpaid";
     }
   }
 }
@@ -847,6 +1061,7 @@ document.querySelectorAll('input[name="editJerseyInterest"]').forEach((radio) =>
       editJerseySizeSelect.value   = "";
       editJerseyNumberInput.value  = "";
       editJerseyNameInput.value    = "";
+      if (editJerseyQuantityInput) editJerseyQuantityInput.value = "1";
       if (editPaymentStatusSelect) {
         editPaymentStatusSelect.value = "N/A";
       }
@@ -1057,6 +1272,18 @@ function validateEditForm() {
     } else {
       setFieldValid(nameGroup, nameError);
     }
+
+    const qtyGroup = document.getElementById("fieldEditJerseyQuantity");
+    const qtyError = document.getElementById("editJerseyQuantityError");
+    if (qtyGroup && editJerseyQuantityInput) {
+      const qtyVal = parseInt(editJerseyQuantityInput.value, 10);
+      if (!editJerseyQuantityInput.value || isNaN(qtyVal) || qtyVal < 1 || qtyVal > 10) {
+        setFieldError(qtyGroup, qtyError, "Enter a quantity between 1 and 10.");
+        isValid = false;
+      } else {
+        setFieldValid(qtyGroup, qtyError);
+      }
+    }
   }
 
   return isValid;
@@ -1086,7 +1313,10 @@ function setSaveLoading(isSaving) {
 
 /* Save Admin Changes Trigger */
 btnSaveChanges.addEventListener("click", async () => {
-  if (!validateEditForm()) {
+  const wantsJersey    = document.querySelector('input[name="editJerseyInterest"]:checked')?.value === "yes";
+  const adminJerseyQty = wantsJersey ? (parseInt(editJerseyQuantityInput?.value, 10) || 1) : 0;
+
+  if (!validateEditForm() || (wantsJersey && !validateEditExtraPanels(adminJerseyQty))) {
     showToast("Please correct the validation errors.", "error");
     return;
   }
@@ -1107,8 +1337,9 @@ btnSaveChanges.addEventListener("click", async () => {
       }
     }
 
-    const wantsJersey = document.querySelector('input[name="editJerseyInterest"]:checked')?.value === "yes";
-    
+    const adminQty    = wantsJersey ? adminJerseyQty : null;
+    const adminExtras  = wantsJersey && adminJerseyQty > 1 ? collectEditExtraPanelsData(adminJerseyQty) : [];
+
     const updatedData = {
       fullName:     editFullNameInput.value.trim(),
       city:         editCityInput.value.trim(),
@@ -1116,6 +1347,7 @@ btnSaveChanges.addEventListener("click", async () => {
       email:        editEmailInput.value.trim().toLowerCase(),
       profilePhoto: photoURL,
       paymentStatus: wantsJersey ? (editPaymentStatusSelect ? editPaymentStatusSelect.value : "No") : "N/A",
+      additionalPaymentStatus: editAdditionalPaymentStatusSelect ? editAdditionalPaymentStatusSelect.value : "Unpaid",
       jersey: {
         interested: wantsJersey,
         type:       wantsJersey ? (document.querySelector('input[name="editJerseyType"]:checked')?.value || null) : null,
@@ -1123,7 +1355,9 @@ btnSaveChanges.addEventListener("click", async () => {
         sleeve:     wantsJersey ? (document.querySelector('input[name="editJerseySleeve"]:checked')?.value || null) : null,
         size:       wantsJersey ? editJerseySizeSelect.value   : null,
         number:     wantsJersey ? parseInt(editJerseyNumberInput.value, 10) : null,
-        name:       wantsJersey ? editJerseyNameInput.value.trim().toUpperCase() : null
+        name:       wantsJersey ? editJerseyNameInput.value.trim().toUpperCase() : null,
+        quantity:   adminQty,
+        extras:     adminExtras
       }
     };
 
@@ -1217,13 +1451,12 @@ function setupGateListeners() {
    ═══════════════════════════════════════════════════════════ */
 
 /**
- * Generates a beautifully styled Excel (.xls) file using the
- * HTML-table-to-Excel technique. Excel and LibreOffice Calc
- * both open this format and render the inline CSS colours,
- * fonts, borders, and widths natively.
+ * Generates a properly formatted SpreadsheetML (.xls) Excel file.
+ * Uses the Excel 2003 XML (SpreadsheetML) format which Excel recognises
+ * natively — no "file format mismatch" warning.
  *
- * Columns: #  |  Full Name  |  Track  |  Jersey Style  |
- *          Sleeve  |  Size  |  Jersey No.  |  Name on Jersey
+ * Columns: SN | Full Name | Bottom wear | Jersey Style |
+ *          Sleeve | Size | No. | Name on Jersey
  */
 function downloadJerseySummaryExcel() {
   const jerseyMembers = activeMembers.filter(
@@ -1236,151 +1469,295 @@ function downloadJerseySummaryExcel() {
     return;
   }
 
-  /* ── Colour palette (MRR brand) ─────────────────────────── */
-  const C = {
-    headerBg:     "#8a0505",   // MRR red — column header (solid fallback)
-    headerText:   "#ffffff",
-    titleGrad:    "linear-gradient(135deg, #8a0505 0%, #c00b0b 45%, #e51111 75%, #f83232 100%)",
-    titleText:    "#ffffff",
-    rowEven:      "#ffffff",
-    rowOdd:       "#fff5f5",   // very light blush alternate row
-    border:       "#e8c5c5",
-    trackYesBg:   "#dcfce7",   // green tint  — Player jersey (Track=Yes)
-    trackYesFg:   "#14532d",
-    trackNoBg:    "#fef9c3",   // amber tint  — Fan jersey   (Track=No)
-    trackNoFg:    "#78350f",
-    seqFg:        "#9b1c1c",   // row index number
-    nameFg:       "#1e3a8a",   // name on jersey — deep navy
-    styleFg:      "#6b21a8",   // jersey style — purple
-    sleeveFg:     "#0f766e",   // sleeve — teal
-    sizeFg:       "#1e40af",   // size — blue
-    numFg:        "#1e40af",   // jersey number — blue
-    sizeBg:       "#eff6ff",
-    fullNameFg:   "#1e293b",   // full name — dark slate
-  };
-
-  /* ── Header cell style ───────────────────────────────────── */
-  const headerCell = "font-family:'Segoe UI',Arial,sans-serif; font-size:11pt; font-weight:bold; vertical-align:middle; padding:8px 12px; text-align:center; background:#8a0505; color:#ffffff; border:1.5px solid #5a0000;";
-
-  /* ── Build data rows ────────────────────────────────────── */
   const now      = new Date();
   const fileDate = now.toISOString().slice(0, 10);
 
-  const dataRows = jerseyMembers.map((m, i) => {
-    const isPlayer = m.jersey.type === "player";
-    const track    = isPlayer ? "Yes" : "No";
-    // Alternating row background — white vs visible blush
-    const rowBg   = i % 2 === 0 ? "#ffffff" : "#fde8e8";
+  // ── Flatten: 1 row per jersey (primary + extras) ─────────
+  const flatJerseyList = [];
+  jerseyMembers.forEach((m) => {
+    flatJerseyList.push({ member: m, jerseyData: m.jersey });
+    if (m.jersey.extras && Array.isArray(m.jersey.extras)) {
+      m.jersey.extras.forEach(extra => {
+        flatJerseyList.push({ member: m, jerseyData: extra });
+      });
+    }
+  });
 
-    const jerseyStyle = m.jersey.style === "button_collar" ? "Button Collar"
-                      : m.jersey.style === "plain_neck"    ? "Plain Neck"
-                      : isPlayer                           ? "Button Collar"
-                      : "Plain Neck";
+  // ── Helper: escape XML special characters ────────────────
+  function esc(v) {
+    if (v == null) return "—";
+    return String(v)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
 
-    const sleeve = m.jersey.sleeve === "full" ? "Full Sleeve"
-                 : m.jersey.sleeve === "half" ? "Half Sleeve"
-                 : "—";
+  // ── Helper: build a styled Cell element ──────────────────
+  function cell(value, styleId) {
+    const type = typeof value === "number" ? "Number" : "String";
+    const safeVal = type === "Number" ? value : esc(value);
+    return `<Cell ss:StyleID="${styleId}"><Data ss:Type="${type}">${safeVal}</Data></Cell>`;
+  }
 
-    const jerseyName = (m.jersey.name && m.jersey.name.trim())
-      ? m.jersey.name.trim().toUpperCase()
-      : (m.fullName ? m.fullName.trim().split(/\s+/)[0].toUpperCase() : "—");
+  // ── Build data rows ───────────────────────────────────────
+  const memberJerseyIndex = {};
+  const dataRows = flatJerseyList.map((item, i) => {
+    const { member, jerseyData } = item;
+    memberJerseyIndex[member.id] = (memberJerseyIndex[member.id] || 0) + 1;
+    const isExtraRow = memberJerseyIndex[member.id] > 1;
+    const isPlayer   = jerseyData.type === "player";
 
-    // Per-row background — white vs. visible blush
-    const B  = rowBg;  // shorthand
-    const BD = "border:1px solid #e0b4b4;";
-    const FN = "font-family:'Segoe UI',Arial,sans-serif;";
-    const PA = "padding:7px 11px;";
-    const VM = "vertical-align:middle;";
+    const bottomWear   = isPlayer ? "Shorts + Track" : "Shorts";
+    const jerseyStyle  = jerseyData.style === "button_collar" ? "Button Collar"
+                       : jerseyData.style === "plain_neck"    ? "Plain Neck"
+                       : isPlayer ? "Button Collar" : "Plain Neck";
+    const sleeve       = jerseyData.sleeve === "full" ? "Full Sleeve"
+                       : jerseyData.sleeve === "half" ? "Half Sleeve" : "—";
+    const jerseyName   = (jerseyData.name && jerseyData.name.trim())
+                       ? jerseyData.name.trim().toUpperCase()
+                       : (member.fullName ? member.fullName.trim().split(/\s+/)[0].toUpperCase() : "—");
 
-    // Track cell colours
-    const trackBg = isPlayer ? "#d1fae5" : "#fef3c7";
-    const trackFg = isPlayer ? "#065f46" : "#92400e";
-
-    // Size/Number cell
-    const numBg = "#dbeafe";
+    const rowStyleSuffix = i % 2 === 0 ? "Even" : "Odd";
+    const bwStyle        = isPlayer ? "TrackYes" : "TrackNo";
+    const extraStyle     = isExtraRow ? "Extra" : "";
 
     return `
-      <tr>
-        <td style="${FN} ${BD} ${PA} ${VM} background:${B}; color:#b91c1c; font-weight:800; font-size:12pt; text-align:center; width:36px;">${i + 1}</td>
-        <td style="${FN} ${BD} ${PA} ${VM} background:${B}; color:#0f172a; font-weight:700; font-size:11pt; min-width:160px;">${m.fullName || "—"}</td>
-        <td style="${FN} ${BD} ${PA} ${VM} background:${trackBg}; color:${trackFg}; font-weight:800; font-size:12pt; text-align:center; width:58px;">${track}</td>
-        <td style="${FN} ${BD} ${PA} ${VM} background:${B}; color:#6d28d9; font-weight:700; font-size:11pt; text-align:center; min-width:120px;">${jerseyStyle}</td>
-        <td style="${FN} ${BD} ${PA} ${VM} background:${B}; color:#0f766e; font-weight:700; font-size:11pt; text-align:center; min-width:100px;">${sleeve}</td>
-        <td style="${FN} ${BD} ${PA} ${VM} background:${numBg}; color:#1e40af; font-weight:800; font-size:12pt; text-align:center; width:54px;">${m.jersey.size || "—"}</td>
-        <td style="${FN} ${BD} ${PA} ${VM} background:${numBg}; color:#1e40af; font-weight:800; font-size:12pt; text-align:center; width:54px;">${m.jersey.number || "—"}</td>
-        <td style="${FN} ${BD} ${PA} ${VM} background:${B}; color:#9f1239; font-weight:800; font-size:12pt; letter-spacing:1.5px; min-width:130px;">${jerseyName}</td>
-      </tr>`;
+    <Row ss:Height="24">
+      ${cell(i + 1,                             "SeqNum")}
+      ${cell(member.fullName || "—",            `FullName${rowStyleSuffix}${extraStyle}`)}
+      ${cell(bottomWear,                         bwStyle)}
+      ${cell(jerseyStyle,                        `Style${rowStyleSuffix}`)}
+      ${cell(sleeve,                             `Sleeve${rowStyleSuffix}`)}
+      ${cell(jerseyData.size || "—",            "SizeCell")}
+      ${cell(jerseyData.number || "—",          "NumCell")}
+      ${cell(jerseyName,                         `JerseyName${rowStyleSuffix}`)}
+    </Row>`;
   }).join("\n");
 
-  /* ── Full HTML document ─────────────────────────────────── */
-  const html = `
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:o="urn:schemas-microsoft-com:office:office"
-      xmlns:x="urn:schemas-microsoft-com:office:excel">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <!--[if gte mso 9]><xml>
-    <x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
-      <x:Name>Jersey Orders</x:Name>
-      <x:WorksheetOptions>
-        <x:FreezePanes/>
-        <x:FrozenNoSplit/>
-        <x:SplitHorizontal>5</x:SplitHorizontal>
-        <x:TopRowBottomPane>5</x:TopRowBottomPane>
-        <x:ActivePane>2</x:ActivePane>
-      </x:WorksheetOptions>
-    </x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook>
-  </xml><![endif]-->
-  <style>
-    body { margin:0; padding:0; font-family:"Segoe UI",Arial,sans-serif; }
-    table { border-collapse: collapse; width: 100%; }
-  </style>
-</head>
-<body>
-<table>
+  // ── Full SpreadsheetML document ───────────────────────────
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:x="urn:schemas-microsoft-com:office:excel"
+          xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:html="http://www.w3.org/TR/REC-html40">
 
-  <!-- ── TITLE BANNER ────────────────────────────────────── -->
-  <tr>
-    <td colspan="8" style="
-      background: ${C.headerBg};
-      mso-pattern: auto none;
-      color: ${C.titleText};
-      font-family: 'Segoe UI', Arial, sans-serif;
-      font-size: 18pt;
-      font-weight: bold;
-      text-align: center;
-      padding: 16px 16px;
-      letter-spacing: 2px;
-      border: 2px solid #5a0000;
-    ">MRR TEAM FINLAND &#8212; Jersey Order Sheet</td>
-  </tr>
+  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+    <Title>MRR Team Finland — Jersey Order Sheet</Title>
+    <Created>${now.toISOString()}</Created>
+  </DocumentProperties>
 
-  <!-- ── SPACER ───────────────────────────────────────────── -->
-  <tr><td colspan="8" style="height:8px; background:#fff; border:none;"></td></tr>
+  <Styles>
+    <!-- Title banner -->
+    <Style ss:ID="Title">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="0"/>
+      <Font ss:FontName="Segoe UI" ss:Size="16" ss:Bold="1" ss:Color="#FFFFFF"/>
+      <Interior ss:Color="#8A0505" ss:Pattern="Solid"/>
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#5A0000"/>
+      </Borders>
+    </Style>
 
-  <!-- ── COLUMN HEADERS ───────────────────────────────────── -->
-  <tr>
-    <td style="${headerCell} width:36px;">SN</td>
-    <td style="${headerCell} min-width:160px; text-align:left; padding-left:14px;">Full Name</td>
-    <td style="${headerCell} width:58px;">Track</td>
-    <td style="${headerCell} min-width:120px;">Jersey Style</td>
-    <td style="${headerCell} min-width:100px;">Sleeve</td>
-    <td style="${headerCell} width:54px;">Size</td>
-    <td style="${headerCell} width:54px;">No.</td>
-    <td style="${headerCell} min-width:130px; text-align:left; padding-left:14px;">Name on Jersey</td>
-  </tr>
+    <!-- Column headers -->
+    <Style ss:ID="Header">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#FFFFFF"/>
+      <Interior ss:Color="#8A0505" ss:Pattern="Solid"/>
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#5A0000"/>
+        <Border ss:Position="Right"  ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#5A0000"/>
+        <Border ss:Position="Left"   ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#5A0000"/>
+        <Border ss:Position="Top"    ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#5A0000"/>
+      </Borders>
+    </Style>
+    <Style ss:ID="HeaderLeft">
+      <Alignment ss:Horizontal="Left" ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#FFFFFF"/>
+      <Interior ss:Color="#8A0505" ss:Pattern="Solid"/>
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#5A0000"/>
+        <Border ss:Position="Right"  ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#5A0000"/>
+        <Border ss:Position="Left"   ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#5A0000"/>
+        <Border ss:Position="Top"    ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#5A0000"/>
+      </Borders>
+    </Style>
 
-  <!-- ── DATA ROWS ────────────────────────────────────────── -->
-  ${dataRows}
+    <!-- Row data base borders -->
+    <Style ss:ID="Base">
+      <Alignment ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="10"/>
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/>
+        <Border ss:Position="Right"  ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/>
+        <Border ss:Position="Left"   ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/>
+        <Border ss:Position="Top"    ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/>
+      </Borders>
+    </Style>
 
-</table>
-</body>
-</html>`.trim();
+    <!-- Sequence number -->
+    <Style ss:ID="SeqNum">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#B91C1C"/>
+      <Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/>
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/>
+        <Border ss:Position="Right"  ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/>
+        <Border ss:Position="Left"   ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/>
+        <Border ss:Position="Top"    ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/>
+      </Borders>
+    </Style>
+
+    <!-- Full Name — even / odd -->
+    <Style ss:ID="FullNameEven">
+      <Alignment ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#0F172A"/>
+      <Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+    <Style ss:ID="FullNameOdd">
+      <Alignment ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#0F172A"/>
+      <Interior ss:Color="#FDE8E8" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+    <Style ss:ID="FullNameEvenExtra">
+      <Alignment ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#0F172A"/>
+      <Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3" ss:Color="#C00B0B"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+    <Style ss:ID="FullNameOddExtra">
+      <Alignment ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#0F172A"/>
+      <Interior ss:Color="#FDE8E8" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="3" ss:Color="#C00B0B"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+
+    <!-- Bottom wear: Track=yes (player) — green -->
+    <Style ss:ID="TrackYes">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#065F46"/>
+      <Interior ss:Color="#D1FAE5" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+    <!-- Bottom wear: Track=no (fan) — amber -->
+    <Style ss:ID="TrackNo">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#92400E"/>
+      <Interior ss:Color="#FEF3C7" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+
+    <!-- Jersey Style — even / odd -->
+    <Style ss:ID="StyleEven">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#6D28D9"/>
+      <Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+    <Style ss:ID="StyleOdd">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#6D28D9"/>
+      <Interior ss:Color="#FDE8E8" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+
+    <!-- Sleeve — even / odd -->
+    <Style ss:ID="SleeveEven">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#0F766E"/>
+      <Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+    <Style ss:ID="SleeveOdd">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="11" ss:Bold="1" ss:Color="#0F766E"/>
+      <Interior ss:Color="#FDE8E8" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+
+    <!-- Size & Number cells — blue tint -->
+    <Style ss:ID="SizeCell">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="12" ss:Bold="1" ss:Color="#1E40AF"/>
+      <Interior ss:Color="#DBEAFE" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+    <Style ss:ID="NumCell">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="12" ss:Bold="1" ss:Color="#1E40AF"/>
+      <Interior ss:Color="#DBEAFE" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+
+    <!-- Name on Jersey — even / odd -->
+    <Style ss:ID="JerseyNameEven">
+      <Alignment ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="12" ss:Bold="1" ss:Color="#9F1239"/>
+      <Interior ss:Color="#FFFFFF" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+    <Style ss:ID="JerseyNameOdd">
+      <Alignment ss:Vertical="Center"/>
+      <Font ss:FontName="Segoe UI" ss:Size="12" ss:Bold="1" ss:Color="#9F1239"/>
+      <Interior ss:Color="#FDE8E8" ss:Pattern="Solid"/>
+      <Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E0B4B4"/></Borders>
+    </Style>
+  </Styles>
+
+  <Worksheet ss:Name="Jersey Orders">
+    <Table ss:DefaultRowHeight="20">
+      <!-- Column widths -->
+      <Column ss:Width="36"/>
+      <Column ss:Width="160"/>
+      <Column ss:Width="110"/>
+      <Column ss:Width="120"/>
+      <Column ss:Width="100"/>
+      <Column ss:Width="54"/>
+      <Column ss:Width="54"/>
+      <Column ss:Width="140"/>
+
+      <!-- Title row -->
+      <Row ss:Height="36">
+        <Cell ss:MergeAcross="7" ss:StyleID="Title">
+          <Data ss:Type="String">MRR TEAM FINLAND — Jersey Order Sheet</Data>
+        </Cell>
+      </Row>
+
+      <!-- Spacer -->
+      <Row ss:Height="6"/>
+
+      <!-- Header row -->
+      <Row ss:Height="28">
+        <Cell ss:StyleID="Header"><Data ss:Type="String">SN</Data></Cell>
+        <Cell ss:StyleID="HeaderLeft"><Data ss:Type="String">Full Name</Data></Cell>
+        <Cell ss:StyleID="Header"><Data ss:Type="String">Bottom wear</Data></Cell>
+        <Cell ss:StyleID="Header"><Data ss:Type="String">Jersey Style</Data></Cell>
+        <Cell ss:StyleID="Header"><Data ss:Type="String">Sleeve</Data></Cell>
+        <Cell ss:StyleID="Header"><Data ss:Type="String">Size</Data></Cell>
+        <Cell ss:StyleID="Header"><Data ss:Type="String">No.</Data></Cell>
+        <Cell ss:StyleID="HeaderLeft"><Data ss:Type="String">Name on Jersey</Data></Cell>
+      </Row>
+
+      <!-- Data rows -->
+      ${dataRows}
+
+    </Table>
+
+    <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+      <FreezePanes/>
+      <FrozenNoSplit/>
+      <SplitHorizontal>3</SplitHorizontal>
+      <TopRowBottomPane>3</TopRowBottomPane>
+      <ActivePane>2</ActivePane>
+    </WorksheetOptions>
+  </Worksheet>
+</Workbook>`;
 
   /* ── Trigger download ───────────────────────────────────── */
-  const blob = new Blob([html], {
+  const blob = new Blob([xml], {
     type: "application/vnd.ms-excel;charset=UTF-8"
   });
   const url  = URL.createObjectURL(blob);
@@ -1392,7 +1769,7 @@ function downloadJerseySummaryExcel() {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 
-  showToast(`Jersey order sheet downloaded — ${jerseyMembers.length} member(s). ✅`, "success");
+  showToast(`Jersey order sheet downloaded — ${flatJerseyList.length} jersey(s) total. ✅`, "success");
 }
 
 /* Wire up download button */
