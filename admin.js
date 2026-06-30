@@ -496,40 +496,43 @@ function renderAdminGrid(membersList) {
       `;
     }
 
-    // Additional Payment Badge (always shown, defaults to Unpaid)
-    const addlPayStatus = member.additionalPaymentStatus || "Unpaid";
-    let addlBadgeClass = "addl-payment-badge--unpaid";
-    let addlBadgeLabel = "Unpaid";
-    let addlBadgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+    // Additional Payment Badge — only for jersey-interested members
+    let addlPaymentBadgeHTML = "";
+    if (isJerseyInterested) {
+      const addlPayStatus = member.additionalPaymentStatus || "Unpaid";
+      let addlBadgeClass = "addl-payment-badge--unpaid";
+      let addlBadgeLabel = "Unpaid";
+      let addlBadgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
 
-    if (addlPayStatus === "Paid") {
-      addlBadgeClass = "addl-payment-badge--paid";
-      addlBadgeLabel = "Paid";
-      addlBadgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><polyline points="20 6 9 17 4 12"/></svg>`;
-    } else if (addlPayStatus === "Partial") {
-      addlBadgeClass = "addl-payment-badge--partial";
-      addlBadgeLabel = "Partially Paid";
-      addlBadgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
-    } else if (addlPayStatus === "Waived") {
-      addlBadgeClass = "addl-payment-badge--waived";
-      addlBadgeLabel = "Waived";
-      addlBadgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>`;
-    }
+      if (addlPayStatus === "Paid") {
+        addlBadgeClass = "addl-payment-badge--paid";
+        addlBadgeLabel = "Paid";
+        addlBadgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><polyline points="20 6 9 17 4 12"/></svg>`;
+      } else if (addlPayStatus === "Partial") {
+        addlBadgeClass = "addl-payment-badge--partial";
+        addlBadgeLabel = "Partially Paid";
+        addlBadgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+      } else if (addlPayStatus === "Waived") {
+        addlBadgeClass = "addl-payment-badge--waived";
+        addlBadgeLabel = "Waived";
+        addlBadgeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>`;
+      }
 
-    const addlPaymentBadgeHTML = `
-      <div class="addl-payment-badge-wrapper">
-        <div class="addl-payment-pill-badge ${addlBadgeClass}">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;opacity:0.7;"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-          <span>Add. Payment: <strong>${addlBadgeLabel}</strong></span>
-          ${addlBadgeIcon}
+      addlPaymentBadgeHTML = `
+        <div class="addl-payment-badge-wrapper">
+          <div class="addl-payment-pill-badge ${addlBadgeClass}">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;opacity:0.7;"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <span>Add. Payment: <strong>${addlBadgeLabel}</strong></span>
+            ${addlBadgeIcon}
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
 
     // Determine card action layout based on active Tab
     let actionsHTML = "";
-    const showMarkPaidBtn = isJerseyInterested && (member.paymentStatus !== "Done" && member.paymentStatus !== "Paid");
-    const showMarkAddlPaidBtn = (member.additionalPaymentStatus || "Unpaid") !== "Paid";
+    const showMarkPaidBtn    = isJerseyInterested && (member.paymentStatus !== "Done" && member.paymentStatus !== "Paid");
+    const showMarkAddlPaidBtn = isJerseyInterested && (member.additionalPaymentStatus || "Unpaid") !== "Paid";
     
     let markPaidBtnHTML = "";
     if (showMarkPaidBtn) {
