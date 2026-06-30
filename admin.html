@@ -111,7 +111,8 @@
     .btn-delete,
     .btn-edit,
     .btn-delete-profile,
-    .btn-mark-paid {
+    .btn-mark-paid,
+    .btn-mark-addl-paid {
       flex: 1;
       min-width: 80px;
       display: flex;
@@ -173,11 +174,23 @@
       transform: translateY(-1.5px);
     }
 
+    .btn-mark-addl-paid {
+      background: linear-gradient(135deg, #6b21a8, #9333ea);
+      color: white;
+      box-shadow: 0 4px 12px rgba(147, 51, 234, 0.2);
+    }
+
+    .btn-mark-addl-paid:hover {
+      box-shadow: 0 6px 16px rgba(147, 51, 234, 0.35);
+      transform: translateY(-1.5px);
+    }
+
     .btn-approve:active,
     .btn-delete:active,
     .btn-edit:active,
     .btn-delete-profile:active,
-    .btn-mark-paid:active {
+    .btn-mark-paid:active,
+    .btn-mark-addl-paid:active {
       transform: translateY(0);
     }
 
@@ -185,7 +198,8 @@
     .btn-delete:disabled,
     .btn-edit:disabled,
     .btn-delete-profile:disabled,
-    .btn-mark-paid:disabled {
+    .btn-mark-paid:disabled,
+    .btn-mark-addl-paid:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none !important;

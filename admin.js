@@ -529,6 +529,7 @@ function renderAdminGrid(membersList) {
     // Determine card action layout based on active Tab
     let actionsHTML = "";
     const showMarkPaidBtn = isJerseyInterested && (member.paymentStatus !== "Done" && member.paymentStatus !== "Paid");
+    const showMarkAddlPaidBtn = (member.additionalPaymentStatus || "Unpaid") !== "Paid";
     
     let markPaidBtnHTML = "";
     if (showMarkPaidBtn) {
@@ -542,10 +543,23 @@ function renderAdminGrid(membersList) {
       `;
     }
 
+    let markAddlPaidBtnHTML = "";
+    if (showMarkAddlPaidBtn) {
+      markAddlPaidBtnHTML = `
+        <button type="button" class="btn-mark-addl-paid" data-id="${member.id}" aria-label="Mark additional payment as paid for ${member.fullName}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><polyline points="6 15 9 18 14 13"/>
+          </svg>
+          Addl. Paid
+        </button>
+      `;
+    }
+
     if (activeTab === "pending") {
       actionsHTML = `
         <div class="approval-actions-wrapper">
           ${markPaidBtnHTML}
+          ${markAddlPaidBtnHTML}
           <button type="button" class="btn-approve" data-id="${member.id}" aria-label="Approve registration for ${member.fullName}">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"/>
@@ -571,6 +585,7 @@ function renderAdminGrid(membersList) {
       actionsHTML = `
         <div class="approval-actions-wrapper">
           ${markPaidBtnHTML}
+          ${markAddlPaidBtnHTML}
           <button type="button" class="btn-edit" data-id="${member.id}" aria-label="Edit active member profile for ${member.fullName}">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -715,6 +730,32 @@ function attachActionHandlers() {
   const deleteBtns  = membersGrid.querySelectorAll(".btn-delete");
   const deleteProfileBtns = membersGrid.querySelectorAll(".btn-delete-profile");
   const markPaidBtns = membersGrid.querySelectorAll(".btn-mark-paid");
+  const markAddlPaidBtns = membersGrid.querySelectorAll(".btn-mark-addl-paid");
+
+  // Mark Additional Paid Quick Button
+  markAddlPaidBtns.forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const memberId = btn.getAttribute("data-id");
+      const member = pendingMembers.find(m => m.id === memberId) || activeMembers.find(m => m.id === memberId);
+      if (!member) return;
+
+      btn.disabled = true;
+      try {
+        showToast(`Marking additional payment as Paid for ${member.fullName}…`, "info");
+
+        const docRef = doc(db, "members", memberId);
+        await updateDoc(docRef, { additionalPaymentStatus: "Paid" });
+
+        showToast(`${member.fullName}'s additional payment marked as Paid! ✅`, "success");
+        await fetchAdminData(false);
+
+      } catch (err) {
+        console.error("Failed to mark additional paid:", err);
+        showToast(`Failed to update additional payment: ${err.message}`, "error");
+        btn.disabled = false;
+      }
+    });
+  });
 
   // Mark Paid Manual Trigger
   markPaidBtns.forEach(btn => {
