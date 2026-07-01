@@ -62,8 +62,9 @@ const noResultsDesc     = document.getElementById("noResultsDesc");
 
 const countPendingText  = document.getElementById("countPending");
 const countActiveText   = document.getElementById("countActive");
-const countAdminPaymentDoneText    = document.getElementById("countAdminPaymentDone");
-const countAdminPaymentPendingText = document.getElementById("countAdminPaymentPending");
+
+const countAdminAddlPaymentDoneText    = document.getElementById("countAdminAddlPaymentDone");
+const countAdminAddlPaymentPendingText = document.getElementById("countAdminAddlPaymentPending");
 
 const searchInput       = document.getElementById("searchInput");
 const sortControlSelect = document.getElementById("sortControl");
@@ -344,18 +345,22 @@ async function fetchAdminData(showSuccessToast = true) {
     animateCounter(countPendingText, pendingMembers.length);
     animateCounter(countActiveText, activeMembers.length);
 
-    // Payment stats (across all members)
+    // Additional payment stats (across all members)
     const allFetched = [...pendingMembers, ...activeMembers];
-    const paymentDone = allFetched.filter(
+
+    // Additional payment done stat
+    const addlPaymentDone = allFetched.filter(
       m => m.jersey && m.jersey.interested === true &&
-        (m.paymentStatus === "Done" || m.paymentStatus === "Paid")
+        m.additionalPaymentStatus === "Paid"
     ).length;
-    const paymentPending = allFetched.filter(
+    if (countAdminAddlPaymentDoneText) animateCounter(countAdminAddlPaymentDoneText, addlPaymentDone);
+
+    // Additional payment pending stat
+    const addlPaymentPending = allFetched.filter(
       m => m.jersey && m.jersey.interested === true &&
-        m.paymentStatus !== "Done" && m.paymentStatus !== "Paid"
+        m.additionalPaymentStatus !== "Paid"
     ).length;
-    if (countAdminPaymentDoneText) animateCounter(countAdminPaymentDoneText, paymentDone);
-    if (countAdminPaymentPendingText) animateCounter(countAdminPaymentPendingText, paymentPending);
+    if (countAdminAddlPaymentPendingText) animateCounter(countAdminAddlPaymentPendingText, addlPaymentPending);
 
     // Hide loader
     loadingState.style.display = "none";
